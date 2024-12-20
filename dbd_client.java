@@ -8,18 +8,33 @@ public class dbd_client {
     private static final int SERVER_PORT = 12345;
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Matching Program");
+        JFrame frame = new JFrame("迷途逃生");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(500, 400);
+        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice gd = ge.getDefaultScreenDevice();
+        
+        // 設定為全螢幕模式
+        gd.setFullScreenWindow(frame); // 設定視窗為全螢幕
 
         // Set main layout
         frame.setLayout(new BorderLayout());
 
-        // Title
-        JLabel titleLabel = new JLabel("Matching Program", JLabel.CENTER);
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 20));
+        // 創建標題標籤
+        JLabel titleLabel = new JLabel("迷途逃生");
+        titleLabel.setFont(new Font("DialogInput", Font.BOLD, 40));
+        titleLabel.setForeground(Color.RED);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        frame.add(titleLabel, BorderLayout.NORTH);
+
+        // 創建容器面板，使用 FlowLayout 靠左對齊
+        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        titlePanel.add(titleLabel);
+        titlePanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0)); // 確保無額外邊距
+
+        // 將面板添加到視窗的北側
+        frame.add(titlePanel, BorderLayout.NORTH);
+
+        // 顯示視窗
+        frame.setVisible(true);
 
         // Form Panel
         JPanel formPanel = new JPanel(new GridBagLayout());
