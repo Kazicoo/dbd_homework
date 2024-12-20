@@ -1,8 +1,5 @@
-import java.awt.*; 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 
 public class dbd_client {
@@ -17,10 +14,14 @@ public class dbd_client {
         GraphicsDevice device = env.getDefaultScreenDevice();
         device.setFullScreenWindow(frame);
 
-        frame.setLayout(new BorderLayout());
+        // 創建 JLayeredPane
+        JLayeredPane layeredPane = new JLayeredPane();
+        layeredPane.setLayout(null); // 使用null佈局管理
+        frame.add(layeredPane);
 
         // 上方標題和規則按鈕區域
         JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBounds(0, 0, frame.getWidth(), 100);
         topPanel.setOpaque(false);
 
         // 左上角標題
@@ -33,14 +34,15 @@ public class dbd_client {
         // 右上角規則按鈕
         JButton rulesButton = new JButton("規則");
         rulesButton.setFont(new Font("Dialog", Font.PLAIN, 20));
-        rulesButton.setMargin(new Insets(5, 15, 5, 15));
+        rulesButton.setMargin(new Insets(10, 10, 10, 10));
         topPanel.add(rulesButton, BorderLayout.EAST);
 
-        frame.add(topPanel, BorderLayout.NORTH);
+        layeredPane.add(topPanel, JLayeredPane.DEFAULT_LAYER);
 
         // 中間主面板
         JPanel mainPanel = new JPanel(new GridLayout(1, 2));
-        frame.add(mainPanel, BorderLayout.CENTER);
+        mainPanel.setBounds(0, 100, frame.getWidth(), frame.getHeight() - 200);
+        layeredPane.add(mainPanel, JLayeredPane.DEFAULT_LAYER);
 
         // 左側角色選擇區
         JPanel rolePanel = new JPanel(new GridLayout(4, 1));
@@ -72,6 +74,7 @@ public class dbd_client {
 
         // 下方操作區
         JPanel bottomPanel = new JPanel(new BorderLayout());
+        bottomPanel.setBounds(0, frame.getHeight() - 100, frame.getWidth(), 100);
 
         JLabel statusLabel = new JLabel("Ready players: 2/4", SwingConstants.LEFT);
         bottomPanel.add(statusLabel, BorderLayout.WEST);
@@ -79,23 +82,18 @@ public class dbd_client {
         JButton readyButton = new JButton("Ready");
         bottomPanel.add(readyButton, BorderLayout.EAST);
 
-        frame.add(bottomPanel, BorderLayout.SOUTH);
+        layeredPane.add(bottomPanel, JLayeredPane.DEFAULT_LAYER);
 
-        // 創建 JLayeredPane
-        JLayeredPane layeredPane = new JLayeredPane();
-        layeredPane.setPreferredSize(frame.getSize());
-        frame.add(layeredPane, BorderLayout.CENTER);
-        
         // 規則面板
         JPanel rulesPanel = new JPanel();
         rulesPanel.setLayout(new BorderLayout());
-        rulesPanel.setBounds(100, 100, 400, 300);
+        rulesPanel.setBounds(frame.getWidth() / 2 - 200, frame.getHeight() / 2 - 150, 400, 300);
         rulesPanel.setBackground(new Color(0, 0, 0, 150));
         rulesPanel.setBorder(BorderFactory.createTitledBorder("遊戲規則"));
         JLabel rulesLabel = new JLabel("<html>遊戲規則:<br>1. 選擇角色<br>2. 按下Ready開始遊戲</html>");
         rulesPanel.add(rulesLabel, BorderLayout.CENTER);
         rulesPanel.setVisible(false);
-        
+
         layeredPane.add(rulesPanel, JLayeredPane.PALETTE_LAYER);
 
         // 角色按鈕點擊事件
