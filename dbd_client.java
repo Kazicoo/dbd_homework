@@ -1,8 +1,13 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
+import java.net.*;
 import javax.swing.*;
 
 public class dbd_client {
+    private static PrintWriter out;
+    private static BufferedReader in;
+
     public static void main(String[] args) {
         // 創建主框架
         JFrame frame = new JFrame("迷途逃生");
@@ -34,7 +39,7 @@ public class dbd_client {
         // 右上角規則按鈕
         JButton rulesButton = new JButton("規則");
         rulesButton.setFont(new Font("Dialog", Font.PLAIN, 20));
-        rulesButton.setMargin(new Insets(10, 10, 10, 10));
+        rulesButton.setMargin(new Insets(5, 15, 5, 15));
         topPanel.add(rulesButton, BorderLayout.EAST);
 
         layeredPane.add(topPanel, JLayeredPane.DEFAULT_LAYER);
@@ -97,10 +102,22 @@ public class dbd_client {
         layeredPane.add(rulesPanel, JLayeredPane.PALETTE_LAYER);
 
         // 角色按鈕點擊事件
-        ghostButton.addActionListener(e -> imageLabel.setText("Ghost Selected"));
-        humanButton1.addActionListener(e -> imageLabel.setText("Character 1 Selected"));
-        humanButton2.addActionListener(e -> imageLabel.setText("Character 2 Selected"));
-        humanButton3.addActionListener(e -> imageLabel.setText("Character 3 Selected"));
+        ghostButton.addActionListener(e -> {
+            imageLabel.setText("Ghost Selected");
+            sendMessage("Ghost Selected");
+        });
+        humanButton1.addActionListener(e -> {
+            imageLabel.setText("Character 1 Selected");
+            sendMessage("Character 1 Selected");
+        });
+        humanButton2.addActionListener(e -> {
+            imageLabel.setText("Character 2 Selected");
+            sendMessage("Character 2 Selected");
+        });
+        humanButton3.addActionListener(e -> {
+            imageLabel.setText("Character 3 Selected");
+            sendMessage("Character 3 Selected");
+        });
 
         // 規則按鈕事件
         rulesButton.addActionListener(e -> rulesPanel.setVisible(true));
@@ -123,5 +140,35 @@ public class dbd_client {
 
         // 顯示框架
         frame.setVisible(true);
+
+        // 連接伺服器
+        connectToServer();
+    }
+
+    private static void connectToServer() {
+        try {
+            Socket socket = new Socket("localhost",12345); // 連接本地伺服器
+            out = new PrintWriter(socket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            
+            new Thread(() -> {
+                try {
+                    String response;
+                    while ((response = in.readLine()) != null) {
+                        System.out.println("伺服器回應: " + response);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void sendMessage(String message) {
+        if (out != null) {
+            out.println(message);
+        }
     }
 }
