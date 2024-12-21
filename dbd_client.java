@@ -39,7 +39,7 @@ public class dbd_client {
         topPanel.setOpaque(false);
 
         JLabel titleLabel = new JLabel("迷途逃生", SwingConstants.LEFT);
-        titleLabel.setFont(new Font("DialogInput", Font.BOLD, 50));
+        titleLabel.setFont(new Font("DialogInput", Font.BOLD, 60));
         titleLabel.setForeground(Color.RED);
         titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         topPanel.add(titleLabel, BorderLayout.WEST);
@@ -76,7 +76,7 @@ public class dbd_client {
             button.setMaximumSize(new Dimension(500, 100)); // 限制按鈕大小
             button.setAlignmentX(Component.LEFT_ALIGNMENT); // 按鈕靠左對齊
             rolePanel.add(button);
-            rolePanel.add(Box.createRigidArea(new Dimension(0, 50))); // 添加垂直間距
+            rolePanel.add(Box.createRigidArea(new Dimension(0, 75))); // 添加垂直間距
         }
         
         // 移除最後一個多餘的空白區域
