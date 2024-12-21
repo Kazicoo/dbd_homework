@@ -45,7 +45,7 @@ public class dbd_client {
         topPanel.add(titleLabel, BorderLayout.WEST);
 
         JButton rulesButton = new JButton("規則");
-        rulesButton.setFont(new Font("Dialog", Font.PLAIN, 20));
+        rulesButton.setFont(new Font("DialogInput", Font.PLAIN, 20));
         rulesButton.setMargin(new Insets(5, 15, 5, 15));
         topPanel.add(rulesButton, BorderLayout.EAST);
 
@@ -86,11 +86,11 @@ public class dbd_client {
 
         // 右側角色展示區
         JPanel imagePanel = new JPanel(new BorderLayout());
-        imagePanel.setBorder(BorderFactory.createTitledBorder("Character Display"));
+        imagePanel.setBorder(BorderFactory.createTitledBorder("角色展示"));
 
         imageLabel = new JLabel("", SwingConstants.CENTER);
-        imageLabel.setFont(new Font("Arial", Font.ITALIC, 18));
-        imageLabel.setText("Select a character to display");
+        imageLabel.setFont(new Font("DialogInput", Font.ITALIC, 18));
+        imageLabel.setText("請選擇角色");
         imagePanel.add(imageLabel, BorderLayout.CENTER);
 
         mainPanel.add(imagePanel);
@@ -99,10 +99,10 @@ public class dbd_client {
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.setBounds(0, frame.getHeight() - 100, frame.getWidth(), 100);
 
-        statusLabel = new JLabel("Ready players: 0/4", SwingConstants.LEFT);
+        statusLabel = new JLabel("已準備玩家: 0/4", SwingConstants.LEFT);
         bottomPanel.add(statusLabel, BorderLayout.WEST);
 
-        readyButton = new JButton("Ready");
+        readyButton = new JButton("選擇角色");
         readyButton.setEnabled(false); // 初始時禁用準備按鈕
         bottomPanel.add(readyButton, BorderLayout.EAST);
 
@@ -114,7 +114,7 @@ public class dbd_client {
         rulesPanel.setBounds(frame.getWidth() / 2 - 200, frame.getHeight() / 2 - 150, 400, 300);
         rulesPanel.setBackground(new Color(100, 0, 0, 150));
         rulesPanel.setBorder(BorderFactory.createTitledBorder("遊戲規則"));
-        JLabel rulesLabel = new JLabel("<html>遊戲規則:<br>1. 選擇角色<br>2. 按下Ready開始遊戲</html>");
+        JLabel rulesLabel = new JLabel("<html>遊戲規則:<br>1. 選擇角色<br>2. 當所有玩家準備完畢後開始遊戲</html>");
         rulesPanel.add(rulesLabel, BorderLayout.CENTER);
         rulesPanel.setVisible(false);
 
@@ -136,44 +136,46 @@ public class dbd_client {
                 rulesPanel.setVisible(false);
             }
         });
+    // "準備" 按鈕事件
+    readyButton.addActionListener(e -> {
+        if (isReady) {
+        // 取消準備
+            readyPlayers--;
+            statusLabel.setText("已準備玩家: " + readyPlayers + "/4");
+            readyButton.setText("選擇角色"); // 恢復為"準備"
+            isReady = false;
 
-        // "準備" 按鈕事件
-        readyButton.addActionListener(e -> {
-            if (isReady) {
-                // 取消準備
-                readyPlayers--;
-                statusLabel.setText("Ready players: " + readyPlayers + "/4");
-                readyButton.setText("Ready"); // 恢復為"準備"
-                isReady = false;
+        // 向伺服器傳送取消準備的封包
+        if (selectedCharacter != null) {
+            sendMessage("CANCEL_READY " + selectedCharacter);
+        }
 
-                // 取消準備後恢復角色按鈕可用狀態
-                for (int i = 0; i < characterButtons.length; i++) {
-                    characterButtons[i].setEnabled(true); // 恢復所有按鈕可用
-                    characterButtons[i].setBackground(Color.LIGHT_GRAY); // 恢復顏色
-                    characterSelected[i] = false; // 取消所有角色選擇
-                }
-                selectedCharacter = null; // 清空選擇的角色
-                imageLabel.setText("Select a character to display"); // 清空顯示的角色名稱
-            } else if (readyPlayers < maxPlayers) {
-                // 準備
-                readyPlayers++;
-                statusLabel.setText("Ready players: " + readyPlayers + "/4");
-                readyButton.setText("Cancel Ready"); // 改為"取消準備"
-                isReady = true;
+        // 取消準備後恢復角色按鈕可用狀態
+        for (int i = 0; i < characterButtons.length; i++) {
+            characterButtons[i].setEnabled(!characterSelected[i]); // 恢復未選擇角色的按鈕可用
+        }
+    } else if (readyPlayers < maxPlayers && selectedCharacter != null) {
+        // 準備
+        readyPlayers++;
+        statusLabel.setText("已準備玩家: " + readyPlayers + "/4");
+        readyButton.setText("取消選擇"); // 改為"取消準備"
+        isReady = true;
 
-                // 準備後禁用所有未選擇的角色按鈕
-                for (int i = 0; i < characterButtons.length; i++) {
-                    if (!characterSelected[i]) {
-                        characterButtons[i].setEnabled(false); // 禁用未選擇的角色按鈕
-                    }
-                }
-            }
+        // 向伺服器傳送準備的封包
+        sendMessage("READY " + selectedCharacter);
 
-            if (readyPlayers == maxPlayers) {
-                readyButton.setEnabled(false); // 當達到最大玩家數量時禁用準備按鈕
-            }
-        });
+        // 準備後禁用所有未選擇的角色按鈕
+        for (int i = 0; i < characterButtons.length; i++) {
+            characterButtons[i].setEnabled(characterSelected[i]); // 只有選中的角色按鈕可用
+        }
+    }
 
+    if (readyPlayers == maxPlayers) {
+        readyButton.setEnabled(false); // 當達到最大玩家數量時禁用準備按鈕
+    }
+});
+
+        
         // ESC退出功能
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
             if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -197,32 +199,33 @@ public class dbd_client {
                     if (characterSelected[i]) {
                         characterButtons[i].setBackground(Color.LIGHT_GRAY); // 恢復默認顏色
                         characterSelected[i] = false; // 取消選擇
+                        sendMessage("DESELECT " + characterButtons[i].getText()); // 向伺服器發送取消選擇訊息
                     }
                 }
-
+    
                 // 選擇當前角色
                 characterSelected[index] = true;
                 selectedCharacter = character;
-                sendMessage(character + " Selected");
+                sendMessage("SELECT " + character); // 向伺服器發送選擇訊息
                 button.setBackground(Color.GRAY); // 高亮選中的角色
-                imageLabel.setText(character + " Selected"); // 更新顯示的角色名稱
-
+                imageLabel.setText(character + " 已被選擇"); // 更新顯示的角色名稱
+    
                 // 啟用準備按鈕
                 readyButton.setEnabled(true);
             } else {
                 // 如果再次點擊同一角色，取消選擇
                 characterSelected[index] = false;
+                sendMessage("DESELECT " + character); // 向伺服器發送取消選擇訊息
                 selectedCharacter = null;
-                sendMessage(character + " Deselected");
                 button.setBackground(Color.LIGHT_GRAY); // 恢復按鈕顏色
-                imageLabel.setText("Select a character to display"); // 清空角色名稱顯示
-
+                imageLabel.setText("請選擇角色"); // 清空角色名稱顯示
+    
                 // 禁用準備按鈕
                 readyButton.setEnabled(false);
             }
         }
     }
-
+    
     private static void connectToServer() {
         try {
             Socket socket = new Socket("localhost", 12345); // 連接本地伺服器
