@@ -15,6 +15,7 @@ public class dbd_client {
     private static JLabel statusLabel; // 用於顯示準備玩家數量的Label
     private static String selectedCharacter = null; // 用於記錄玩家選擇的角色
     private static JLabel imageLabel; // 顯示選擇角色的圖片或名稱
+    private static JButton readyButton; // 準備按鈕
 
     public static void main(String[] args) {
         // 創建主框架
@@ -90,7 +91,8 @@ public class dbd_client {
         statusLabel = new JLabel("Ready players: 0/4", SwingConstants.LEFT);
         bottomPanel.add(statusLabel, BorderLayout.WEST);
 
-        JButton readyButton = new JButton("Ready");
+        readyButton = new JButton("Ready");
+        readyButton.setEnabled(false); // 初始時禁用準備按鈕
         bottomPanel.add(readyButton, BorderLayout.EAST);
 
         layeredPane.add(bottomPanel, JLayeredPane.DEFAULT_LAYER);
@@ -179,41 +181,36 @@ public class dbd_client {
     private static void selectCharacter(String character, JButton button, int index) {
         if (!isReady) {
             if (!characterSelected[index]) {
-                // 如果角色未被選擇，選擇該角色並鎖定
-                characterSelected[index] = true; // 標記該角色為已選
-                selectedCharacter = character; // 記錄選擇的角色
-                sendMessage(character + " Selected");
-                button.setBackground(Color.GRAY); // 當選擇角色後，按鈕變為灰色
-                button.setEnabled(false); // 禁用已選擇角色的按鈕
+                // 如果有其他角色被選中，取消之前的選擇
+                for (int i = 0; i < characterButtons.length; i++) {
+                    if (characterSelected[i]) {
+                        characterButtons[i].setBackground(Color.LIGHT_GRAY); // 恢復默認顏色
+                        characterSelected[i] = false; // 取消選擇
+                    }
+                }
 
-                // 更新imagePanel顯示所選角色的名稱
-                imageLabel.setText(character + " Selected");
+                // 選擇當前角色
+                characterSelected[index] = true;
+                selectedCharacter = character;
+                sendMessage(character + " Selected");
+                button.setBackground(Color.GRAY); // 高亮選中的角色
+                imageLabel.setText(character + " Selected"); // 更新顯示的角色名稱
+
+                // 啟用準備按鈕
+                readyButton.setEnabled(true);
             } else {
-                // 如果角色已被選擇，則取消選擇並恢復為可選狀態
-                characterSelected[index] = false; // 取消選擇
+                // 如果再次點擊同一角色，取消選擇
+                characterSelected[index] = false;
+                selectedCharacter = null;
                 sendMessage(character + " Deselected");
-                button.setBackground(Color.LIGHT_GRAY); // 恢復為默認顏色
-                button.setEnabled(true); // 恢復按鈕可用
-                selectedCharacter = null; // 清除選擇的角色
-                imageLabel.setText("Select a character to display"); // 清空顯示的角色名稱
+                button.setBackground(Color.LIGHT_GRAY); // 恢復按鈕顏色
+                imageLabel.setText("Select a character to display"); // 清空角色名稱顯示
+
+                // 禁用準備按鈕
+                readyButton.setEnabled(false);
             }
         }
     }
-
-    /*private static int getCharacterIndex(String character) {
-        switch (character) {
-            case "Ghost":
-                return 0;
-            case "Character 1":
-                return 1;
-            case "Character 2":
-                return 2;
-            case "Character 3":
-                return 3;
-            default:
-                return -1;
-        }
-    }*/
 
     private static void connectToServer() {
         try {
