@@ -99,7 +99,7 @@ public class dbd_client {
         JPanel rulesPanel = new JPanel();
         rulesPanel.setLayout(new BorderLayout());
         rulesPanel.setBounds(frame.getWidth() / 2 - 200, frame.getHeight() / 2 - 150, 400, 300);
-        rulesPanel.setBackground(new Color(0, 0, 0, 150));
+        rulesPanel.setBackground(new Color(100, 0, 0, 150));
         rulesPanel.setBorder(BorderFactory.createTitledBorder("遊戲規則"));
         JLabel rulesLabel = new JLabel("<html>遊戲規則:<br>1. 選擇角色<br>2. 按下Ready開始遊戲</html>");
         rulesPanel.add(rulesLabel, BorderLayout.CENTER);
@@ -200,7 +200,7 @@ public class dbd_client {
         }
     }
 
-    private static int getCharacterIndex(String character) {
+    /*private static int getCharacterIndex(String character) {
         switch (character) {
             case "Ghost":
                 return 0;
@@ -213,7 +213,7 @@ public class dbd_client {
             default:
                 return -1;
         }
-    }
+    }*/
 
     private static void connectToServer() {
         try {
