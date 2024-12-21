@@ -57,20 +57,31 @@ public class dbd_client {
         layeredPane.add(mainPanel, JLayeredPane.DEFAULT_LAYER);
 
         // 左側角色選擇區
-        JPanel rolePanel = new JPanel(new GridLayout(4, 1));
-
+        JPanel rolePanel = new JPanel();
+        rolePanel.setLayout(new BoxLayout(rolePanel, BoxLayout.Y_AXIS)); // 垂直排列
+        
         characterButtons[0] = new JButton("Ghost");
+        
         characterButtons[1] = new JButton("Character 1");
+        
         characterButtons[2] = new JButton("Character 2");
+        
         characterButtons[3] = new JButton("Character 3");
-
-        // 設置角色按鈕的初始顏色，並添加到面板
+        
+        
+        // 設置角色按鈕的初始顏色和大小，並添加到面板
         for (JButton button : characterButtons) {
             button.setBackground(Color.LIGHT_GRAY); // 默認顏色
             button.setForeground(Color.WHITE);
+            button.setMaximumSize(new Dimension(500, 100)); // 限制按鈕大小
+            button.setAlignmentX(Component.LEFT_ALIGNMENT); // 按鈕靠左對齊
             rolePanel.add(button);
+            rolePanel.add(Box.createRigidArea(new Dimension(0, 50))); // 添加垂直間距
         }
-
+        
+        // 移除最後一個多餘的空白區域
+        rolePanel.remove(rolePanel.getComponentCount() - 1);
+        
         mainPanel.add(rolePanel);
 
         // 右側角色展示區
