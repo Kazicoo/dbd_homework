@@ -54,12 +54,12 @@ public class Server implements Comm.TcpServerCallback {
     // 1.玩家選擇角色，封包為updateReadyState;ready;<role>
     // 2.玩家取消選擇角色，封包為updateReadyState;unready;<role>
     String[] parts = message.split(";");
-    // 若封包是準備，則執行準備的動作
     if ("ready".equals(parts[1])) {
+      // 封包是準備，執行準備的動作
       readyCount++;
     } 
     else if ("unready".equals(parts[1])) {
-      // 執行取消準備的動作 
+      // 封包是取消準備，執行取消準備的動作 
       readyCount--;
     }
     server.broadcast(message + ";" + id);
