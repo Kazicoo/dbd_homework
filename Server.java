@@ -7,6 +7,7 @@ public class Server implements Comm.TcpServerCallback {
   public static void main(String[] args) {
     try {
       Server server = new Server();
+      System.out.println("Launching the server");
       // 從這裡開始遊戲(即等待所有玩家準備完成後，伺服器會告訴前端準備完成)
       server.waitGameStart();
     } catch (IOException e) {
