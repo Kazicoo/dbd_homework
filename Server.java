@@ -49,9 +49,19 @@ public class Server implements Comm.TcpServerCallback {
   }
 
   void updateReadyState (String message, int id) {
-    // 判斷能不能準備，此時收到的訊息封包大概是updateReadyState;ready;is_killer
+    // 主視窗負責處理是否準備的邏輯處理
+    // 判斷能不能準備，此時收到的訊息封包大概是兩組
+    // 1.玩家選擇角色，封包為updateReadyState;ready;<role>
+    // 2.玩家取消選擇角色，封包為updateReadyState;unready;<role>
     String[] parts = message.split(";");
-    server.broadcast("ready;" + id);
-    readyCount++;
+    // 若封包是準備，則執行準備的動作
+    if ("ready".equals(parts[1])) {
+      readyCount++;
+    } 
+    else if ("unready".equals(parts[1])) {
+      // 執行取消準備的動作 
+      readyCount--;
+    }
+    server.broadcast(message + ";" + id);
   }
 }
