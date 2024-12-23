@@ -4,15 +4,15 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class setupGUI {
-    private static int readyPlayers = 0; // Tracks the number of ready players
-    private static int maxPlayers = 4; // Maximum number of players
-    private static boolean[] characterSelected = new boolean[4]; // Tracks character selection
-    private static boolean isReady = false; // Tracks if the player is ready
-    private static JButton[] characterButtons = new JButton[4]; // Character buttons array
-    private static JLabel statusLabel; // Displays the number of ready players
-    private static String selectedCharacter = null; // Tracks the selected character
-    private static JLabel imageLabel; // Displays the selected character image or name
-    private static JButton readyButton; // Ready button
+    private int readyPlayers = 0; // Tracks the number of ready players
+    private int maxPlayers = 4; // Maximum number of players
+    private boolean[] characterSelected = new boolean[4]; // Tracks character selection
+    private boolean isReady = false; // Tracks if the player is ready
+    private JButton[] characterButtons = new JButton[4]; // Character buttons array
+    private JLabel statusLabel; // Displays the number of ready players
+    private String selectedCharacter = null; // Tracks the selected character
+    private JLabel imageLabel; // Displays the selected character image or name
+    private JButton readyButton; // Ready button
     private TcpClient conn;
 
     // 建構子，初始化所有的GUI组件
@@ -141,7 +141,7 @@ public class setupGUI {
     }
 
   // 角色選擇方法
-private static void selectCharacter(String character, JButton button, int index) {
+private void selectCharacter(String character, JButton button, int index) {
     if (!isReady) {
         if (!characterSelected[index]) {
             // 如果角色未被選擇，選擇它
@@ -149,19 +149,19 @@ private static void selectCharacter(String character, JButton button, int index)
                 if (characterSelected[i]) {
                     characterButtons[i].setBackground(Color.LIGHT_GRAY); // 將之前選擇的角色按鈕恢復原色
                     characterSelected[i] = false;
-                    sendMessage("unready" + characterButtons[i].getText());  // 發送取消選擇訊息
+                    conn.send("unready" + characterButtons[i].getText());  // 發送取消選擇訊息
                 }
             }
             characterSelected[index] = true;
             selectedCharacter = character;
-            sendMessage("ready" + character);  // 發送選擇角色訊息
+            conn.send("ready" + character);  // 發送選擇角色訊息
             button.setBackground(Color.GRAY); // 將當前選擇角色按鈕變為灰色
             imageLabel.setText(character + " 已被選擇"); // 更新角色展示
             readyButton.setEnabled(true); // 啟用準備按鈕
         } else {
             // 如果角色已被選擇，取消選擇
             characterSelected[index] = false;
-            sendMessage("unready" + character);  // 發送取消選擇訊息
+            conn.send("unready" + character);  // 發送取消選擇訊息
             selectedCharacter = null; // 清空當前選擇的角色
             button.setBackground(Color.LIGHT_GRAY); // 按鈕恢復原色
             imageLabel.setText("請選擇角色"); // 更新角色展示文字
@@ -176,7 +176,7 @@ private static void selectCharacter(String character, JButton button, int index)
 }
 
   // 處理準備按鈕的邏輯
-private static void handleReadyButton() {
+private void handleReadyButton() {
     if (isReady) {
         // 玩家取消準備
         readyPlayers--;
@@ -184,7 +184,7 @@ private static void handleReadyButton() {
         readyButton.setText("選擇角色"); // 更新按鈕文字
         isReady = false; // 更新準備狀態
         if (selectedCharacter != null) {
-            sendMessage("unready" + selectedCharacter); // 發送取消準備訊息
+            conn.send("unready" + selectedCharacter); // 發送取消準備訊息
         }
 
         // 恢復角色按鈕狀態
@@ -197,11 +197,11 @@ private static void handleReadyButton() {
         statusLabel.setText("已準備玩家: " + readyPlayers + "/4"); // 更新狀態文字
         readyButton.setText("取消選擇"); // 更新按鈕文字
         isReady = true; // 更新準備狀態
-        sendMessage("ready" + selectedCharacter); // 發送準備訊息
+        conn.send("ready" + selectedCharacter); // 發送準備訊息
 
         // 傳送角色狀態封包
         String roles = getRoleStatus(); // 獲取角色狀態
-        sendMessage("role" + roles); // 發送角色封包
+        conn.send("role" + roles); // 發送角色封包
 
         // 禁用所有未選擇的角色按鈕
         for (int i = 0; i < characterButtons.length; i++) {
@@ -216,7 +216,7 @@ private static void handleReadyButton() {
 }
 
     // 取得角色狀態
-    private static String getRoleStatus() {
+    private String getRoleStatus() {
         StringBuilder roleStatus = new StringBuilder();
         roleStatus.append(characterSelected[0] ? "killer" : "p1");
         roleStatus.append(",");
