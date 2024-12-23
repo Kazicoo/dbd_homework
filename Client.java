@@ -2,6 +2,8 @@ import java.io.*;
 import java.util.Scanner;
 
 public class Client implements Comm.TcpClientCallback {
+  Comm.TcpClient client;
+  
   public static void main(String[] args) {  
     try {
       Client client = new Client();
@@ -10,7 +12,6 @@ public class Client implements Comm.TcpClientCallback {
     }
   }
 
-  Comm.TcpClient client;
   private String selectedRole = null;  // Tracks the selected character/role
   private boolean isReady = false;     // Tracks if the player is ready
 
