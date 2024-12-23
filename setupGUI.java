@@ -16,7 +16,7 @@ public class setupGUI {
     private TcpClient conn;
 
     // 建構子，初始化所有的GUI组件
-    public setupGUI() {
+    public setupGUI(TcpClient conn) {
         this.conn = conn;
 
         JFrame frame = new JFrame("迷途逃生");
