@@ -23,16 +23,50 @@ public class Server implements Comm.TcpServerCallback {
   }
 
   @Override
-  public void onMessage(int id, String message) {
-    if (message.startsWith("updateReadyState")) {
-      updateReadyState(message, id);
-    } 
+public void onMessage(int id, String message) {
+    String chosenCharacter = null;
 
-    // System.out.println("Client " + id + " sent: " + message);
-    // server.send(id, "Echo: " + message);
-  }
+    // 确保消息格式是以 "updateIfChoseState" 开头
+    if (message.startsWith("updateIfChoseState")) {
+        // 提取角色部分，假设消息格式为 "updateIfChoseState:CharacterX"
+        chosenCharacter = message.split(":")[1]; // 获取 "Character1", "Character2", ...
 
-  @Override
+        // 使用 switch-case 处理不同的角色
+        switch (chosenCharacter) {
+            case "Ghost":
+                // 如果是 ghost，不需要进一步的数字解析
+                id = 0;  // 假设 ghost 对应 id 为 0
+                break;
+            case "Character1":
+            case "Character2":
+            case "Character3":
+                // 提取 "Character" 后的数字部分
+                try {
+                    String playerIDStr = chosenCharacter.replaceAll("[^0-9]", ""); // 去除非数字字符
+                    if (!playerIDStr.isEmpty()) {
+                        id = Integer.parseInt(playerIDStr);  // 将数字转换为整数，并更新 id
+                    }
+                } catch (NumberFormatException e) {
+                    // 处理数字解析错误
+                    System.out.println("Error: Invalid player ID in message: " + chosenCharacter);
+                }
+                break;
+            default:
+                // 处理未知的角色
+                System.out.println("Error: Unknown character in message: " + chosenCharacter);
+                return;
+        }
+    }
+
+    // 更新游戏状态，传入角色和 id
+    if (chosenCharacter != null) {
+        updateReadyState(chosenCharacter, id);
+    } else {
+        System.out.println("Error: No valid character chosen in the message.");
+    }
+}
+
+  @Override 
   public void onConnect(int id) {
     System.out.println("Client connected: " + id);
   }
@@ -49,20 +83,24 @@ public class Server implements Comm.TcpServerCallback {
     server.broadcast("gameStart");
   }
 
-  void updateReadyState (String message, int id) {
+  void updateReadyState (String chosenCharacter, int playerID) {
     // 主視窗負責處理是否準備的邏輯處理
     // 判斷能不能準備，此時收到的訊息封包大概是兩組
     // 1.玩家選擇角色，封包為updateReadyState;ready;<role>
     // 2.玩家取消選擇角色，封包為updateReadyState;unready;<role>
-    String[] parts = message.split(";");
-    if ("ready".equals(parts[1])) {
-      // 封包是準備，執行準備的動作
-      readyCount++;
-    } 
-    else if ("unready".equals(parts[1])) {
-      // 封包是取消準備，執行取消準備的動作 
-      readyCount--;
-    }
-    server.broadcast(message + ";" + id);
+    // String[] parts = message.split(";");
+    // // if ("ready".equals(parts[1])) {
+    // //   // 封包是準備，執行準備的動作
+    // //   readyCount++;
+    // // } 
+    // // else if ("unready".equals(parts[1])) {
+    // //   // 封包是取消準備，執行取消準備的動作 
+    // //   readyCount--;
+    // // }
+    // server.broadcast(message + ";" + id);
+
+    
+    System.out.println("Player " + playerID + " chose: " + chosenCharacter);
+    server.broadcast("Player " + playerID + " chose: " + chosenCharacter);
   }
 }
