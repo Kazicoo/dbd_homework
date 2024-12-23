@@ -20,7 +20,7 @@ public class Client implements Comm.TcpClientCallback {
 
     // 等待伺服器連接成功後開始接受指令
     while (client.isAlive()) {
-      
+        setupGUI initialGUI = new setupGUI();
     }
 
     scanner.close();
