@@ -9,9 +9,6 @@ import java.net.*;
 public class setupGUI {
     
 
-
-
-
     private static PrintWriter out;
     private static BufferedReader in;
     private static Socket socket;
@@ -142,22 +139,24 @@ public class setupGUI {
     private static void selectCharacter(String character, JButton button, int index) {
         if (!isReady) {
             if (!characterSelected[index]) {
+                // 如果角色未被選擇，選擇它
                 for (int i = 0; i < characterButtons.length; i++) {
                     if (characterSelected[i]) {
                         characterButtons[i].setBackground(Color.LIGHT_GRAY);
                         characterSelected[i] = false;
-                        sendMessage("DESELECT " + characterButtons[i].getText());
+                        sendMessage("DESELECT " + characterButtons[i].getText());  // 取消之前選擇的角色
                     }
                 }
                 characterSelected[index] = true;
                 selectedCharacter = character;
-                sendMessage("SELECT " + character);
+                sendMessage("SELECT " + character);  // 發送選擇角色的封包
                 button.setBackground(Color.GRAY);
                 imageLabel.setText(character + " 已被選擇");
                 readyButton.setEnabled(true);
             } else {
+                // 如果角色已經選擇，取消選擇
                 characterSelected[index] = false;
-                sendMessage("DESELECT " + character);
+                sendMessage("DESELECT " + character);  // 發送取消選擇角色的封包
                 selectedCharacter = null;
                 button.setBackground(Color.LIGHT_GRAY);
                 imageLabel.setText("請選擇角色");
@@ -165,33 +164,59 @@ public class setupGUI {
             }
         }
     }
+    
 
     private static void handleReadyButton() {
         if (isReady) {
+            // 玩家取消準備
             readyPlayers--;
             statusLabel.setText("已準備玩家: " + readyPlayers + "/4");
             readyButton.setText("選擇角色");
             isReady = false;
             if (selectedCharacter != null) {
-                sendMessage("CANCEL_READY " + selectedCharacter);
+                sendMessage("CANCEL_READY " + selectedCharacter);  // 發送取消準備的封包
             }
             for (int i = 0; i < characterButtons.length; i++) {
                 characterButtons[i].setEnabled(!characterSelected[i]);
             }
         } else if (readyPlayers < maxPlayers && selectedCharacter != null) {
+            // 玩家準備
             readyPlayers++;
             statusLabel.setText("已準備玩家: " + readyPlayers + "/4");
             readyButton.setText("取消選擇");
             isReady = true;
-            sendMessage("READY " + selectedCharacter);
+            sendMessage("READY " + selectedCharacter);  // 發送準備訊息給伺服器
+    
+            // 傳送角色封包，包含所有角色的狀態
+            String roles = getRoleStatus();  // 取得角色狀態
+            sendMessage("ROLE " + roles);  // 發送角色封包
+    
             for (int i = 0; i < characterButtons.length; i++) {
                 characterButtons[i].setEnabled(characterSelected[i]);
             }
+    
+           
         }
         if (readyPlayers == maxPlayers) {
             readyButton.setEnabled(false);
         }
     }
+    
+    
+    private static String getRoleStatus() {
+        StringBuilder roleStatus = new StringBuilder();
+        // 設定角色狀態，依照角色是否選擇來定義
+        roleStatus.append(characterSelected[0] ? "killer" : "p1");  // 如果選擇了 Ghost 就是 killer，否則是 p1
+        roleStatus.append(",");
+        roleStatus.append(characterSelected[1] ? "p2" : "p3");  // 這裡也可以根據角色選擇來設定其他角色的狀態
+        roleStatus.append(",");
+        roleStatus.append(characterSelected[2] ? "p2" : "p3");
+        roleStatus.append(",");
+        roleStatus.append(characterSelected[3] ? "p2" : "p3");
+    
+        return roleStatus.toString();  // 返回角色狀態字符串
+    }
+    
     private static void sendMessage(String message) {
         if (out != null) {
             out.println(message);
