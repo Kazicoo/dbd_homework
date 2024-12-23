@@ -1,11 +1,12 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import javax.swing.*;
 import java.net.*;
+import javax.swing.*;
+
+import Comm.TcpClient;
 
 public class setupGUI {
-
     private static PrintWriter out;
     private static BufferedReader in;
     private static Socket socket;
@@ -18,9 +19,11 @@ public class setupGUI {
     private static String selectedCharacter = null; // Tracks the selected character
     private static JLabel imageLabel; // Displays the selected character image or name
     private static JButton readyButton; // Ready button
+    private TcpClient conn;
+        // 建構子，初始化所有的GUI组件
+    public setupGUI(TcpClient conn) {
+        this.conn = conn;
 
-    // 构造器，初始化所有的GUI组件
-    public setupGUI() {
         JFrame frame = new JFrame("迷途逃生");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setUndecorated(true);

@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.Scanner;
 
+
 public class Client implements Comm.TcpClientCallback {
   public static void main(String[] args) {  
     try {
@@ -19,9 +20,8 @@ public class Client implements Comm.TcpClientCallback {
     Scanner scanner = new Scanner(System.in);
 
     // 等待伺服器連接成功後開始接受指令
-    while (client.isAlive()) {
-      
-    }
+    while (!client.isAlive());
+    setupGUI initialGUI = new setupGUI();
 
     scanner.close();
   }
@@ -46,9 +46,9 @@ public class Client implements Comm.TcpClientCallback {
 
   // 發送訊息到伺服器
   private void sendMessage(String message) {
-    // if (client != null) {
-    //   client.send(message);
-    // }
+    if (client != null) {
+      client.send(message);
+    }
   }
 
   @Override
