@@ -24,7 +24,7 @@ public class Client implements Comm.TcpClientCallback {
 
     scanner.close();
   }
-
+  
   // 設定角色
   private void selectRole(String role) {
     selectedRole = role;
