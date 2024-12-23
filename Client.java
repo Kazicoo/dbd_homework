@@ -20,21 +20,7 @@ public class Client implements Comm.TcpClientCallback {
 
     // 等待伺服器連接成功後開始接受指令
     while (client.isAlive()) {
-      System.out.println("Enter command: ");
-      System.out.println("1. select <role>   (e.g., select Ghost)");
-      System.out.println("2. ready           (Ready to start game)");
-      System.out.println("3. unready         (Cancel readiness)");
-      String message = scanner.nextLine();
-
-      if (message.startsWith("select ")) {
-        selectRole(message.split(" ")[1]);
-      } else if (message.equals("ready")) {
-        setReady(true);
-      } else if (message.equals("unready")) {
-        setReady(false);
-      } else {
-        System.out.println("Unknown command");
-      }
+      
     }
 
     scanner.close();

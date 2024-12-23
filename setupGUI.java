@@ -1,11 +1,10 @@
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
-import javax.swing.*;
 import java.net.*;
+import javax.swing.*;
 
 public class setupGUI {
-
     private static PrintWriter out;
     private static BufferedReader in;
     private static Socket socket;
