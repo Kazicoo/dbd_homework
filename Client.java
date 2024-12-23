@@ -45,9 +45,9 @@ public class Client implements Comm.TcpClientCallback {
 
   // 發送訊息到伺服器
   private void sendMessage(String message) {
-    // if (client != null) {
-    //   client.send(message);
-    // }
+    if (client != null) {
+      client.send(message);
+    }
   }
 
   @Override
