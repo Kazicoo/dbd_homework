@@ -109,10 +109,7 @@ public class setupGUI {
         layeredPane.add(rulesPanel, JLayeredPane.PALETTE_LAYER);
 
         // 添加角色選擇事件
-        characterButtons[0].addActionListener(e -> selectCharacter("Ghost", characterButtons[0], 0));
-        characterButtons[1].addActionListener(e -> selectCharacter("Character 1", characterButtons[1], 1));
-        characterButtons[2].addActionListener(e -> selectCharacter("Character 2", characterButtons[2], 2));
-        characterButtons[3].addActionListener(e -> selectCharacter("Character 3", characterButtons[3], 3));
+  
 
         // 規則按鈕事件
         rulesButton.addActionListener(e -> rulesPanel.setVisible(true));
@@ -126,7 +123,7 @@ public class setupGUI {
         });
 
         // 選擇角色按鈕事件
-        readyButton.addActionListener(e -> handleReadyButton());
+     
 
         // 退出按鍵事件
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
