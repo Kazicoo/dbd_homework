@@ -11,7 +11,7 @@ public class Client implements Comm.TcpClientCallback {
   }
 
   Comm.TcpClient client;
-
+  
   public Client() throws IOException {
     client = new Comm.TcpClient("localhost", 8080, this);
     Scanner scanner = new Scanner(System.in);
@@ -23,6 +23,7 @@ public class Client implements Comm.TcpClientCallback {
     scanner.close();
   }
   
+
   // 發送訊息到伺服器
   private void sendMessage(String message) {
     if (client != null) {
