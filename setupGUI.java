@@ -1,3 +1,4 @@
+import Comm.TcpClient;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -12,9 +13,12 @@ public class setupGUI {
     private static String selectedCharacter = null; // Tracks the selected character
     private static JLabel imageLabel; // Displays the selected character image or name
     private static JButton readyButton; // Ready button
+    private TcpClient conn;
 
-    // 构造器，初始化所有的GUI组件
-    public setupGUI() {
+    // 建構子，初始化所有的GUI组件
+    public setupGUI(TcpClient conn) {
+        this.conn = conn;
+
         JFrame frame = new JFrame("迷途逃生");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setUndecorated(true);
@@ -223,10 +227,5 @@ private static void handleReadyButton() {
         roleStatus.append(characterSelected[3] ? "p2" : "p3");
     
         return roleStatus.toString();
-    }
-    
-    // 發送訊息到伺服器
-    private static void sendMessage(String message) {
-      
     }
 }
