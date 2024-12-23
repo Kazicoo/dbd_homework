@@ -1,7 +1,6 @@
 import java.io.*;
 import java.util.Scanner;
 
-
 public class Client implements Comm.TcpClientCallback {
   public static void main(String[] args) {  
     try {
@@ -12,19 +11,58 @@ public class Client implements Comm.TcpClientCallback {
   }
 
   Comm.TcpClient client;
-  public Client()
-    throws IOException
-  {
+  private String selectedRole = null;  // Tracks the selected character/role
+  private boolean isReady = false;     // Tracks if the player is ready
+
+  public Client() throws IOException {
     client = new Comm.TcpClient("localhost", 8080, this);
     Scanner scanner = new Scanner(System.in);
 
+    // 等待伺服器連接成功後開始接受指令
     while (client.isAlive()) {
-      System.out.print("Enter message: ");
+      System.out.println("Enter command: ");
+      System.out.println("1. select <role>   (e.g., select Ghost)");
+      System.out.println("2. ready           (Ready to start game)");
+      System.out.println("3. unready         (Cancel readiness)");
       String message = scanner.nextLine();
-      client.send(message);
+
+      if (message.startsWith("select ")) {
+        selectRole(message.split(" ")[1]);
+      } else if (message.equals("ready")) {
+        setReady(true);
+      } else if (message.equals("unready")) {
+        setReady(false);
+      } else {
+        System.out.println("Unknown command");
+      }
     }
 
     scanner.close();
+  }
+
+  // 設定角色
+  private void selectRole(String role) {
+    selectedRole = role;
+    System.out.println("Selected role: " + role);
+    sendMessage("updateReadyState;ready;" + role); // 發送選擇角色的準備訊息
+  }
+
+  // 設定準備狀態
+  private void setReady(boolean ready) {
+    if (ready) {
+      isReady = true;
+      sendMessage("updateReadyState;ready;" + selectedRole); // 發送準備訊息
+    } else {
+      isReady = false;
+      sendMessage("updateReadyState;unready;" + selectedRole); // 發送取消準備訊息
+    }
+  }
+
+  // 發送訊息到伺服器
+  private void sendMessage(String message) {
+    if (client != null) {
+      client.send(message);
+    }
   }
 
   @Override
