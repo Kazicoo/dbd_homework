@@ -1,13 +1,8 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
-import java.net.*;
 import javax.swing.*;
 
 public class setupGUI {
-    private static PrintWriter out;
-    private static BufferedReader in;
-    private static Socket socket;
     private static int readyPlayers = 0; // Tracks the number of ready players
     private static int maxPlayers = 4; // Maximum number of players
     private static boolean[] characterSelected = new boolean[4]; // Tracks character selection
@@ -232,8 +227,6 @@ private static void handleReadyButton() {
     
     // 發送訊息到伺服器
     private static void sendMessage(String message) {
-        if (out != null) {
-            out.println(message);
-        }
+      
     }
 }
