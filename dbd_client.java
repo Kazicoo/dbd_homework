@@ -1,3 +1,7 @@
+//備案
+//備案
+//備案
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
