@@ -4,15 +4,16 @@ import java.io.*;
 import javax.swing.*;
 import java.net.*;
 
-public class dbd_client extends setupGUI{
+public class dbd_client extends setupGUI {
     private static PrintWriter out;
     private static BufferedReader in;
     private static Socket socket;
-    
-    
 
     public static void main(String[] args) {
+        // 創建 setupGUI 實例並初始化視窗
         setupGUI initialGUI = new setupGUI();
+
+        // 呼叫connectToServer來連接伺服器
         connectToServer();
     }
 
@@ -36,7 +37,4 @@ public class dbd_client extends setupGUI{
             JOptionPane.showMessageDialog(null, "無法連接到伺服器: " + e.getMessage(), "連線錯誤", JOptionPane.ERROR_MESSAGE);
         }
     }
-
-
 }
-
