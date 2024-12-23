@@ -2,8 +2,6 @@ import java.io.*;
 import java.util.Scanner;
 
 public class Client implements Comm.TcpClientCallback {
-  Comm.TcpClient client;
-  
   public static void main(String[] args) {  
     try {
       Client client = new Client();
@@ -12,6 +10,7 @@ public class Client implements Comm.TcpClientCallback {
     }
   }
 
+  Comm.TcpClient client;
   private String selectedRole = null;  // Tracks the selected character/role
   private boolean isReady = false;     // Tracks if the player is ready
 
@@ -25,7 +24,7 @@ public class Client implements Comm.TcpClientCallback {
 
     scanner.close();
   }
-  
+  class setupGUI {}
   // 設定角色
   private void selectRole(String role) {
     selectedRole = role;
