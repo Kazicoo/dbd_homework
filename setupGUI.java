@@ -87,7 +87,7 @@ public class setupGUI {
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.setBounds(0, frame.getHeight() - 100, frame.getWidth(), 100);
 
-        statusLabel = new JLabel("已準備玩家: 0/4", SwingConstants.LEFT);
+        statusLabel = new JLabel("所有角色被選定後將直接開始遊戲", SwingConstants.LEFT);
         bottomPanel.add(statusLabel, BorderLayout.WEST);
 
         readyButton = new JButton("選擇角色");
@@ -140,92 +140,5 @@ public class setupGUI {
         frame.setVisible(true);
     }
 
-  // 角色選擇方法
-private void selectCharacter(String character, JButton button, int index) {
-    if (!isReady) {
-        if (!characterSelected[index]) {
-            // 如果角色未被選擇，選擇它
-            for (int i = 0; i < characterButtons.length; i++) {
-                if (characterSelected[i]) {
-                    characterButtons[i].setBackground(Color.LIGHT_GRAY); // 將之前選擇的角色按鈕恢復原色
-                    characterSelected[i] = false;
-                    conn.send("unready" + characterButtons[i].getText());  // 發送取消選擇訊息
-                }
-            }
-            characterSelected[index] = true;
-            selectedCharacter = character;
-            conn.send("ready" + character);  // 發送選擇角色訊息
-            button.setBackground(Color.GRAY); // 將當前選擇角色按鈕變為灰色
-            imageLabel.setText(character + " 已被選擇"); // 更新角色展示
-            readyButton.setEnabled(true); // 啟用準備按鈕
-        } else {
-            // 如果角色已被選擇，取消選擇
-            characterSelected[index] = false;
-            conn.send("unready" + character);  // 發送取消選擇訊息
-            selectedCharacter = null; // 清空當前選擇的角色
-            button.setBackground(Color.LIGHT_GRAY); // 按鈕恢復原色
-            imageLabel.setText("請選擇角色"); // 更新角色展示文字
-            readyButton.setEnabled(false); // 禁用準備按鈕
-            
-            // 恢復所有角色按鈕可選狀態
-            for (JButton btn : characterButtons) {
-                btn.setEnabled(true);
-            }
-        }
-    }
-}
-
-  // 處理準備按鈕的邏輯
-private void handleReadyButton() {
-    if (isReady) {
-        // 玩家取消準備
-        readyPlayers--;
-        statusLabel.setText("已準備玩家: " + readyPlayers + "/4"); // 更新狀態文字
-        readyButton.setText("選擇角色"); // 更新按鈕文字
-        isReady = false; // 更新準備狀態
-        if (selectedCharacter != null) {
-            conn.send("unready" + selectedCharacter); // 發送取消準備訊息
-        }
-
-        // 恢復角色按鈕狀態
-        for (int i = 0; i < characterButtons.length; i++) {
-            characterButtons[i].setEnabled(true);
-        }
-    } else if (readyPlayers < maxPlayers && selectedCharacter != null) {
-        // 玩家準備
-        readyPlayers++;
-        statusLabel.setText("已準備玩家: " + readyPlayers + "/4"); // 更新狀態文字
-        readyButton.setText("取消選擇"); // 更新按鈕文字
-        isReady = true; // 更新準備狀態
-        conn.send("ready" + selectedCharacter); // 發送準備訊息
-
-        // 傳送角色狀態封包
-        String roles = getRoleStatus(); // 獲取角色狀態
-        conn.send("role" + roles); // 發送角色封包
-
-        // 禁用所有未選擇的角色按鈕
-        for (int i = 0; i < characterButtons.length; i++) {
-            characterButtons[i].setEnabled(characterSelected[i]);
-        }
-    }
-
-    // 如果玩家已滿，禁用準備按鈕
-    if (readyPlayers == maxPlayers) {
-        readyButton.setEnabled(false);
-    }
-}
-
-    // 取得角色狀態
-    private String getRoleStatus() {
-        StringBuilder roleStatus = new StringBuilder();
-        roleStatus.append(characterSelected[0] ? "killer" : "p1");
-        roleStatus.append(",");
-        roleStatus.append(characterSelected[1] ? "p2" : "p3");
-        roleStatus.append(",");
-        roleStatus.append(characterSelected[2] ? "p2" : "p3");
-        roleStatus.append(",");
-        roleStatus.append(characterSelected[3] ? "p2" : "p3");
-    
-        return roleStatus.toString();
-    }
+  
 }
