@@ -26,7 +26,7 @@ public class Client implements Comm.TcpClientCallback {
         e.printStackTrace();
       }
     }
-    this.initialGUI = new setupGUI(client);
+    initialGUI = new setupGUI(client);
     scanner.close();
   }
 
@@ -35,7 +35,8 @@ public class Client implements Comm.TcpClientCallback {
     String[] parts = message.split(";");
     // 如果message一開始是id的話，代表封包為id;<id; "0" | "1" | "2" | "3">的格式
     if (message.startsWith("id")) {
-      int id = Integer.parseInt(parts[1]);
+      String idStr = parts[1];
+      id = Integer.parseInt(idStr);
     }
     
     // 按下更新的角色按鈕後，會獲得 updateReadyState;ready;p1;0 的封包

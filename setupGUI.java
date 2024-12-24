@@ -146,80 +146,126 @@ public class setupGUI {
     // 當ready被傳進前端時，畫面更新會進行更新 
     // 封包為 updateReadyState;ready;p1;0
     public void playerReady(Boolean is_ready, String message, int id) {
-        String[] parts = message.split(";");
+        System.out.println(id);
         // 將數字id轉成字串，檢查該封包是不是自己傳
         String idStr = "" + id;
+        String[] parts = message.split(";");
+
+        // 本人按下選擇角色按鈕時，要有的變化
         if (idStr.equals(parts[3])) {
-            // 本人按下選擇角色按鈕時，要有的變化
             if (is_ready) {
                 switch (parts[2]) {
-                    case "killer":
+                    case "killer" -> {
                         characterButtons[0].setBackground(Color.RED);
                         characterSelected[0] = true;
                         for (int i = 0; i < characterButtons.length; i++) {
                             if (i == 0) continue;
                             characterButtons[i].setEnabled(false);
-                        }  
-                        break;
-                    case "p1":
+                        }
+                    }
+                    case "p1" -> {
                         characterButtons[1].setBackground(Color.GREEN);
                         characterSelected[1] = true;
                         for (int i = 0; i < characterButtons.length; i++) {
                             if (i == 1) continue;
                             characterButtons[i].setEnabled(false);
-                        }     
-                        break;
-                        case "p2":
+                        }
+                    }
+                    case "p2" -> {
                         characterButtons[2].setBackground(Color.GREEN);
                         characterSelected[2] = true;
                         for (int i = 0; i < characterButtons.length; i++) {
                             if (i == 2) continue;
                             characterButtons[i].setEnabled(false);
-                        }     
-                        break;
-                        case "p3":
+                        }
+                    }
+                    case "p3" -> {
                         characterButtons[3].setBackground(Color.GREEN);
                         characterSelected[3] = true;
                         for (int i = 0; i < characterButtons.length; i++) {
                             if (i == 3) continue;
                             characterButtons[i].setEnabled(false);
-                        }         
-                        break;
+                        }
+                    }
                 }
-            } else {
+            } 
+            else {
                 switch (parts[2]) {
-                    case "killer":
+                    case "killer" -> {
                         characterButtons[0].setBackground(Color.LIGHT_GRAY);
                         characterSelected[0] = false;
                         for (int i = 0; i < characterButtons.length; i++) {
                             if (i == 0) continue;
                             characterButtons[i].setEnabled(true);
-                        }  
-                        break;
-                        case "p1":
+                        }
+                    }
+                    case "p1" -> {
                         characterButtons[1].setBackground(Color.LIGHT_GRAY);
                         characterSelected[1] = false;
                         for (int i = 0; i < characterButtons.length; i++) {
                             if (i == 1) continue;
                             characterButtons[i].setEnabled(true);
-                        }     
-                        break;
-                        case "p2":
+                        }
+                    }
+                    case "p2" -> {
                         characterButtons[2].setBackground(Color.LIGHT_GRAY);
                         characterSelected[2] = false;
                         for (int i = 0; i < characterButtons.length; i++) {
                             if (i == 2) continue;
                             characterButtons[i].setEnabled(true);
-                        }     
-                        break;
-                        case "p3":
+                        }
+                    }
+                    case "p3" -> {
                         characterButtons[3].setBackground(Color.LIGHT_GRAY);
                         characterSelected[3] = false;
                         for (int i = 0; i < characterButtons.length; i++) {
                             if (i == 3) continue;
                             characterButtons[i].setEnabled(true);
-                        }         
-                        break;
+                        }
+                    }
+                }
+            }
+        }
+        // 非本人按下按鈕應該要有的反應
+        if (!idStr.equals(parts[3])) {
+            if (is_ready) {
+                switch (parts[2]) {
+                    case "killer" -> {
+                        characterButtons[0].setBackground(Color.DARK_GRAY);
+                        characterButtons[0].setEnabled(false);
+                    }
+                    case "p1" -> {
+                        characterButtons[1].setBackground(Color.DARK_GRAY);
+                        characterButtons[1].setEnabled(false);
+                    }
+                    case "p2" -> {
+                        characterButtons[2].setBackground(Color.DARK_GRAY);
+                        characterButtons[2].setEnabled(false);
+                    }
+                    case "p3" -> {
+                        characterButtons[3].setBackground(Color.DARK_GRAY);
+                        characterButtons[3].setEnabled(false);
+                    }
+                }
+            }
+            else {
+                switch (parts[2]) {
+                    case "killer" -> {
+                        characterButtons[0].setBackground(Color.LIGHT_GRAY);
+                        characterButtons[0].setEnabled(true);
+                    }
+                    case "p1" -> {
+                        characterButtons[1].setBackground(Color.LIGHT_GRAY);
+                        characterButtons[1].setEnabled(true);
+                    }
+                    case "p2" -> {
+                        characterButtons[2].setBackground(Color.LIGHT_GRAY);
+                        characterButtons[2].setEnabled(true);
+                    }
+                    case "p3" -> {
+                        characterButtons[3].setBackground(Color.LIGHT_GRAY);
+                        characterButtons[3].setEnabled(true);
+                    }
                 }
             }
         }
