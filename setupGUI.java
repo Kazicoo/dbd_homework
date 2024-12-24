@@ -3,6 +3,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+
+
 public class setupGUI {
     private boolean[] characterSelected = new boolean[4]; // Tracks character selection
     private JButton[] characterButtons = new JButton[4]; // Character buttons array
@@ -28,7 +30,18 @@ public class setupGUI {
         layeredPane.setLayout(null);
         frame.add(layeredPane);
 
-        // 顶部面板（标题和规则按钮）
+        // 創建背景圖片的 JLabel
+        ImageIcon originalIcon = new ImageIcon("Graphic/GameBackGround.jpg");
+        Image scaledImage = originalIcon.getImage().getScaledInstance(frame.getWidth(), frame.getHeight(), Image.SCALE_SMOOTH);
+        ImageIcon backgroundIcon = new ImageIcon(scaledImage);
+        JLabel backgroundLabel = new JLabel(backgroundIcon);
+
+        backgroundLabel.setSize(frame.getWidth(), frame.getHeight());
+        backgroundLabel.setBounds(0, 0, frame.getWidth(), frame.getHeight()); 
+
+        // 將背景圖片的 JLabel 添加到 JLayeredPane 的底層 
+        layeredPane.add(backgroundLabel, Integer.valueOf(-1));
+
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBounds(0, 0, frame.getWidth(), 100);
         topPanel.setOpaque(false);
@@ -92,11 +105,13 @@ public class setupGUI {
         bottomPanel.setBounds(0, frame.getHeight() - 100, frame.getWidth(), 100);
 
         statusLabel = new JLabel("所有角色被選定後將直接開始遊戲", SwingConstants.LEFT);
-        statusLabel.setFont(new Font("微軟正黑體", Font.BOLD, 20));
+        statusLabel.setFont(new Font("微軟正黑體", Font.BOLD, 25));
+        statusLabel.setForeground(Color.WHITE);
         bottomPanel.add(statusLabel, BorderLayout.WEST);
 
         waitReadyLabel = new JLabel("等待玩家到齊...");
         waitReadyLabel.setFont(new Font("微軟正黑體", Font.BOLD, 30));
+        waitReadyLabel.setForeground(Color.WHITE);
         bottomPanel.add(waitReadyLabel, BorderLayout.EAST);
 
         layeredPane.add(bottomPanel, JLayeredPane.DEFAULT_LAYER);
@@ -131,6 +146,13 @@ public class setupGUI {
             }
             return false;
         });
+
+        topPanel.setOpaque(false);
+        mainPanel.setOpaque(false);
+        rolePanel.setOpaque(false);
+        imagePanel.setOpaque(false);
+        bottomPanel.setOpaque(false);
+        rulesPanel.setOpaque(false);
 
         // 顯示視窗
         frame.setVisible(true);
