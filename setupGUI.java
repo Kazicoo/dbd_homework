@@ -91,7 +91,7 @@ public class setupGUI {
         bottomPanel.add(statusLabel, BorderLayout.WEST);
 
         readyLabel = new JLabel("文字放這邊");
-        statusLabel.setFont(new Font("微軟正黑體", Font.BOLD, 20));
+        readyLabel.setFont(new Font("微軟正黑體", Font.BOLD, 30));
         bottomPanel.add(readyLabel, BorderLayout.EAST);
 
         layeredPane.add(bottomPanel, JLayeredPane.DEFAULT_LAYER);
