@@ -133,5 +133,7 @@ public class setupGUI {
         frame.setVisible(true);
     }
 
-  
+    public void playerReady(Boolean ready) {
+        
+    }
 }

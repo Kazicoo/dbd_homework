@@ -2,6 +2,9 @@ import java.io.*;
 import java.util.Scanner;
 
 public class Client implements Comm.TcpClientCallback {
+  private Comm.TcpClient client;
+  private setupGUI initialGUI;
+
   public static void main(String[] args) {  
     try {
       Client client = new Client();
@@ -10,8 +13,6 @@ public class Client implements Comm.TcpClientCallback {
     }
   }
 
-  Comm.TcpClient client;
-  
   public Client() throws IOException {
     client = new Comm.TcpClient("localhost", 8080, this);
     Scanner scanner = new Scanner(System.in);
@@ -19,7 +20,7 @@ public class Client implements Comm.TcpClientCallback {
     // 等待伺服器連接成功後開始接受指令
     while (!client.isAlive());
     setupGUI initialGUI = new setupGUI(client);
-
+    
     scanner.close();
   }
   
@@ -33,7 +34,14 @@ public class Client implements Comm.TcpClientCallback {
 
   @Override
   public void onMessage(String message) {
-    System.out.println("Server sent: " + message);
+    String[] parts = message.split(";");
+    if ("updateReadyState".equals(parts[0])) {
+      if ("ready".equals(parts[1])) {
+      } else if ("ready".equals(parts[1])) {
+        initialGUI.playerReady(false);
+      }
+    } 
+    // System.out.println("Server sent: " + message);
   }
 
   @Override
