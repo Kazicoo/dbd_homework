@@ -1,7 +1,7 @@
 import java.io.*;
 
 
-public class Server implements Comm.TcpServerCallback {
+public class Server implements Comm.TcpServerCallback { 
   private int readyCount = 0;
   
   public static void main(String[] args) {
