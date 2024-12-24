@@ -6,9 +6,10 @@ import javax.swing.*;
 public class setupGUI {
     private boolean[] characterSelected = new boolean[4]; // Tracks character selection
     private JButton[] characterButtons = new JButton[4]; // Character buttons array
+    private JButton rulesButton;
     private JLabel statusLabel; // Displays the number of ready players
     private JLabel imageLabel; // Displays the selected character image or name
-    private JLabel readyLabel;
+    private JLabel waitReadyLabel;
     private TcpClient conn;
 
     // 建構子，初始化所有的GUI组件
@@ -38,7 +39,7 @@ public class setupGUI {
         titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         topPanel.add(titleLabel, BorderLayout.WEST);
 
-        JButton rulesButton = new JButton("規則");
+        rulesButton = new JButton("規則");
         rulesButton.setFont(new Font("微軟正黑體", Font.BOLD, 20));
         rulesButton.setMargin(new Insets(5, 40, 5, 40));
         topPanel.add(rulesButton, BorderLayout.EAST);
@@ -94,9 +95,9 @@ public class setupGUI {
         statusLabel.setFont(new Font("微軟正黑體", Font.BOLD, 20));
         bottomPanel.add(statusLabel, BorderLayout.WEST);
 
-        readyLabel = new JLabel("文字放這邊");
-        readyLabel.setFont(new Font("微軟正黑體", Font.BOLD, 30));
-        bottomPanel.add(readyLabel, BorderLayout.EAST);
+        waitReadyLabel = new JLabel("等待玩家到齊...");
+        waitReadyLabel.setFont(new Font("微軟正黑體", Font.BOLD, 30));
+        bottomPanel.add(waitReadyLabel, BorderLayout.EAST);
 
         layeredPane.add(bottomPanel, JLayeredPane.DEFAULT_LAYER);
 
@@ -268,6 +269,30 @@ public class setupGUI {
                     }
                 }
             }
+        }
+    }
+
+    public void startCountdown() {
+        for (int i = 0; i < characterButtons.length ; i++) {
+            characterButtons[i].setEnabled(false);
+            rulesButton.setEnabled(false);
+        }
+            
+        // 倒數計時
+        try {
+            waitReadyLabel.setText("準備開始...");
+            Thread.sleep(1500);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+        for (int i = 3; i > 0; i--) {
+            try {
+                Thread.sleep(1000);
+                waitReadyLabel.setFont(new Font("微軟正黑體", Font.BOLD, 50));
+                waitReadyLabel.setText("" + i);
+              } catch (InterruptedException e) {
+                e.printStackTrace();
+              }
         }
     }
 }

@@ -45,6 +45,8 @@ public class Client implements Comm.TcpClientCallback {
       if ("ready".equals(parts[1])) initialGUI.playerReady(true, message, id);
       if ("unready".equals(parts[1])) initialGUI.playerReady(false, message, id);
     }
+
+    if ("gameStart".equals(message)) initialGUI.startCountdown();
     
     System.out.println("Server sent: " + message);
   }
