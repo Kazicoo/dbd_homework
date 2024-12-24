@@ -23,10 +23,7 @@ public class Server implements Comm.TcpServerCallback {
   }
 
   @Override
-  public void onMessage(int id, String message) {
-    if (message.startsWith("updateReadyState")) {
-      updateReadyState(message, id);
-    } 
+public void onMessage(int id, String message) {
 
     // System.out.println("Client " + id + " sent: " + message);
     // server.send(id, "Echo: " + message); 

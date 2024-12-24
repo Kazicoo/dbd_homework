@@ -106,6 +106,25 @@ public class setupGUI {
         layeredPane.add(rulesPanel, JLayeredPane.PALETTE_LAYER);
 
         // 添加角色選擇事件
+        for (int i = 0; i < characterButtons.length; i++) {
+            int index = i;
+            characterButtons[i].addActionListener(_ -> {
+                // 設定選擇的角色
+                characterSelected[index] = true;
+                String selectedCharacter = characterButtons[index].getText(); // 取得選中的角色名稱
+        
+                // 發送選中的角色給伺服器
+                try {
+                    // 只發送一次更新角色的訊息，根據選擇的角色來傳遞
+                    conn.send("updateIfChoseState:"+selectedCharacter);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+        
+                // 顯示選擇的角色名稱
+                imageLabel.setText("選擇的角色: " + selectedCharacter);
+            });
+        }
         
         // 規則按鈕事件
         rulesButton.addActionListener(_ -> rulesPanel.setVisible(true));
@@ -136,4 +155,9 @@ public class setupGUI {
     public void playerReady(Boolean ready) {
         // 改視窗
     }
+    public void updateStatus(String message) {
+        statusLabel.setText(message);
+    }
+    
+  
 }
