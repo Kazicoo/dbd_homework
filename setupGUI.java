@@ -4,10 +4,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 public class setupGUI {
-    private int readyPlayers = 0; // Tracks the number of ready players
-    private int maxPlayers = 4; // Maximum number of players
     private boolean[] characterSelected = new boolean[4]; // Tracks character selection
-    private boolean isReady = false; // Tracks if the player is ready
     private JButton[] characterButtons = new JButton[4]; // Character buttons array
     private JLabel statusLabel; // Displays the number of ready players
     private String selectedCharacter = null; // Tracks the selected character
@@ -90,7 +87,7 @@ public class setupGUI {
         statusLabel = new JLabel("所有角色被選定後將直接開始遊戲", SwingConstants.LEFT);
         bottomPanel.add(statusLabel, BorderLayout.WEST);
 
-        readyButton = new JButton("選擇角色");
+        readyButton = new JButton("取消選擇");
         readyButton.setEnabled(false);
         bottomPanel.add(readyButton, BorderLayout.EAST);
 
@@ -109,8 +106,7 @@ public class setupGUI {
         layeredPane.add(rulesPanel, JLayeredPane.PALETTE_LAYER);
 
         // 添加角色選擇事件
-  
-
+        
         // 規則按鈕事件
         rulesButton.addActionListener(e -> rulesPanel.setVisible(true));
 
@@ -123,7 +119,7 @@ public class setupGUI {
         });
 
         // 選擇角色按鈕事件
-     
+        
 
         // 退出按鍵事件
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
