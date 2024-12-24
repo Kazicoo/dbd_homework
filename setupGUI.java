@@ -118,7 +118,6 @@ public class setupGUI {
                 rulesPanel.setVisible(false);
             }
         });
-<<<<<<< HEAD
 
         // 退出按鍵事件
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
@@ -128,9 +127,6 @@ public class setupGUI {
             return false;
         });
 
-=======
-        
->>>>>>> 929c6e195be0d8cc216e07cdb12f1a8867fa707b
         // 顯示視窗
         frame.setVisible(true);
     }
