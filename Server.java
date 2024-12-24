@@ -27,7 +27,7 @@ public class Server implements Comm.TcpServerCallback {
     if (message.startsWith("updateReadyState")) {
       updateReadyState(message, id);
     } 
-
+    System.out.println(readyCount);
     System.out.println("Client " + id + " sent: " + message);
     server.send(id, "Echo: " + message); 
   }
@@ -44,7 +44,13 @@ public class Server implements Comm.TcpServerCallback {
 
   void waitGameStart () {
     // 檢查是否所有玩家都準備遊戲
-    while (readyCount != 4);
+    while (readyCount < 4) {
+      try {
+        Thread.sleep(10);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
     // 開始遊戲，告訴前端遊戲開始
     server.broadcast("gameStart");
   }
@@ -57,11 +63,11 @@ public class Server implements Comm.TcpServerCallback {
     String[] parts = message.split(";");
     if ("ready".equals(parts[1])) {
       // 封包是準備，執行準備的動作
-      readyCount++;
+      if (readyCount < 4) readyCount++;
     } 
     else if ("unready".equals(parts[1])) {
       // 封包是取消準備，執行取消準備的動作 
-      readyCount--;
+      if (readyCount < 4) readyCount++;
     }
     server.broadcast(message + ";" + id);
   }

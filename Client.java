@@ -23,25 +23,16 @@ public class Client implements Comm.TcpClientCallback {
     
     scanner.close();
   }
-  
-
-  // 發送訊息到伺服器
-  private void sendMessage(String message) {
-    if (client != null) {
-      client.send(message);
-    }
-  }
 
   @Override
   public void onMessage(String message) {
+
     String[] parts = message.split(";");
+    // 按下更新的角色按鈕後，會獲得 updateReadyState;ready;p1;0 的封包
     // 主視窗的更新畫面
-    if ("updateReadyState".equals(parts[0])) {
-      if ("ready".equals(parts[1])) {
-        initialGUI.playerReady(true);
-      } else if ("ready".equals(parts[1])) {
-        initialGUI.playerReady(false);
-      }
+    if (message.startsWith("updateReadyState")) {
+      if ("ready".equals(parts[1])) initialGUI.playerReady(true);
+      if ("unready".equals(parts[1])) initialGUI.playerReady(false);
     } 
 
     System.out.println("Server sent: " + message);
