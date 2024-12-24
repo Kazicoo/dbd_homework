@@ -134,6 +134,6 @@ public class setupGUI {
     }
 
     public void playerReady(Boolean ready) {
-        
+        // 改視窗
     }
 }

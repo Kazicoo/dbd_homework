@@ -37,6 +37,7 @@ public class Client implements Comm.TcpClientCallback {
     String[] parts = message.split(";");
     if ("updateReadyState".equals(parts[0])) {
       if ("ready".equals(parts[1])) {
+        initialGUI.playerReady(true);
       } else if ("ready".equals(parts[1])) {
         initialGUI.playerReady(false);
       }
