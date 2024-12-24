@@ -1,18 +1,23 @@
 import java.io.*;
 import java.util.Scanner;
 
-public class Client implements Comm.TcpClientCallback {
-  private Comm.TcpClient client;
-  private setupGUI initialGUI;
+import javax.swing.SwingUtilities;
 
+
+public class Client implements Comm.TcpClientCallback {
+  private setupGUI initialGUI;
   public static void main(String[] args) {  
     try {
-      Client client = new Client();
+      new Client();
     } catch (IOException e) {
       System.out.println("Failed to create client: " + e.getMessage());
     }
+
+
   }
 
+  Comm.TcpClient client;
+  
   public Client() throws IOException {
     client = new Comm.TcpClient("localhost", 8080, this);
     Scanner scanner = new Scanner(System.in);

@@ -32,7 +32,7 @@ public class Server implements Comm.TcpServerCallback {
     // server.send(id, "Echo: " + message); 
   }
 
-  @Override
+  @Override 
   public void onConnect(int id) {
     System.out.println("Client connected: " + id);
   }

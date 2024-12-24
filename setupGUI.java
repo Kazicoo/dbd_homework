@@ -55,9 +55,9 @@ public class setupGUI {
         rolePanel.setLayout(new BoxLayout(rolePanel, BoxLayout.Y_AXIS));
 
         characterButtons[0] = new JButton("Ghost");
-        characterButtons[1] = new JButton("Character 1");
-        characterButtons[2] = new JButton("Character 2");
-        characterButtons[3] = new JButton("Character 3");
+        characterButtons[1] = new JButton("Character1");
+        characterButtons[2] = new JButton("Character2");
+        characterButtons[3] = new JButton("Character3");
 
         for (JButton button : characterButtons) {
             button.setBackground(Color.LIGHT_GRAY);
@@ -108,7 +108,7 @@ public class setupGUI {
         // 添加角色選擇事件
         
         // 規則按鈕事件
-        rulesButton.addActionListener(e -> rulesPanel.setVisible(true));
+        rulesButton.addActionListener(_ -> rulesPanel.setVisible(true));
 
         // 規則面板點擊事件
         rulesPanel.addMouseListener(new MouseAdapter() {
