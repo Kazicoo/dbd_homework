@@ -15,7 +15,7 @@ public class setupGUI {
     // 建構子，初始化所有的GUI组件
     public setupGUI(TcpClient conn) {
         this.conn = conn;
-        // 生成視窗
+        // 生成主視窗
         JFrame frame = new JFrame("迷途逃生");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setUndecorated(true);
@@ -85,6 +85,7 @@ public class setupGUI {
         bottomPanel.setBounds(0, frame.getHeight() - 100, frame.getWidth(), 100);
 
         statusLabel = new JLabel("所有角色被選定後將直接開始遊戲", SwingConstants.LEFT);
+        statusLabel.setFont(new Font("微軟正黑體", Font.BOLD, 20));
         bottomPanel.add(statusLabel, BorderLayout.WEST);
 
         readyButton = new JButton("取消選擇");
