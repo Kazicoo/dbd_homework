@@ -118,19 +118,7 @@ public class setupGUI {
                 rulesPanel.setVisible(false);
             }
         });
-<<<<<<< HEAD
-
-        // 退出按鍵事件
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
-            if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                System.exit(0);
-            }
-            return false;
-        });
-
-=======
         
->>>>>>> b16e77e5d8b3a6da39b1f4089ba56cee7b228150
         // 顯示視窗
         frame.setVisible(true);
     }
