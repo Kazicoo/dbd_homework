@@ -117,7 +117,6 @@ public class setupGUI {
                 rulesPanel.setVisible(false);
             }
         });
-<<<<<<< HEAD
 
         // 退出按鍵事件
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
@@ -127,9 +126,6 @@ public class setupGUI {
             return false;
         });
 
-=======
-        
->>>>>>> b16e77e5d8b3a6da39b1f4089ba56cee7b228150
         // 顯示視窗
         frame.setVisible(true);
     }
@@ -139,6 +135,7 @@ public class setupGUI {
             conn.send("updateReadyState;unready;" + characterButtons[index].getText());
         } else {
             conn.send("updateReadyState;ready;" + characterButtons[index].getText());
+            characterButtons[index].setBackground(Color.DARK_GRAY);
         }
     }
 
