@@ -28,8 +28,8 @@ public class Server implements Comm.TcpServerCallback {
       updateReadyState(message, id);
     } 
 
-    // System.out.println("Client " + id + " sent: " + message);
-    // server.send(id, "Echo: " + message); 
+    System.out.println("Client " + id + " sent: " + message);
+    server.send(id, "Echo: " + message); 
   }
 
   @Override
