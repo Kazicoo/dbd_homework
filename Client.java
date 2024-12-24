@@ -35,6 +35,7 @@ public class Client implements Comm.TcpClientCallback {
   @Override
   public void onMessage(String message) {
     String[] parts = message.split(";");
+    // 主視窗的更新畫面
     if ("updateReadyState".equals(parts[0])) {
       if ("ready".equals(parts[1])) {
         initialGUI.playerReady(true);
@@ -42,7 +43,8 @@ public class Client implements Comm.TcpClientCallback {
         initialGUI.playerReady(false);
       }
     } 
-    // System.out.println("Server sent: " + message);
+
+    System.out.println("Server sent: " + message);
   }
 
   @Override

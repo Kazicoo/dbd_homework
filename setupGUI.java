@@ -15,7 +15,7 @@ public class setupGUI {
     // 建構子，初始化所有的GUI组件
     public setupGUI(TcpClient conn) {
         this.conn = conn;
-
+        // 生成視窗
         JFrame frame = new JFrame("迷途逃生");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setUndecorated(true);
@@ -117,18 +117,7 @@ public class setupGUI {
                 rulesPanel.setVisible(false);
             }
         });
-
-        // 選擇角色按鈕事件
         
-
-        // 退出按鍵事件
-        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
-            if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                System.exit(0);
-            }
-            return false;
-        });
-
         // 顯示視窗
         frame.setVisible(true);
     }
