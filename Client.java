@@ -4,6 +4,7 @@ import java.util.Scanner;
 public class Client implements Comm.TcpClientCallback {
   private Comm.TcpClient client;
   private setupGUI initialGUI;
+  private int id;
 
   public static void main(String[] args) {  
     try {
@@ -18,23 +19,32 @@ public class Client implements Comm.TcpClientCallback {
     Scanner scanner = new Scanner(System.in);
 
     // 等待伺服器連接成功後開始接受指令
-    while (!client.isAlive());
-    setupGUI initialGUI = new setupGUI(client);
-    
+    while (!client.isAlive()) {
+      try {
+        Thread.sleep(10);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+    this.initialGUI = new setupGUI(client);
     scanner.close();
   }
 
   @Override
   public void onMessage(String message) {
-
     String[] parts = message.split(";");
+    // 如果message一開始是id的話，代表封包為id;<id; "0" | "1" | "2" | "3">的格式
+    if (message.startsWith("id")) {
+      int id = Integer.parseInt(parts[1]);
+    }
+    
     // 按下更新的角色按鈕後，會獲得 updateReadyState;ready;p1;0 的封包
     // 主視窗的更新畫面
     if (message.startsWith("updateReadyState")) {
-      if ("ready".equals(parts[1])) initialGUI.playerReady(true);
-      if ("unready".equals(parts[1])) initialGUI.playerReady(false);
-    } 
-
+      if ("ready".equals(parts[1])) initialGUI.playerReady(true, message, id);
+      if ("unready".equals(parts[1])) initialGUI.playerReady(false, message, id);
+    }
+    
     System.out.println("Server sent: " + message);
   }
 

@@ -35,6 +35,8 @@ public class Server implements Comm.TcpServerCallback {
   @Override
   public void onConnect(int id) {
     System.out.println("Client connected: " + id);
+    // 告訴連進來的那位client的id是多少，使用字串串接
+    server.send(id, "id;" + id);
   }
 
   @Override
@@ -67,7 +69,7 @@ public class Server implements Comm.TcpServerCallback {
     } 
     else if ("unready".equals(parts[1])) {
       // 封包是取消準備，執行取消準備的動作 
-      if (readyCount < 4) readyCount++;
+      if (readyCount < 4) readyCount--;
     }
     server.broadcast(message + ";" + id);
   }

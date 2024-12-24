@@ -58,6 +58,10 @@ public class setupGUI {
         characterButtons[2] = new JButton("p2");
         characterButtons[3] = new JButton("p3");
 
+        for (int i = 0; i < characterSelected.length; i++) {
+            characterSelected[i] = false;
+        }
+
         for (int i = 0; i < characterButtons.length; i++) {
             JButton button = characterButtons[i];
             button.setBackground(Color.LIGHT_GRAY);
@@ -136,11 +140,88 @@ public class setupGUI {
             conn.send("updateReadyState;unready;" + characterButtons[index].getText());
         } else {
             conn.send("updateReadyState;ready;" + characterButtons[index].getText());
-            characterButtons[index].setBackground(Color.DARK_GRAY);
         }
     }
 
-    public void playerReady(Boolean ready) {
-        // 改視窗
+    // 當ready被傳進前端時，畫面更新會進行更新 
+    // 封包為 updateReadyState;ready;p1;0
+    public void playerReady(Boolean is_ready, String message, int id) {
+        String[] parts = message.split(";");
+        // 將數字id轉成字串，檢查該封包是不是自己傳
+        String idStr = "" + id;
+        if (idStr.equals(parts[3])) {
+            // 本人按下選擇角色按鈕時，要有的變化
+            if (is_ready) {
+                switch (parts[2]) {
+                    case "killer":
+                        characterButtons[0].setBackground(Color.RED);
+                        characterSelected[0] = true;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 0) continue;
+                            characterButtons[i].setEnabled(false);
+                        }  
+                        break;
+                    case "p1":
+                        characterButtons[1].setBackground(Color.GREEN);
+                        characterSelected[1] = true;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 1) continue;
+                            characterButtons[i].setEnabled(false);
+                        }     
+                        break;
+                        case "p2":
+                        characterButtons[2].setBackground(Color.GREEN);
+                        characterSelected[2] = true;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 2) continue;
+                            characterButtons[i].setEnabled(false);
+                        }     
+                        break;
+                        case "p3":
+                        characterButtons[3].setBackground(Color.GREEN);
+                        characterSelected[3] = true;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 3) continue;
+                            characterButtons[i].setEnabled(false);
+                        }         
+                        break;
+                }
+            } else {
+                switch (parts[2]) {
+                    case "killer":
+                        characterButtons[0].setBackground(Color.LIGHT_GRAY);
+                        characterSelected[0] = false;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 0) continue;
+                            characterButtons[i].setEnabled(true);
+                        }  
+                        break;
+                        case "p1":
+                        characterButtons[1].setBackground(Color.LIGHT_GRAY);
+                        characterSelected[1] = false;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 1) continue;
+                            characterButtons[i].setEnabled(true);
+                        }     
+                        break;
+                        case "p2":
+                        characterButtons[2].setBackground(Color.LIGHT_GRAY);
+                        characterSelected[2] = false;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 2) continue;
+                            characterButtons[i].setEnabled(true);
+                        }     
+                        break;
+                        case "p3":
+                        characterButtons[3].setBackground(Color.LIGHT_GRAY);
+                        characterSelected[3] = false;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 3) continue;
+                            characterButtons[i].setEnabled(true);
+                        }         
+                        break;
+                }
+            }
+        }
     }
 }
