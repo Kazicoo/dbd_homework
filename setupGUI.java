@@ -7,7 +7,6 @@ public class setupGUI {
     private boolean[] characterSelected = new boolean[4]; // Tracks character selection
     private JButton[] characterButtons = new JButton[4]; // Character buttons array
     private JLabel statusLabel; // Displays the number of ready players
-    private String selectedCharacter = null; // Tracks the selected character
     private JLabel imageLabel; // Displays the selected character image or name
     private JButton readyButton; // Ready button
     private TcpClient conn;
@@ -15,7 +14,7 @@ public class setupGUI {
     // 建構子，初始化所有的GUI组件
     public setupGUI(TcpClient conn) {
         this.conn = conn;
-
+        // 生成視窗
         JFrame frame = new JFrame("迷途逃生");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setUndecorated(true);
@@ -54,16 +53,19 @@ public class setupGUI {
         JPanel rolePanel = new JPanel();
         rolePanel.setLayout(new BoxLayout(rolePanel, BoxLayout.Y_AXIS));
 
-        characterButtons[0] = new JButton("Ghost");
-        characterButtons[1] = new JButton("Character1");
-        characterButtons[2] = new JButton("Character2");
-        characterButtons[3] = new JButton("Character3");
+        characterButtons[0] = new JButton("killer");
+        characterButtons[1] = new JButton("p1");
+        characterButtons[2] = new JButton("p2");
+        characterButtons[3] = new JButton("p3");
 
-        for (JButton button : characterButtons) {
+        for (int i = 0; i < characterButtons.length; i++) {
+            JButton button = characterButtons[i];
             button.setBackground(Color.LIGHT_GRAY);
             button.setForeground(Color.WHITE);
             button.setMaximumSize(new Dimension(500, 100));
             button.setAlignmentX(Component.LEFT_ALIGNMENT);
+            int index = i;
+            button.addActionListener(e -> handleCharacterSelection(index));
             rolePanel.add(button);
             rolePanel.add(Box.createRigidArea(new Dimension(0, 75)));
         }
@@ -137,9 +139,6 @@ public class setupGUI {
             }
         });
 
-        // 選擇角色按鈕事件
-        
-
         // 退出按鍵事件
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
             if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -150,6 +149,14 @@ public class setupGUI {
 
         // 顯示視窗
         frame.setVisible(true);
+    }
+
+    private void handleCharacterSelection(int index) {
+        if (characterSelected[index]){
+            conn.send("updateReadyState;unready;" + characterButtons[index].getText());
+        } else {
+            conn.send("updateReadyState;ready;" + characterButtons[index].getText());
+        }
     }
 
     public void playerReady(Boolean ready) {
