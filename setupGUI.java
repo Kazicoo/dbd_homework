@@ -8,13 +8,13 @@ public class setupGUI {
     private JButton[] characterButtons = new JButton[4]; // Character buttons array
     private JLabel statusLabel; // Displays the number of ready players
     private JLabel imageLabel; // Displays the selected character image or name
-    private JButton readyButton; // Ready button
+    private JLabel readyLabel;
     private TcpClient conn;
 
     // 建構子，初始化所有的GUI组件
     public setupGUI(TcpClient conn) {
         this.conn = conn;
-        // 生成視窗
+        // 生成主視窗
         JFrame frame = new JFrame("迷途逃生");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setUndecorated(true);
@@ -39,8 +39,8 @@ public class setupGUI {
         topPanel.add(titleLabel, BorderLayout.WEST);
 
         JButton rulesButton = new JButton("規則");
-        rulesButton.setFont(new Font("DialogInput", Font.PLAIN, 20));
-        rulesButton.setMargin(new Insets(5, 15, 5, 15));
+        rulesButton.setFont(new Font("微軟正黑體", Font.BOLD, 20));
+        rulesButton.setMargin(new Insets(5, 40, 5, 40));
         topPanel.add(rulesButton, BorderLayout.EAST);
 
         layeredPane.add(topPanel, JLayeredPane.DEFAULT_LAYER);
@@ -87,11 +87,12 @@ public class setupGUI {
         bottomPanel.setBounds(0, frame.getHeight() - 100, frame.getWidth(), 100);
 
         statusLabel = new JLabel("所有角色被選定後將直接開始遊戲", SwingConstants.LEFT);
+        statusLabel.setFont(new Font("微軟正黑體", Font.BOLD, 20));
         bottomPanel.add(statusLabel, BorderLayout.WEST);
 
-        readyButton = new JButton("取消選擇");
-        readyButton.setEnabled(false);
-        bottomPanel.add(readyButton, BorderLayout.EAST);
+        readyLabel = new JLabel("文字放這邊");
+        statusLabel.setFont(new Font("微軟正黑體", Font.BOLD, 20));
+        bottomPanel.add(readyLabel, BorderLayout.EAST);
 
         layeredPane.add(bottomPanel, JLayeredPane.DEFAULT_LAYER);
 
@@ -156,6 +157,7 @@ public class setupGUI {
             conn.send("updateReadyState;unready;" + characterButtons[index].getText());
         } else {
             conn.send("updateReadyState;ready;" + characterButtons[index].getText());
+            characterButtons[index].setBackground(Color.DARK_GRAY);
         }
     }
 
