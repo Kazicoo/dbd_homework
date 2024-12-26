@@ -1,7 +1,6 @@
+import Comm.TcpClient;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.*;
-import java.net.*;
 import javax.swing.*;
 
 import Comm.TcpClient;
@@ -36,7 +35,18 @@ public class setupGUI {
         layeredPane.setLayout(null);
         frame.add(layeredPane);
 
-        // 顶部面板（标题和规则按钮）
+        // 創建背景圖片的 JLabel
+        ImageIcon originalIcon = new ImageIcon("Graphic/GameBackGround.jpg");
+        Image scaledImage = originalIcon.getImage().getScaledInstance(frame.getWidth(), frame.getHeight(), Image.SCALE_SMOOTH);
+        ImageIcon backgroundIcon = new ImageIcon(scaledImage);
+        JLabel backgroundLabel = new JLabel(backgroundIcon);
+
+        backgroundLabel.setSize(frame.getWidth(), frame.getHeight());
+        backgroundLabel.setBounds(0, 0, frame.getWidth(), frame.getHeight()); 
+
+        // 將背景圖片的 JLabel 添加到 JLayeredPane 的底層 
+        layeredPane.add(backgroundLabel, Integer.valueOf(-1));
+
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBounds(0, 0, frame.getWidth(), 100);
         topPanel.setOpaque(false);
@@ -47,9 +57,9 @@ public class setupGUI {
         titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         topPanel.add(titleLabel, BorderLayout.WEST);
 
-        JButton rulesButton = new JButton("規則");
-        rulesButton.setFont(new Font("DialogInput", Font.PLAIN, 20));
-        rulesButton.setMargin(new Insets(5, 15, 5, 15));
+        rulesButton = new JButton("規則");
+        rulesButton.setFont(new Font("微軟正黑體", Font.BOLD, 20));
+        rulesButton.setMargin(new Insets(5, 40, 5, 40));
         topPanel.add(rulesButton, BorderLayout.EAST);
 
         layeredPane.add(topPanel, JLayeredPane.DEFAULT_LAYER);
@@ -62,16 +72,23 @@ public class setupGUI {
         JPanel rolePanel = new JPanel();
         rolePanel.setLayout(new BoxLayout(rolePanel, BoxLayout.Y_AXIS));
 
-        characterButtons[0] = new JButton("Ghost");
-        characterButtons[1] = new JButton("Character 1");
-        characterButtons[2] = new JButton("Character 2");
-        characterButtons[3] = new JButton("Character 3");
+        characterButtons[0] = new JButton("killer");
+        characterButtons[1] = new JButton("p1");
+        characterButtons[2] = new JButton("p2");
+        characterButtons[3] = new JButton("p3");
 
-        for (JButton button : characterButtons) {
+        for (int i = 0; i < characterSelected.length; i++) {
+            characterSelected[i] = false;
+        }
+
+        for (int i = 0; i < characterButtons.length; i++) {
+            JButton button = characterButtons[i];
             button.setBackground(Color.LIGHT_GRAY);
             button.setForeground(Color.WHITE);
             button.setMaximumSize(new Dimension(500, 100));
             button.setAlignmentX(Component.LEFT_ALIGNMENT);
+            int index = i;
+            button.addActionListener(e -> handleCharacterSelection(index));
             rolePanel.add(button);
             rolePanel.add(Box.createRigidArea(new Dimension(0, 75)));
         }
@@ -92,12 +109,15 @@ public class setupGUI {
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.setBounds(0, frame.getHeight() - 100, frame.getWidth(), 100);
 
-        statusLabel = new JLabel("已準備玩家: 0/4", SwingConstants.LEFT);
+        statusLabel = new JLabel("所有角色被選定後將直接開始遊戲", SwingConstants.LEFT);
+        statusLabel.setFont(new Font("微軟正黑體", Font.BOLD, 25));
+        statusLabel.setForeground(Color.WHITE);
         bottomPanel.add(statusLabel, BorderLayout.WEST);
 
-        readyButton = new JButton("選擇角色");
-        readyButton.setEnabled(false);
-        bottomPanel.add(readyButton, BorderLayout.EAST);
+        waitReadyLabel = new JLabel("等待玩家到齊...");
+        waitReadyLabel.setFont(new Font("微軟正黑體", Font.BOLD, 30));
+        waitReadyLabel.setForeground(Color.WHITE);
+        bottomPanel.add(waitReadyLabel, BorderLayout.EAST);
 
         layeredPane.add(bottomPanel, JLayeredPane.DEFAULT_LAYER);
 
@@ -113,12 +133,6 @@ public class setupGUI {
 
         layeredPane.add(rulesPanel, JLayeredPane.PALETTE_LAYER);
 
-        // 添加角色選擇事件
-        characterButtons[0].addActionListener(e -> selectCharacter("Ghost", characterButtons[0], 0));
-        characterButtons[1].addActionListener(e -> selectCharacter("Character 1", characterButtons[1], 1));
-        characterButtons[2].addActionListener(e -> selectCharacter("Character 2", characterButtons[2], 2));
-        characterButtons[3].addActionListener(e -> selectCharacter("Character 3", characterButtons[3], 3));
-
         // 規則按鈕事件
         rulesButton.addActionListener(e -> rulesPanel.setVisible(true));
 
@@ -130,9 +144,6 @@ public class setupGUI {
             }
         });
 
-        // 選擇角色按鈕事件
-        readyButton.addActionListener(e -> handleReadyButton());
-
         // 退出按鍵事件
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
             if (e.getID() == KeyEvent.KEY_PRESSED && e.getKeyCode() == KeyEvent.VK_ESCAPE) {
@@ -141,94 +152,174 @@ public class setupGUI {
             return false;
         });
 
+        topPanel.setOpaque(false);
+        mainPanel.setOpaque(false);
+        rolePanel.setOpaque(false);
+        imagePanel.setOpaque(false);
+        bottomPanel.setOpaque(false);
+        rulesPanel.setOpaque(false);
+
         // 顯示視窗
         frame.setVisible(true);
     }
 
-    // 角色選擇方法
-    private static void selectCharacter(String character, JButton button, int index) {
-        if (!isReady) {
-            if (!characterSelected[index]) {
-                // 如果角色未被選擇，選擇它
-                for (int i = 0; i < characterButtons.length; i++) {
-                    if (characterSelected[i]) {
-                        characterButtons[i].setBackground(Color.LIGHT_GRAY);
-                        characterSelected[i] = false;
-                        sendMessage("DESELECT " + characterButtons[i].getText());  // 取消之前選擇的角色
+    private void handleCharacterSelection(int index) {
+        if (characterSelected[index]){
+            conn.send("updateReadyState;unready;" + characterButtons[index].getText());
+        } else {
+            conn.send("updateReadyState;ready;" + characterButtons[index].getText());
+        }
+    }
+
+    // 當ready被傳進前端時，畫面更新會進行更新 
+    // 封包為 updateReadyState;ready;p1;0
+    public void playerReady(Boolean is_ready, String message, int id) {
+        System.out.println(id);
+        // 將數字id轉成字串，檢查該封包是不是自己傳
+        String idStr = "" + id;
+        String[] parts = message.split(";");
+
+        // 本人按下選擇角色按鈕時，要有的變化
+        if (idStr.equals(parts[3])) {
+            if (is_ready) {
+                switch (parts[2]) {
+                    case "killer" -> {
+                        characterButtons[0].setBackground(Color.RED);
+                        characterSelected[0] = true;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 0) continue;
+                            characterButtons[i].setEnabled(false);
+                        }
+                    }
+                    case "p1" -> {
+                        characterButtons[1].setBackground(Color.GREEN);
+                        characterSelected[1] = true;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 1) continue;
+                            characterButtons[i].setEnabled(false);
+                        }
+                    }
+                    case "p2" -> {
+                        characterButtons[2].setBackground(Color.GREEN);
+                        characterSelected[2] = true;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 2) continue;
+                            characterButtons[i].setEnabled(false);
+                        }
+                    }
+                    case "p3" -> {
+                        characterButtons[3].setBackground(Color.GREEN);
+                        characterSelected[3] = true;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 3) continue;
+                            characterButtons[i].setEnabled(false);
+                        }
                     }
                 }
-                characterSelected[index] = true;
-                selectedCharacter = character;
-                sendMessage("SELECT " + character);  // 發送選擇角色的封包
-                button.setBackground(Color.GRAY);
-                imageLabel.setText(character + " 已被選擇");
-                readyButton.setEnabled(true);
-            } else {
-                // 如果角色已經選擇，取消選擇
-                characterSelected[index] = false;
-                sendMessage("DESELECT " + character);  // 發送取消選擇角色的封包
-                selectedCharacter = null;
-                button.setBackground(Color.LIGHT_GRAY);
-                imageLabel.setText("請選擇角色");
-                readyButton.setEnabled(false);
+            } 
+            else {
+                switch (parts[2]) {
+                    case "killer" -> {
+                        characterButtons[0].setBackground(Color.LIGHT_GRAY);
+                        characterSelected[0] = false;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 0) continue;
+                            characterButtons[i].setEnabled(true);
+                        }
+                    }
+                    case "p1" -> {
+                        characterButtons[1].setBackground(Color.LIGHT_GRAY);
+                        characterSelected[1] = false;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 1) continue;
+                            characterButtons[i].setEnabled(true);
+                        }
+                    }
+                    case "p2" -> {
+                        characterButtons[2].setBackground(Color.LIGHT_GRAY);
+                        characterSelected[2] = false;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 2) continue;
+                            characterButtons[i].setEnabled(true);
+                        }
+                    }
+                    case "p3" -> {
+                        characterButtons[3].setBackground(Color.LIGHT_GRAY);
+                        characterSelected[3] = false;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 3) continue;
+                            characterButtons[i].setEnabled(true);
+                        }
+                    }
+                }
+            }
+        }
+        // 非本人按下按鈕應該要有的反應
+        if (!idStr.equals(parts[3])) {
+            if (is_ready) {
+                switch (parts[2]) {
+                    case "killer" -> {
+                        characterButtons[0].setBackground(Color.DARK_GRAY);
+                        characterButtons[0].setEnabled(false);
+                    }
+                    case "p1" -> {
+                        characterButtons[1].setBackground(Color.DARK_GRAY);
+                        characterButtons[1].setEnabled(false);
+                    }
+                    case "p2" -> {
+                        characterButtons[2].setBackground(Color.DARK_GRAY);
+                        characterButtons[2].setEnabled(false);
+                    }
+                    case "p3" -> {
+                        characterButtons[3].setBackground(Color.DARK_GRAY);
+                        characterButtons[3].setEnabled(false);
+                    }
+                }
+            }
+            else {
+                switch (parts[2]) {
+                    case "killer" -> {
+                        characterButtons[0].setBackground(Color.LIGHT_GRAY);
+                        characterButtons[0].setEnabled(true);
+                    }
+                    case "p1" -> {
+                        characterButtons[1].setBackground(Color.LIGHT_GRAY);
+                        characterButtons[1].setEnabled(true);
+                    }
+                    case "p2" -> {
+                        characterButtons[2].setBackground(Color.LIGHT_GRAY);
+                        characterButtons[2].setEnabled(true);
+                    }
+                    case "p3" -> {
+                        characterButtons[3].setBackground(Color.LIGHT_GRAY);
+                        characterButtons[3].setEnabled(true);
+                    }
+                }
             }
         }
     }
 
-    // 處理準備按鈕的邏輯
-    private static void handleReadyButton() {
-        if (isReady) {
-            // 玩家取消準備
-            readyPlayers--;
-            statusLabel.setText("已準備玩家: " + readyPlayers + "/4");
-            readyButton.setText("選擇角色");
-            isReady = false;
-            if (selectedCharacter != null) {
-                sendMessage("CANCEL_READY " + selectedCharacter);  // 發送取消準備的封包
-            }
-            for (int i = 0; i < characterButtons.length; i++) {
-                characterButtons[i].setEnabled(!characterSelected[i]);
-            }
-        } else if (readyPlayers < maxPlayers && selectedCharacter != null) {
-            // 玩家準備
-            readyPlayers++;
-            statusLabel.setText("已準備玩家: " + readyPlayers + "/4");
-            readyButton.setText("取消選擇");
-            isReady = true;
-            sendMessage("READY " + selectedCharacter);  // 發送準備訊息給伺服器
-    
-            // 傳送角色封包，包含所有角色的狀態
-            String roles = getRoleStatus();  // 取得角色狀態
-            sendMessage("ROLE " + roles);  // 發送角色封包
-    
-            for (int i = 0; i < characterButtons.length; i++) {
-                characterButtons[i].setEnabled(characterSelected[i]);
-            }
-    
+    public void startCountdown() {
+        for (int i = 0; i < characterButtons.length ; i++) {
+            characterButtons[i].setEnabled(false);
+            rulesButton.setEnabled(false);
         }
-        if (readyPlayers == maxPlayers) {
-            readyButton.setEnabled(false);
-        }
-    }
-
-    // 取得角色狀態
-    private static String getRoleStatus() {
-        StringBuilder roleStatus = new StringBuilder();
-        roleStatus.append(characterSelected[0] ? "killer" : "p1");
-        roleStatus.append(",");
-        roleStatus.append(characterSelected[1] ? "p2" : "p3");
-        roleStatus.append(",");
-        roleStatus.append(characterSelected[2] ? "p2" : "p3");
-        roleStatus.append(",");
-        roleStatus.append(characterSelected[3] ? "p2" : "p3");
-    
-        return roleStatus.toString();
-    }
-    
-    // 發送訊息到伺服器
-    private static void sendMessage(String message) {
-        if (out != null) {
-            out.println(message);
+            
+        // 倒數計時
+        try {
+            waitReadyLabel.setText("準備開始...");
+            Thread.sleep(1500);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+        for (int i = 3; i > 0; i--) {
+            try {
+                Thread.sleep(1000);
+                waitReadyLabel.setFont(new Font("微軟正黑體", Font.BOLD, 50));
+                waitReadyLabel.setText("" + i);
+              } catch (InterruptedException e) {
+                e.printStackTrace();
+              }
         }
     }
 }

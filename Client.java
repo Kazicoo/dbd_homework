@@ -3,6 +3,10 @@ import java.util.Scanner;
 
 
 public class Client implements Comm.TcpClientCallback {
+  private Comm.TcpClient client;
+  private setupGUI initialGUI;
+  private int id;
+
   public static void main(String[] args) {  
     try {
       Client client = new Client();
@@ -11,48 +15,40 @@ public class Client implements Comm.TcpClientCallback {
     }
   }
 
-  Comm.TcpClient client;
-  private String selectedRole = null;  // Tracks the selected character/role
-  private boolean isReady = false;     // Tracks if the player is ready
-
   public Client() throws IOException {
     client = new Comm.TcpClient("localhost", 8080, this);
     Scanner scanner = new Scanner(System.in);
 
     // 等待伺服器連接成功後開始接受指令
-    while (!client.isAlive());
-    setupGUI initialGUI = new setupGUI();
-
+    while (!client.isAlive()) {
+      try {
+        Thread.sleep(10);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
+    initialGUI = new setupGUI(client);
     scanner.close();
-  }
-
-  // 設定角色
-  private void selectRole(String role) {
-    selectedRole = role;
-    System.out.println("Selected role: " + role);
-    sendMessage("updateReadyState;ready;" + role); // 發送選擇角色的準備訊息
-  }
-
-  // 設定準備狀態
-  private void setReady(boolean ready) {
-    if (ready) {
-      isReady = true;
-      sendMessage("updateReadyState;ready;" + selectedRole); // 發送準備訊息
-    } else {
-      isReady = false;
-      sendMessage("updateReadyState;unready;" + selectedRole); // 發送取消準備訊息
-    }
-  }
-
-  // 發送訊息到伺服器
-  private void sendMessage(String message) {
-    if (client != null) {
-      client.send(message);
-    }
   }
 
   @Override
   public void onMessage(String message) {
+    String[] parts = message.split(";");
+    // 如果message一開始是id的話，代表封包為id;<id; "0" | "1" | "2" | "3">的格式
+    if (message.startsWith("id")) {
+      String idStr = parts[1];
+      id = Integer.parseInt(idStr);
+    }
+    
+    // 按下更新的角色按鈕後，會獲得 updateReadyState;ready;p1;0 的封包
+    // 主視窗的更新畫面
+    if (message.startsWith("updateReadyState")) {
+      if ("ready".equals(parts[1])) initialGUI.playerReady(true, message, id);
+      if ("unready".equals(parts[1])) initialGUI.playerReady(false, message, id);
+    }
+
+    if ("gameStart".equals(message)) initialGUI.startCountdown();
+    
     System.out.println("Server sent: " + message);
   }
 
