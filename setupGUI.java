@@ -3,26 +3,21 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import Comm.TcpClient;
+
 
 public class setupGUI {
-    private static PrintWriter out;
-    private static BufferedReader in;
-    private static Socket socket;
-    private static int readyPlayers = 0; // Tracks the number of ready players
-    private static int maxPlayers = 4; // Maximum number of players
-    private static boolean[] characterSelected = new boolean[4]; // Tracks character selection
-    private static boolean isReady = false; // Tracks if the player is ready
-    private static JButton[] characterButtons = new JButton[4]; // Character buttons array
-    private static JLabel statusLabel; // Displays the number of ready players
-    private static String selectedCharacter = null; // Tracks the selected character
-    private static JLabel imageLabel; // Displays the selected character image or name
-    private static JButton readyButton; // Ready button
+    private boolean[] characterSelected = new boolean[4]; // Tracks character selection
+    private JButton[] characterButtons = new JButton[4]; // Character buttons array
+    private JButton rulesButton;
+    private JLabel statusLabel; // Displays the number of ready players
+    private JLabel imageLabel; // Displays the selected character image or name
+    private JLabel waitReadyLabel;
     private TcpClient conn;
-        // 建構子，初始化所有的GUI组件
+
+    // 建構子，初始化所有的GUI组件
     public setupGUI(TcpClient conn) {
         this.conn = conn;
-
+        // 生成主視窗
         JFrame frame = new JFrame("迷途逃生");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setUndecorated(true);
