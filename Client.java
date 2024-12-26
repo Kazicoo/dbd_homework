@@ -1,55 +1,53 @@
 import java.io.*;
 import java.util.Scanner;
 
-import javax.swing.SwingUtilities;
-
-
 public class Client implements Comm.TcpClientCallback {
+  private Comm.TcpClient client;
   private setupGUI initialGUI;
+  private int id;
+
   public static void main(String[] args) {  
     try {
-      new Client();
+      Client client = new Client();
     } catch (IOException e) {
       System.out.println("Failed to create client: " + e.getMessage());
     }
-
-
   }
 
-  Comm.TcpClient client;
-  
   public Client() throws IOException {
     client = new Comm.TcpClient("localhost", 8080, this);
     Scanner scanner = new Scanner(System.in);
 
     // 等待伺服器連接成功後開始接受指令
-    while (client.isAlive()) {
-      
+    while (!client.isAlive()) {
+      try {
+        Thread.sleep(10);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
     }
-
+    initialGUI = new setupGUI(client);
     scanner.close();
-  }
-  
-
-  // 發送訊息到伺服器
-  private void sendMessage(String message) {
-    if (client != null) {
-      client.send(message);
-    }
   }
 
   @Override
   public void onMessage(String message) {
     String[] parts = message.split(";");
+    // 如果message一開始是id的話，代表封包為id;<id; "0" | "1" | "2" | "3">的格式
+    if (message.startsWith("id")) {
+      String idStr = parts[1];
+      id = Integer.parseInt(idStr);
+    }
+    
+    // 按下更新的角色按鈕後，會獲得 updateReadyState;ready;p1;0 的封包
     // 主視窗的更新畫面
-    if ("updateReadyState".equals(parts[0])) {
-      if ("ready".equals(parts[1])) {
-        initialGUI.playerReady(true);
-      } else if ("ready".equals(parts[1])) {
-        initialGUI.playerReady(false);
-      }
-    } 
+    if (message.startsWith("updateReadyState")) {
+      if ("ready".equals(parts[1])) initialGUI.playerReady(true, message, id);
+      if ("unready".equals(parts[1])) initialGUI.playerReady(false, message, id);
+    }
 
+    if ("gameStart".equals(message)) initialGUI.startCountdown();
+    
     System.out.println("Server sent: " + message);
   }
 

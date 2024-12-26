@@ -23,8 +23,11 @@ public class Server implements Comm.TcpServerCallback {
   }
 
   @Override
-public void onMessage(int id, String message) {
-
+  public void onMessage(int id, String message) {
+    if (message.startsWith("updateReadyState")) {
+      updateReadyState(message, id);
+    } 
+    System.out.println(readyCount);
     System.out.println("Client " + id + " sent: " + message);
     server.send(id, "Echo: " + message); 
   }
@@ -32,6 +35,8 @@ public void onMessage(int id, String message) {
   @Override 
   public void onConnect(int id) {
     System.out.println("Client connected: " + id);
+    // 告訴連進來的那位client的id是多少，使用字串串接
+    server.send(id, "id;" + id);
   }
 
   @Override
@@ -41,9 +46,21 @@ public void onMessage(int id, String message) {
 
   void waitGameStart () {
     // 檢查是否所有玩家都準備遊戲
-    while (readyCount != 4);
+    while (readyCount < 4) {
+      try {
+        Thread.sleep(10);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+    }
     // 開始遊戲，告訴前端遊戲開始
     server.broadcast("gameStart");
+    // 4.5秒後開始遊戲
+    try {
+      Thread.sleep(4500);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
   }
 
   void updateReadyState (String message, int id) {
@@ -54,11 +71,11 @@ public void onMessage(int id, String message) {
     String[] parts = message.split(";");
     if ("ready".equals(parts[1])) {
       // 封包是準備，執行準備的動作
-      readyCount++;
+      if (readyCount < 4) readyCount++;
     } 
     else if ("unready".equals(parts[1])) {
       // 封包是取消準備，執行取消準備的動作 
-      readyCount--;
+      if (readyCount < 4) readyCount--;
     }
     server.broadcast(message + ";" + id);
   }

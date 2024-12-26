@@ -3,12 +3,15 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+
+
 public class setupGUI {
     private boolean[] characterSelected = new boolean[4]; // Tracks character selection
     private JButton[] characterButtons = new JButton[4]; // Character buttons array
+    private JButton rulesButton;
     private JLabel statusLabel; // Displays the number of ready players
     private JLabel imageLabel; // Displays the selected character image or name
-    private JLabel readyLabel;
+    private JLabel waitReadyLabel;
     private TcpClient conn;
 
     // 建構子，初始化所有的GUI组件
@@ -27,7 +30,18 @@ public class setupGUI {
         layeredPane.setLayout(null);
         frame.add(layeredPane);
 
-        // 顶部面板（标题和规则按钮）
+        // 創建背景圖片的 JLabel
+        ImageIcon originalIcon = new ImageIcon("Graphic/GameBackGround.jpg");
+        Image scaledImage = originalIcon.getImage().getScaledInstance(frame.getWidth(), frame.getHeight(), Image.SCALE_SMOOTH);
+        ImageIcon backgroundIcon = new ImageIcon(scaledImage);
+        JLabel backgroundLabel = new JLabel(backgroundIcon);
+
+        backgroundLabel.setSize(frame.getWidth(), frame.getHeight());
+        backgroundLabel.setBounds(0, 0, frame.getWidth(), frame.getHeight()); 
+
+        // 將背景圖片的 JLabel 添加到 JLayeredPane 的底層 
+        layeredPane.add(backgroundLabel, Integer.valueOf(-1));
+
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setBounds(0, 0, frame.getWidth(), 100);
         topPanel.setOpaque(false);
@@ -38,7 +52,7 @@ public class setupGUI {
         titleLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         topPanel.add(titleLabel, BorderLayout.WEST);
 
-        JButton rulesButton = new JButton("規則");
+        rulesButton = new JButton("規則");
         rulesButton.setFont(new Font("微軟正黑體", Font.BOLD, 20));
         rulesButton.setMargin(new Insets(5, 40, 5, 40));
         topPanel.add(rulesButton, BorderLayout.EAST);
@@ -57,6 +71,10 @@ public class setupGUI {
         characterButtons[1] = new JButton("p1");
         characterButtons[2] = new JButton("p2");
         characterButtons[3] = new JButton("p3");
+
+        for (int i = 0; i < characterSelected.length; i++) {
+            characterSelected[i] = false;
+        }
 
         for (int i = 0; i < characterButtons.length; i++) {
             JButton button = characterButtons[i];
@@ -87,12 +105,14 @@ public class setupGUI {
         bottomPanel.setBounds(0, frame.getHeight() - 100, frame.getWidth(), 100);
 
         statusLabel = new JLabel("所有角色被選定後將直接開始遊戲", SwingConstants.LEFT);
-        statusLabel.setFont(new Font("微軟正黑體", Font.BOLD, 20));
+        statusLabel.setFont(new Font("微軟正黑體", Font.BOLD, 25));
+        statusLabel.setForeground(Color.WHITE);
         bottomPanel.add(statusLabel, BorderLayout.WEST);
 
-        readyLabel = new JLabel("文字放這邊");
-        statusLabel.setFont(new Font("微軟正黑體", Font.BOLD, 20));
-        bottomPanel.add(readyLabel, BorderLayout.EAST);
+        waitReadyLabel = new JLabel("等待玩家到齊...");
+        waitReadyLabel.setFont(new Font("微軟正黑體", Font.BOLD, 30));
+        waitReadyLabel.setForeground(Color.WHITE);
+        bottomPanel.add(waitReadyLabel, BorderLayout.EAST);
 
         layeredPane.add(bottomPanel, JLayeredPane.DEFAULT_LAYER);
 
@@ -157,12 +177,159 @@ public class setupGUI {
             conn.send("updateReadyState;unready;" + characterButtons[index].getText());
         } else {
             conn.send("updateReadyState;ready;" + characterButtons[index].getText());
-            characterButtons[index].setBackground(Color.DARK_GRAY);
         }
     }
 
-    public void playerReady(Boolean ready) {
-        // 改視窗
+    // 當ready被傳進前端時，畫面更新會進行更新 
+    // 封包為 updateReadyState;ready;p1;0
+    public void playerReady(Boolean is_ready, String message, int id) {
+        System.out.println(id);
+        // 將數字id轉成字串，檢查該封包是不是自己傳
+        String idStr = "" + id;
+        String[] parts = message.split(";");
+
+        // 本人按下選擇角色按鈕時，要有的變化
+        if (idStr.equals(parts[3])) {
+            if (is_ready) {
+                switch (parts[2]) {
+                    case "killer" -> {
+                        characterButtons[0].setBackground(Color.RED);
+                        characterSelected[0] = true;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 0) continue;
+                            characterButtons[i].setEnabled(false);
+                        }
+                    }
+                    case "p1" -> {
+                        characterButtons[1].setBackground(Color.GREEN);
+                        characterSelected[1] = true;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 1) continue;
+                            characterButtons[i].setEnabled(false);
+                        }
+                    }
+                    case "p2" -> {
+                        characterButtons[2].setBackground(Color.GREEN);
+                        characterSelected[2] = true;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 2) continue;
+                            characterButtons[i].setEnabled(false);
+                        }
+                    }
+                    case "p3" -> {
+                        characterButtons[3].setBackground(Color.GREEN);
+                        characterSelected[3] = true;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 3) continue;
+                            characterButtons[i].setEnabled(false);
+                        }
+                    }
+                }
+            } 
+            else {
+                switch (parts[2]) {
+                    case "killer" -> {
+                        characterButtons[0].setBackground(Color.LIGHT_GRAY);
+                        characterSelected[0] = false;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 0) continue;
+                            characterButtons[i].setEnabled(true);
+                        }
+                    }
+                    case "p1" -> {
+                        characterButtons[1].setBackground(Color.LIGHT_GRAY);
+                        characterSelected[1] = false;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 1) continue;
+                            characterButtons[i].setEnabled(true);
+                        }
+                    }
+                    case "p2" -> {
+                        characterButtons[2].setBackground(Color.LIGHT_GRAY);
+                        characterSelected[2] = false;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 2) continue;
+                            characterButtons[i].setEnabled(true);
+                        }
+                    }
+                    case "p3" -> {
+                        characterButtons[3].setBackground(Color.LIGHT_GRAY);
+                        characterSelected[3] = false;
+                        for (int i = 0; i < characterButtons.length; i++) {
+                            if (i == 3) continue;
+                            characterButtons[i].setEnabled(true);
+                        }
+                    }
+                }
+            }
+        }
+        // 非本人按下按鈕應該要有的反應
+        if (!idStr.equals(parts[3])) {
+            if (is_ready) {
+                switch (parts[2]) {
+                    case "killer" -> {
+                        characterButtons[0].setBackground(Color.DARK_GRAY);
+                        characterButtons[0].setEnabled(false);
+                    }
+                    case "p1" -> {
+                        characterButtons[1].setBackground(Color.DARK_GRAY);
+                        characterButtons[1].setEnabled(false);
+                    }
+                    case "p2" -> {
+                        characterButtons[2].setBackground(Color.DARK_GRAY);
+                        characterButtons[2].setEnabled(false);
+                    }
+                    case "p3" -> {
+                        characterButtons[3].setBackground(Color.DARK_GRAY);
+                        characterButtons[3].setEnabled(false);
+                    }
+                }
+            }
+            else {
+                switch (parts[2]) {
+                    case "killer" -> {
+                        characterButtons[0].setBackground(Color.LIGHT_GRAY);
+                        characterButtons[0].setEnabled(true);
+                    }
+                    case "p1" -> {
+                        characterButtons[1].setBackground(Color.LIGHT_GRAY);
+                        characterButtons[1].setEnabled(true);
+                    }
+                    case "p2" -> {
+                        characterButtons[2].setBackground(Color.LIGHT_GRAY);
+                        characterButtons[2].setEnabled(true);
+                    }
+                    case "p3" -> {
+                        characterButtons[3].setBackground(Color.LIGHT_GRAY);
+                        characterButtons[3].setEnabled(true);
+                    }
+                }
+            }
+        }
+    }
+
+    public void startCountdown() {
+        for (int i = 0; i < characterButtons.length ; i++) {
+            characterButtons[i].setEnabled(false);
+            rulesButton.setEnabled(false);
+        }
+            
+        // 倒數計時
+        try {
+            waitReadyLabel.setText("準備開始...");
+            Thread.sleep(1500);
+          } catch (InterruptedException e) {
+            e.printStackTrace();
+          }
+        for (int i = 3; i > 0; i--) {
+            try {
+                Thread.sleep(1000);
+                waitReadyLabel.setFont(new Font("微軟正黑體", Font.BOLD, 50));
+                waitReadyLabel.setText("" + i);
+              } catch (InterruptedException e) {
+                e.printStackTrace();
+              }
+        }
     }
     public void updateStatus(String message) {
         statusLabel.setText(message);
