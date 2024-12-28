@@ -74,7 +74,7 @@ public class Server implements Comm.TcpServerCallback {
       }
     } 
     // 開始遊戲，告訴前端遊戲開始
-    server.broadcast("gameStart");
+    server.broadcast("startLoading");
     // 4.5秒後開始遊戲
     try {
       Thread.sleep(4500);
