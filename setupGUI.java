@@ -2,6 +2,8 @@ import Comm.TcpClient;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 
 
 
@@ -116,49 +118,131 @@ public class setupGUI {
 
         layeredPane.add(bottomPanel, JLayeredPane.DEFAULT_LAYER);
 
-        // 規則面板
-        JPanel rulesPanel = new JPanel();
-        rulesPanel.setLayout(new BorderLayout());
-        rulesPanel.setBounds(frame.getWidth() / 2 - 200, frame.getHeight() / 2 - 150, 400, 300);
-        rulesPanel.setBackground(new Color(100, 0, 0, 150));
-        rulesPanel.setBorder(BorderFactory.createTitledBorder("遊戲規則"));
-        JLabel rulesLabel = new JLabel("<html>遊戲規則:<br>1. 選擇角色<br>2. 當所有玩家準備完畢後開始遊戲</html>");
-        rulesPanel.add(rulesLabel, BorderLayout.CENTER);
-        rulesPanel.setVisible(false);
+ 
 
-        layeredPane.add(rulesPanel, JLayeredPane.PALETTE_LAYER);
+// 規則面板
+JPanel rulesPanel = new JPanel();
+rulesPanel.setLayout(new BoxLayout(rulesPanel, BoxLayout.Y_AXIS)); // 替代原本的 BorderLayout
 
-        // 添加角色選擇事件
-        for (int i = 0; i < characterButtons.length; i++) {
-            int index = i;
-            characterButtons[i].addActionListener(_ -> {
-                // 設定選擇的角色
-                characterSelected[index] = true;
-                String selectedCharacter = characterButtons[index].getText(); // 取得選中的角色名稱
-        
-                // 發送選中的角色給伺服器
-                try {
-                    // 只發送一次更新角色的訊息，根據選擇的角色來傳遞
-                    conn.send("updateIfChoseState:"+selectedCharacter);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-        
-                // 顯示選擇的角色名稱
-                imageLabel.setText("選擇的角色: " + selectedCharacter);
-            });
-        }
-        
-        // 規則按鈕事件
-        rulesButton.addActionListener(_ -> rulesPanel.setVisible(true));
+TitledBorder titledBorder = BorderFactory.createTitledBorder("遊戲規則 再按一次規則關閉");
+titledBorder.setTitleColor(Color.BLACK); // 設定標題文字顏色為白色
+rulesPanel.setBorder(titledBorder);
 
-        // 規則面板點擊事件
-        rulesPanel.addMouseListener(new MouseAdapter() {
+// 創建規則內容
+JLabel rulesLabel = new JLabel("<html>"
+    + "1. 如何開始：所有玩家準備完畢後開始遊戲<br>"
+    + "2. 遊玩方式：使用WASD進行移動<br>"
+    + "&nbsp;&nbsp;&nbsp;(1) Killer：<br>"
+    + "&nbsp;&nbsp;&nbsp;砍人 -> 滑鼠左鍵<br>"
+    + "&nbsp;&nbsp;&nbsp;將倒地的人抱起-> Space<br>"
+    + "&nbsp;&nbsp;&nbsp;將抱起來的人掛上架子 -> Space<br>"  
+    + "&nbsp;&nbsp;&nbsp;(2)人類：<br>"
+    + "&nbsp;&nbsp;&nbsp;開門、翻版子、翻窗 -> Space<br>"
+    + "&nbsp;&nbsp;&nbsp;救人、開門、修理發電機 -> 滑鼠左鍵<br>"
+    + "3. 遊玩規則：<br>"
+    + "&nbsp;&nbsp;&nbsp;(1) Killer：擊殺人類或將他們掛在架子上<br>"
+    + "&nbsp;&nbsp;&nbsp;(2) 與地圖物件互動來躲避Killer，人類躲避Killer的同時修理發電機使大門通電後逃脫<br>"
+    + "4. 如何逃生：修理發電機到一定數量，即可使大門通電打開<br>"
+    + "5. 勝利條件：<br>"
+    + "&nbsp;&nbsp;&nbsp;(1) (Killer) Killer需殺死兩人以上<br>"
+    + "&nbsp;&nbsp;&nbsp;(2) (人類)   人類逃出兩人<br>"
+    + "</html>");
+rulesLabel.setFont(new Font("微軟正黑體", Font.BOLD, 16));
+rulesLabel.setOpaque(false);
+
+// 添加規則內容到規則面板
+rulesPanel.add(rulesLabel); // 添加彈性空間
+rulesPanel.setPreferredSize(new Dimension(1000, 600));
+rulesPanel.setVisible(true);
+
+// 設置滾動面板
+JScrollPane scrollPane = new JScrollPane();
+scrollPane.setPreferredSize(new Dimension(500, 300)); // 滾動面板尺寸 
+scrollPane.setViewportView(rulesPanel);
+scrollPane.getViewport().setOpaque(true); // 視口透明
+scrollPane.setBorder(null); // 不設邊框
+scrollPane.setVisible(false); // 初始時滾動面板不可見
+
+// 自定義捲動條
+        JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
+        JScrollBar horizontalScrollBar = scrollPane.getHorizontalScrollBar();
+        verticalScrollBar.setUI(new BasicScrollBarUI() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                rulesPanel.setVisible(false);
+            protected void configureScrollBarColors() {
+                this.thumbColor = new Color(70, 130, 180);  // 設定滑塊顏色
+                this.thumbHighlightColor = new Color(100, 150, 200); // 設定滑塊亮點顏色
+                this.thumbDarkShadowColor = new Color(50, 100, 150);  // 設定滑塊暗影顏色
+                this.trackColor = new Color(200, 200, 255);  // 設定捲動條軌道顏色
+            }
+
+            @Override
+            protected JButton createDecreaseButton(int orientation) {
+                JButton button = super.createDecreaseButton(orientation);
+                button.setBackground(new Color(100, 100, 255));
+                return button;
+            }
+
+            @Override
+            protected JButton createIncreaseButton(int orientation) {
+                JButton button = super.createIncreaseButton(orientation);
+                button.setBackground(new Color(100, 100, 255));
+                return button;
             }
         });
+
+        // 自定義水準捲動條
+        horizontalScrollBar.setUI(new BasicScrollBarUI() {
+            @Override
+            protected void configureScrollBarColors() {
+                this.thumbColor = new Color(70, 130, 180);  // 設定滑塊顏色
+                this.thumbHighlightColor = new Color(100, 150, 200); // 設定滑塊亮點顏色
+                this.thumbDarkShadowColor = new Color(50, 100, 150);  // 設定滑塊暗影顏色
+                this.trackColor = new Color(200, 200, 255);  // 設定捲動條軌道顏色
+            }
+
+            @Override
+            protected JButton createDecreaseButton(int orientation) {
+                JButton button = super.createDecreaseButton(orientation);
+                button.setBackground(new Color(100, 100, 255));
+                return button;
+            }
+
+            @Override
+            protected JButton createIncreaseButton(int orientation) {
+                JButton button = super.createIncreaseButton(orientation);
+                button.setBackground(new Color(100, 100, 255));
+                return button;
+            }
+        });
+
+// 添加滾動面板到 LayeredPane
+layeredPane.add(scrollPane, JLayeredPane.DEFAULT_LAYER);
+scrollPane.setBounds(
+    (frame.getWidth() - 500) / 2, // 水平居中
+    (frame.getHeight() - 300) / 2, // 垂直居中
+    500, // 寬度
+    300  // 高度
+);
+
+// 規則按鈕事件
+rulesButton.addMouseListener(new MouseAdapter() {
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (scrollPane.isVisible()) {
+            scrollPane.setVisible(false); // 隱藏規則面板
+        } else {
+            int x = (frame.getWidth() - 500) / 2;
+            int y = (frame.getHeight() - 300) / 2;
+            scrollPane.setBounds(x, y, 500, 300);
+            scrollPane.setVisible(true); // 顯示規則面板
+        }
+        scrollPane.revalidate();
+        scrollPane.repaint();
+    }
+});
+
+
+
 
         // 退出按鍵事件
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
@@ -167,6 +251,13 @@ public class setupGUI {
             }
             return false;
         });
+
+        topPanel.setOpaque(false);
+        mainPanel.setOpaque(false);
+        rolePanel.setOpaque(false);
+        imagePanel.setOpaque(false);
+        bottomPanel.setOpaque(false);
+        rulesPanel.setOpaque(false);
 
         // 顯示視窗
         frame.setVisible(true);
@@ -331,9 +422,4 @@ public class setupGUI {
               }
         }
     }
-    public void updateStatus(String message) {
-        statusLabel.setText(message);
-    }
-    
-  
 }
