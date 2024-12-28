@@ -169,7 +169,6 @@ public class setupGUI {
     // 當ready被傳進前端時，畫面更新會進行更新 
     // 封包為 updateReadyState;ready;p1;0
     public void playerReady(Boolean is_ready, String message, int id) {
-        System.out.println(id);
         // 將數字id轉成字串，檢查該封包是不是自己傳
         String idStr = "" + id;
         String[] parts = message.split(";");

@@ -26,8 +26,12 @@ public class Client implements Comm.TcpClientCallback {
       } catch (InterruptedException e) {
         e.printStackTrace();
       }
+    }   
+    
+    synchronized (this) {
+      initialGUI = new setupGUI(client);
+      notifyAll();
     }
-    initialGUI = new setupGUI(client);
     scanner.close();
   }
 
@@ -38,6 +42,18 @@ public class Client implements Comm.TcpClientCallback {
     if (message.startsWith("id")) {
       String idStr = parts[1];
       id = Integer.parseInt(idStr);
+    }
+
+    // 使用鎖來確保initialGUI被初始化後再進行處理 
+    synchronized (this) {
+      // 等待initialGUI被初始化
+      while (initialGUI == null) {
+        try {
+            wait();
+        } catch (InterruptedException e) {
+          Thread.currentThread().interrupt();
+        }
+      }
     }
     
     // 按下更新的角色按鈕後，會獲得 updateReadyState;ready;p1;0 的封包
