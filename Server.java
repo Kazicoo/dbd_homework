@@ -5,6 +5,7 @@ public class Server implements Comm.TcpServerCallback {
   private int readyCount = 0;
   private String[] chars = {"killer", "p1", "p2", "p3"};
   private boolean[] characterSelected = new boolean[4];
+  private int totalPlayers = 0;
   
   public static void main(String[] args) {
     try {
@@ -45,11 +46,14 @@ public class Server implements Comm.TcpServerCallback {
         server.send(id, "updateReadyState;ready;" + chars[i] + ";" + (id - 1));
       }
     }
+    totalPlayers ++;
+    server.broadcast("totalPlayers;" + (totalPlayers));
   }
 
   @Override
   public void onDisconnect(int id) {
     System.out.println("Client disconnected: " + id);
+    totalPlayers --;
   }
 
   void waitGameStart () {
