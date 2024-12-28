@@ -1,10 +1,10 @@
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.*;
 import java.util.Random;
+import javax.swing.*;
 
-public class game{
-    public game() {
+public class ClientGame{
+    public ClientGame() {
         JFrame frame = new JFrame("迷途逃生");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setUndecorated(true);
