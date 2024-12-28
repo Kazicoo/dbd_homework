@@ -54,6 +54,11 @@ public class Client implements Comm.TcpClientCallback {
         }
       }
     }
+
+    if (message.startsWith("totalPlayers")) {
+      int totalPlayers = Integer.parseInt(parts[1]);
+      initialGUI.updateTotalPlayers(totalPlayers);
+    }
     
     // 按下更新的角色按鈕後，會獲得 updateReadyState;ready;p1;0 的封包
     // 主視窗的更新畫面

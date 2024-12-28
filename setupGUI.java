@@ -271,6 +271,17 @@ rulesButton.addMouseListener(new MouseAdapter() {
         }
     }
 
+    public void updateTotalPlayers(int totalPlayers) {
+        if (totalPlayers != 4) {
+            waitReadyLabel.setText("等待玩家到齊...("+ (totalPlayers) +"/4)");
+        }
+        else {
+            waitReadyLabel.setText("伺服器人數已達上限4人! 大家都選好角色後即會開始遊戲");
+            waitReadyLabel.setFont(new Font("微軟正黑體", Font.BOLD, 40));
+            waitReadyLabel.setForeground(Color.RED);
+        }
+    }
+
     // 當ready被傳進前端時，畫面更新會進行更新 
     // 封包為 updateReadyState;ready;p1;0
     public void playerReady(Boolean is_ready, String message, int id) {
