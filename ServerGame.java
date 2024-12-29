@@ -1,11 +1,9 @@
-import Comm.TcpServer;
 import java.util.Random;
 
 public class ServerGame {
-    private TcpServer conn;
-    private Server server;
+    private final Server server;
     private int[] idRole = new int[4];
-    private ServerPlayer players[] = new ServerPlayer[4];
+    private final ServerPlayer players[] = new ServerPlayer[4];
     Random rand = new Random();
 
     public ServerGame(Server server) {
