@@ -1,8 +1,8 @@
-public class serverPlayer {
+public class ServerPlayer {
     private int playerId;          
     private int relativeLocation;   
 
-    public serverPlayer(int id) {
+    public ServerPlayer(int id) {
         this.playerId = id;
         this.relativeLocation = -1; 
     }
