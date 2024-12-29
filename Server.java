@@ -3,11 +3,11 @@ import java.io.*;
 
 public class Server implements Comm.TcpServerCallback { 
   private int readyCount = 0;
-  private String[] chars = {"killer", "p1", "p2", "p3"};
-  private boolean[] characterSelected = new boolean[4];
-  private int[] idRole = new int[4];
+  private final String[] chars = {"killer", "p1", "p2", "p3"};
+  private final boolean[] characterSelected = new boolean[4];
+  private final int[] idRole = new int[4];
   private int totalPlayers = 0;
-  private Comm.TcpServer server;
+  private final Comm.TcpServer server;
   private static ServerGame serverGame;
     
     public static void main(String[] args) {
