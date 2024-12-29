@@ -5,6 +5,7 @@ public class ServerGame {
     private Player players[] = new Player[4];
     Random rand = new Random();
 
+    //處理分配玩家出生點
     public void loadingPlayerLocation(){
         int count = 0;
 
@@ -28,6 +29,36 @@ public class ServerGame {
             if(isValid){
                 players[count].relativeLocation = relativeLocation;
                 count ++;
+            }
+        }
+    }
+
+    //處理分配發動機出生點
+    public void loadingGeneratorLocation(){
+        int count = 0;
+        int[] generatorLocations = new int[4];
+
+        while(count < 4){
+            int relativeLocation = rand.nextInt(9); 
+            boolean isValid = true;
+
+            for(int i = 0; i < count; i++){
+                if(generatorLocations[i] == relativeLocation){ 
+                    isValid = false;
+                    break;
+                }
+            }
+    
+            for(int i = 0; i < 4; i++){  
+                if(players[i].relativeLocation == relativeLocation){
+                    isValid = false;
+                    break;
+                }
+            }
+    
+            if(isValid){
+                generatorLocations[count] = relativeLocation;
+                count++;
             }
         }
     }
