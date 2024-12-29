@@ -2,7 +2,7 @@ import java.util.Random;
 
 public class ServerGame {
     private int[] area = {0,1,2,3,4,5,6,7,8};
-    private Player players[] = new Player[4];
+    private serverPlayer players[] = new serverPlayer[4];
     Random rand = new Random();
 
     //處理分配玩家出生點
