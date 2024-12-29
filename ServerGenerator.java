@@ -1,6 +1,6 @@
 public class ServerGenerator {       
     private int relativeLocation;  
-    private int generatorID; 
+    private final int generatorID; 
 
     public ServerGenerator(int id) {
         this.generatorID = id;
@@ -13,5 +13,9 @@ public class ServerGenerator {
 
     public int getRelativeLocation() {
         return this.relativeLocation;
+    }
+
+    public int getId() {
+        return this.generatorID;
     }
 }

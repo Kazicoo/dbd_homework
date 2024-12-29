@@ -1,5 +1,5 @@
 public class ServerPlayer {
-    private int playerId;          
+    private final int playerId;          
     private int relativeLocation;   
 
     public ServerPlayer(int id) {
