@@ -3,7 +3,7 @@ import java.util.Random;
 public class ServerGame {
     private final Server server;
     private int[] idRole = new int[4];
-    private final ServerPlayer players[] = new ServerPlayer[4];
+    private final serverPlayer players[] = new serverPlayer[4];
     Random rand = new Random();
 
     public ServerGame(Server server) {
@@ -36,7 +36,7 @@ public class ServerGame {
             }
         }
         int index = 0;
-        for (ServerPlayer player : players) {
+        for (serverPlayer player : players) {
             server.broadcastToClient("GameObject;player;" + player.getRelativeLocation() + ";" + idRole[index]);
             index++;
         }

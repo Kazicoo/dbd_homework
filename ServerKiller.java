@@ -1,4 +1,4 @@
-public class ServerKiller extends ServerPlayer {
+public class ServerKiller extends serverPlayer {
     
     public ServerKiller(int id) {
         super(id);

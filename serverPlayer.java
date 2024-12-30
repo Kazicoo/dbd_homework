@@ -1,7 +1,7 @@
-public class ServerPlayer extends ServerGameObject {
+public class serverPlayer extends ServerGameObject {
     private int relativeLocation;   
 
-    public ServerPlayer(int id) {
+    public serverPlayer(int id) {
         super(id);
         this.relativeLocation = -1; 
     }
