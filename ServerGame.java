@@ -37,7 +37,7 @@ public class ServerGame {
             }
         }
         int index = 0;
-        for (serverPlayer player : players) {
+        for (ServerPlayer player : players) {
             server.broadcastToClient("initGameObject;player;" + player.getRelativeLocation() + ";" + idRole[index]);
             index++;
         }
