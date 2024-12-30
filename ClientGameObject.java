@@ -1,8 +1,8 @@
-public class ServerGameObject {
+public class ClientGameObject {
     private final int id;
     private int relativeLocation;  
 
-    public ServerGameObject(int id) {
+    public ClientGameObject(int id) {
         this.id = id;
         this.relativeLocation = -1; 
     }
