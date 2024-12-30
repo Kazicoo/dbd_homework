@@ -6,7 +6,6 @@ import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 
 
-
     public class setupGUI {
         private boolean[] characterSelected = new boolean[4]; // Tracks character selection
         private JButton[] characterButtons = new JButton[4]; // Character buttons array
@@ -15,6 +14,7 @@ import javax.swing.plaf.basic.BasicScrollBarUI;
         private JLabel imageLabel; // Displays the selected character image or name
         private JLabel waitReadyLabel;
         private TcpClient conn;
+        private JFrame frame; // 主視窗
 
         // 建構子，初始化所有的GUI组件
         public setupGUI(TcpClient conn) {
@@ -77,6 +77,7 @@ import javax.swing.plaf.basic.BasicScrollBarUI;
         for (int i = 0; i < characterSelected.length; i++) {
             characterSelected[i] = false;
         }
+        
 
         for (int i = 0; i < characterButtons.length; i++) {
             JButton button = characterButtons[i];
@@ -429,9 +430,12 @@ rulesButton.addMouseListener(new MouseAdapter() {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            } 
+            }
+
         }
     }
+
+
 }
 
     

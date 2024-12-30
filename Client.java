@@ -1,11 +1,12 @@
 import java.io.*;
 import java.util.Scanner;
+import javax.swing.*;
 
 public class Client implements Comm.TcpClientCallback {
   private Comm.TcpClient client;
   private setupGUI initialGUI;
   private int id;
-  private ClientGame clientGame;
+  private ClientGame ClientGame;
 
   public static void main(String[] args) {  
     try {
@@ -65,10 +66,12 @@ public class Client implements Comm.TcpClientCallback {
     }
 
     if ("startLoading".equals(message)) {
-      initialGUI.startCountdown();
-      clientGame = new ClientGame();
+      if ("startLoading".equals(message)) {
+        initialGUI.startCountdown();
+        ClientGame = new ClientGame();
+      }
     }
-
+    
     System.out.println("Server sent: " + message);
   }
 
