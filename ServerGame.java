@@ -4,7 +4,7 @@ public class ServerGame {
     private final Server server;
     private int[] idRole = new int[4];
     private final ServerPlayer players[] = new ServerPlayer[4];
-    private ServerGenerator[] generators = new ServerGenerator[4];
+    private final ServerGenerator[] generators = new ServerGenerator[4];
     Random rand = new Random();
 
     public ServerGame(Server server) {
