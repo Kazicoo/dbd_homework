@@ -336,6 +336,13 @@
                     
                 }
             }
+            closeFrame();
+        }
 
+        public void closeFrame() {
+            if (frame != null) {
+                frame.dispose();
+                frame = null;
+            }
         }
     }
