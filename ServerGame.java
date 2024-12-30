@@ -3,6 +3,8 @@ import java.util.Random;
 public class ServerGame {
     private final Server server;
     private int[] idRole = new int[4];
+    private final ServerPlayer players[] = new ServerPlayer[4];
+    private ServerGenerator[] generators = new ServerGenerator[4];
     private final serverPlayer players[] = new serverPlayer[4];
     Random rand = new Random();
 
@@ -36,6 +38,8 @@ public class ServerGame {
             }
         }
         int index = 0;
+        for (ServerPlayer player : players) {
+            server.broadcastToClient("initGameObject;player;" + player.getRelativeLocation() + ";" + idRole[index]);
         for (serverPlayer player : players) {
             server.broadcastToClient("GameObject;player;" + player.getRelativeLocation() + ";" + idRole[index]);
             index++;
@@ -45,7 +49,6 @@ public class ServerGame {
     //處理分配發動機出生點
     public void loadingGeneratorLocation(){
         int count = 0;
-        ServerGenerator[] generators = new ServerGenerator[4];
 
         while (count < 4) {
             int relativeLocation = rand.nextInt(9); 
@@ -58,6 +61,7 @@ public class ServerGame {
                 }
             }
             if (isValid) {
+                generators[count] = new ServerGenerator(count);
                 generators[count].setRelativeLocation(relativeLocation);
                 count++;
             }
