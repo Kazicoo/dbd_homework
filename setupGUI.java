@@ -7,30 +7,30 @@ import javax.swing.plaf.basic.BasicScrollBarUI;
 
 
 
-public class setupGUI {
-    private boolean[] characterSelected = new boolean[4]; // Tracks character selection
-    private JButton[] characterButtons = new JButton[4]; // Character buttons array
-    private JButton rulesButton;
-    private JLabel statusLabel; // Displays the number of ready players
-    private JLabel imageLabel; // Displays the selected character image or name
-    private JLabel waitReadyLabel;
-    private TcpClient conn;
+    public class setupGUI {
+        private boolean[] characterSelected = new boolean[4]; // Tracks character selection
+        private JButton[] characterButtons = new JButton[4]; // Character buttons array
+        private JButton rulesButton;
+        private JLabel statusLabel; // Displays the number of ready players
+        private JLabel imageLabel; // Displays the selected character image or name
+        private JLabel waitReadyLabel;
+        private TcpClient conn;
 
-    // 建構子，初始化所有的GUI组件
-    public setupGUI(TcpClient conn) {
-        this.conn = conn;
-        // 生成主視窗
-        JFrame frame = new JFrame("迷途逃生");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setUndecorated(true);
+        // 建構子，初始化所有的GUI组件
+        public setupGUI(TcpClient conn) {
+            this.conn = conn;
+            // 生成主視窗
+            JFrame frame = new JFrame("迷途逃生");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setUndecorated(true);
 
-        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice device = env.getDefaultScreenDevice();
-        device.setFullScreenWindow(frame);
+            GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            GraphicsDevice device = env.getDefaultScreenDevice();
+            device.setFullScreenWindow(frame);
 
-        JLayeredPane layeredPane = new JLayeredPane();
-        layeredPane.setLayout(null);
-        frame.add(layeredPane);
+            JLayeredPane layeredPane = new JLayeredPane();
+            layeredPane.setLayout(null);
+            frame.add(layeredPane);
 
         // 創建背景圖片的 JLabel
         ImageIcon originalIcon = new ImageIcon("Graphic/GameBackGround.jpg");
@@ -407,8 +407,8 @@ rulesButton.addMouseListener(new MouseAdapter() {
                 }
             }
         }
+        
     }
-
     public void startCountdown() {
         for (int i = 0; i < characterButtons.length ; i++) {
             characterButtons[i].setEnabled(false);
@@ -419,17 +419,19 @@ rulesButton.addMouseListener(new MouseAdapter() {
         try {
             waitReadyLabel.setText("準備開始...");
             Thread.sleep(1500);
-          } catch (InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
-          }
+        }
         for (int i = 3; i > 0; i--) {
             try {
-                Thread.sleep(1000);
                 waitReadyLabel.setFont(new Font("微軟正黑體", Font.BOLD, 50));
                 waitReadyLabel.setText("" + i);
-              } catch (InterruptedException e) {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
                 e.printStackTrace();
-              }
+            } 
         }
     }
 }
+
+    
