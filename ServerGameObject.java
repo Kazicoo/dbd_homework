@@ -1,5 +1,5 @@
 public class ServerGameObject {
-    private final int id;
+    private int id;
 
     public ServerGameObject(int id) {
         this.id = id;
@@ -7,5 +7,9 @@ public class ServerGameObject {
 
     public int getId() {
         return id;
+    }
+    
+    public int setId(int id) {
+        return this.id = id;
     }
 }

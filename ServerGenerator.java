@@ -11,6 +11,6 @@ public class ServerGenerator extends ServerGameObject {
     }
 
     public int getRelativeLocation() {
-        return this.relativeLocation;
+        return relativeLocation;
     }
 }
