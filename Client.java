@@ -1,6 +1,6 @@
 import java.io.*;
 import java.util.Scanner;
-import javax.swing.*;
+import javax.swing.SwingUtilities;
 
 
 public class Client implements Comm.TcpClientCallback {
@@ -69,7 +69,10 @@ public class Client implements Comm.TcpClientCallback {
     if ("startLoading".equals(message)) {
       if ("startLoading".equals(message)) {
         initialGUI.startCountdown();
-        ClientGame = new ClientGame();
+        initialGUI.closeFrame();
+        SwingUtilities.invokeLater(() -> {
+          ClientGame = new ClientGame(client);
+        });
       }
     }
     

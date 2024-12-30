@@ -316,8 +316,8 @@
         public void startCountdown() {
             for (JButton characterButton : characterButtons) {
                 characterButton.setEnabled(false);
-                rulesButton.setEnabled(false);
             }
+            rulesButton.setEnabled(false);
                 
             // 倒數計時
             try {
@@ -336,7 +336,6 @@
                     
                 }
             }
-            closeFrame();
         }
 
         public void closeFrame() {

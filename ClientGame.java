@@ -1,11 +1,13 @@
+import Comm.TcpClient;
 import java.awt.*;
 import javax.swing.*;
 
 public class ClientGame {
-
+    private TcpClient conn;
     private JFrame frame;
 
-    public ClientGame() {
+    public ClientGame(TcpClient conn) {
+        this.conn = conn;
         initGame();
     }
 
@@ -44,9 +46,5 @@ public class ClientGame {
         frame.add(bottomPanel, BorderLayout.SOUTH);
 
         frame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(ClientGame::new);
     }
 }
