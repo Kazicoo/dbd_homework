@@ -18,7 +18,7 @@
         public setupGUI(TcpClient conn) {
             this.conn = conn;
             // 生成主視窗
-            JFrame frame = new JFrame("迷途逃生");
+            frame = new JFrame("迷途逃生");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setUndecorated(true);
 
@@ -314,8 +314,8 @@
         }
 
         public void startCountdown() {
-            for (int i = 0; i < characterButtons.length ; i++) {
-                characterButtons[i].setEnabled(false);
+            for (JButton characterButton : characterButtons) {
+                characterButton.setEnabled(false);
                 rulesButton.setEnabled(false);
             }
                 
