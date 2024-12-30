@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.Scanner;
+import javax.swing.*;
 
 
 public class Client implements Comm.TcpClientCallback {
@@ -38,18 +39,16 @@ public class Client implements Comm.TcpClientCallback {
   @Override
   public void onMessage(String message) {
     String[] parts = message.split(";");
-    // 如果message一開始是id的話，代表封包為id;<id; "0" | "1" | "2" | "3">的格式
+    
     if (message.startsWith("id")) {
       String idStr = parts[1];
       id = Integer.parseInt(idStr);
     }
 
-    // 使用鎖來確保initialGUI被初始化後再進行處理 
     synchronized (this) {
-      // 等待initialGUI被初始化
       while (initialGUI == null) {
         try {
-            wait();
+          wait();
         } catch (InterruptedException e) {
           Thread.currentThread().interrupt();
         }
@@ -61,14 +60,19 @@ public class Client implements Comm.TcpClientCallback {
       initialGUI.updateTotalPlayers(totalPlayers);
     }
     
-    // 按下更新的角色按鈕後，會獲得 updateReadyState;ready;p1;0 的封包
-    // 主視窗的更新畫面
     if (message.startsWith("updateReadyState")) {
       if ("ready".equals(parts[1])) initialGUI.playerReady(true, message, id);
       if ("unready".equals(parts[1])) initialGUI.playerReady(false, message, id);
     }
 
-    if ("startLoading".equals(message)) initialGUI.startCountdown();
+    if ("startLoading".equals(message)) {
+      SwingUtilities.invokeLater(() -> {
+       
+        
+        //  啟動 ClientGame
+        new ClientGame();
+      });
+    }
     
     System.out.println("Server sent: " + message);
   }
