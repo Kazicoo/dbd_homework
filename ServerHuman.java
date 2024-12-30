@@ -5,7 +5,11 @@ public class ServerHuman extends ServerPlayer {
         super(id);
     }
 
-    public int getHumanHealth() {
+    public int getHealth() {
         return this.health;
+    }
+
+    public int setHealth(int health) {
+        return this.health = health;
     }
 }

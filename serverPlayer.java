@@ -1,9 +1,8 @@
-public class ServerPlayer {
-    private final int playerId;          
+public class ServerPlayer extends ServerGameObject {
     private int relativeLocation;   
 
     public ServerPlayer(int id) {
-        this.playerId = id;
+        super(id);
         this.relativeLocation = -1; 
     }
 
@@ -17,6 +16,6 @@ public class ServerPlayer {
 
     @Override
     public String toString() {
-        return "Player{id=" + playerId + ", relativeLocation=" + relativeLocation + "}";
+        return "Player{id=" + getId() + ", relativeLocation=" + relativeLocation + "}";
     }
 }

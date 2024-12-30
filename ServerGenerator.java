@@ -1,9 +1,8 @@
-public class ServerGenerator {       
+public class ServerGenerator extends ServerGameObject {       
     private int relativeLocation;  
-    private final int generatorID; 
 
     public ServerGenerator(int id) {
-        this.generatorID = id;
+        super(id);
         this.relativeLocation = -1; 
     }
 
@@ -13,9 +12,5 @@ public class ServerGenerator {
 
     public int getRelativeLocation() {
         return this.relativeLocation;
-    }
-
-    public int getId() {
-        return this.generatorID;
     }
 }
