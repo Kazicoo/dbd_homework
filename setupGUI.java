@@ -333,20 +333,9 @@
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-<<<<<<< HEAD
                     
                 }
-=======
-                } 
             }
-<<<<<<< HEAD
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
->>>>>>> 963dc9905dedb5d144fe7c8079cd98436752f9cf
-            }
-=======
->>>>>>> 334bfb2d406832b97437d09166b358bb32fcea4c
+
         }
     }
