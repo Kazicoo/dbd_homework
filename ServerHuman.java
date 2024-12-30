@@ -1,4 +1,4 @@
-public class ServerHuman extends serverPlayer {
+public class ServerHuman extends ServerPlayer {
     private int health = 2; 
 
     public ServerHuman(int id) {
