@@ -333,9 +333,17 @@
                     waitReadyLabel.setText("" + i);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+<<<<<<< HEAD
                     
                 }
+=======
+                } 
             }
-          
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+>>>>>>> 963dc9905dedb5d144fe7c8079cd98436752f9cf
+            }
         }
     }
