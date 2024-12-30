@@ -64,7 +64,7 @@ public class ServerGame {
             }
         }
         for (ServerGenerator generator : generators) {
-            server.broadcastToClient("GameObject;generator;" + generator.getRelativeLocation() + ";" + generator.getId());
+            server.broadcastToClient("initGameObject;generator;" + generator.getRelativeLocation() + ";" + generator.getId());
         }
     }
 }
