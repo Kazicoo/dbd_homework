@@ -81,7 +81,7 @@ public class Server implements Comm.TcpServerCallback {
     // 開始遊戲，告訴前端遊戲開始
     server.broadcast("startLoading");
   }
-
+  
   public void updateReadyState (String message, int id) {
     // 主視窗負責處理是否準備的邏輯處理
     // 判斷能不能準備，此時收到的訊息封包大概是兩組
