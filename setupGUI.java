@@ -4,7 +4,6 @@
     import javax.swing.*;
 
 
-
     public class setupGUI {
         private boolean[] characterSelected = new boolean[4]; // Tracks character selection
         private JButton[] characterButtons = new JButton[4]; // Character buttons array
@@ -13,6 +12,7 @@
         private JLabel imageLabel; // Displays the selected character image or name
         private JLabel waitReadyLabel;
         private TcpClient conn;
+        private JFrame frame; // 主視窗
 
         // 建構子，初始化所有的GUI组件
         public setupGUI(TcpClient conn) {
@@ -160,6 +160,11 @@
 
             // 顯示視窗
             frame.setVisible(true);
+        }
+        public void dispose() {
+            if (frame != null) {
+                frame.dispose();
+            }
         }
 
         private void handleCharacterSelection(int index) {
@@ -328,6 +333,7 @@
                     waitReadyLabel.setText("" + i);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
+                    
                 }
             }
           

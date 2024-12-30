@@ -67,9 +67,11 @@ public class Client implements Comm.TcpClientCallback {
 
     if ("startLoading".equals(message)) {
       SwingUtilities.invokeLater(() -> {
-       
-        
-        //  啟動 ClientGame
+        if (initialGUI != null) {
+          // 關閉 setupGUI 視窗
+          initialGUI.dispose();
+        }
+        // 啟動 ClientGame
         new ClientGame();
       });
     }
