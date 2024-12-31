@@ -15,6 +15,19 @@ public class ServerGame {
     //處理分配玩家出生點
     public void loadingPlayerLocation(){
         int count = 0;
+        int[][] positionMap = new int[9][2];
+        positionMap[0] = new int[]{1000, 1000};
+        positionMap[1] = new int[]{1000, 1000};
+        positionMap[2] = new int[]{1000, 1000};
+        positionMap[3] = new int[]{1000, 1000};
+        positionMap[4] = new int[]{1000, 1000};
+        positionMap[5] = new int[]{1000, 1000};
+        positionMap[6] = new int[]{1000, 1000};
+        positionMap[7] = new int[]{1000, 1000};
+        positionMap[8] = new int[]{1000, 1000};
+
+        int[] usedPosition = new int[4];
+
         players[0] = new ServerKiller(idRole[0]);
 
         for (int i = 1; i < 4; i++) {
@@ -26,19 +39,23 @@ public class ServerGame {
             boolean isValid = true;
 
             for (int i = 0; i < count; i++) {
-                if (players[i].getRelativeLocation() == position) {
+                if (usedPosition[i] == position) {
                     isValid = false;
                     break;
                 }
             }
             if (isValid) {
-                players[count].setRelativeLocation(position);
+                usedPosition[count] = position;
+                players[count].setX(positionMap[position][0]);
+                players[count].setY(positionMap[position][1]);
                 count++;
             }
         }
         int index = 0;
         for (ServerPlayer player : players) {
-            server.broadcastToClient("initGameObject;player;" + player.getRelativeLocation() + ";" + idRole[index]);
+            server.broadcastToClient("initGameObject;player;" + 
+            player.getX() + ";" + player.getX() + ";" +
+            idRole[index]);
             index++;
         }
     }
