@@ -305,6 +305,12 @@
                                 characterButtons[i].setEnabled(false);
                             }
                             // 殺手圖案
+                            ImageIcon killerImage = new ImageIcon("Graphic/p0.PNG");
+                            Image image = killerImage.getImage();
+                            Image scaledImage = image.getScaledInstance(700, 700, Image.SCALE_SMOOTH);
+                            killerImage = new ImageIcon(scaledImage);
+                            imageLabel.setIcon(killerImage); 
+                            imageLabel.setText("");  
                         }
                         case "p1" -> {
                             characterButtons[1].setBackground(Color.GREEN);
@@ -343,6 +349,8 @@
                                 characterButtons[i].setEnabled(true);
                             }
                             // 殺手圖案撤銷
+                            imageLabel.setIcon(null); 
+                            imageLabel.setText("請選擇角色");
                         }
                         case "p1" -> {
                             characterButtons[1].setBackground(Color.LIGHT_GRAY);
