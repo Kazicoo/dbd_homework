@@ -52,10 +52,12 @@ public class ClientGame {
     // update;generator;fixed;2
     // update;totalGenerator;3
     public void updateheaith(int totalhealth) {
+        JLabel healthLabel = new JLabel("血量: "+totalhealth);
+        healthLabel.add(healthLabel, BorderLayout.WEST);
+        healthLabel.setFont(new Font("Serif", Font.PLAIN, 20));
         if(totalhealth == 2) {
-            JLabel healthLabel = new JLabel("血量: I I");
-            healthLabel.add(healthLabel, BorderLayout.WEST);
-            healthLabel.setFont(new Font("Serif", Font.PLAIN, 20));
+
+        }if(totalhealth == 1) {
             
         }
         else if (totalhealth == 0) {
@@ -64,5 +66,16 @@ public class ClientGame {
             
         }
     }
-
+    private final String[] chars = {"killer", "p1", "p2", "p3"};
+    private int count = 0;
+    // 收到initGameObject時 count+1
+    public void initGameObject(String[] part, int id) {
+    count++;
+    // 每一次都判斷 part[4].equals(""+id)
+    if (part[4].equals("" + id)) {
+        // 成立的話 就讓role = chars[count];
+        String role = chars[count];
+        // 這裡可以加入其他處理邏輯
+        }
+    }
 }
