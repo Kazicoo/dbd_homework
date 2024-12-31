@@ -1,14 +1,19 @@
 import Comm.TcpClient;
 import java.awt.*;
+import java.awt.event.*;
 import javax.swing.*;
 
-public class ClientGame {
+public class ClientGame implements ActionListener{
     private TcpClient conn;
     private JFrame frame;
+    private final ClientPlayer clientPlayers[] = new ClientPlayer[4];
+    private final ClientGenerator generators[] = new ClientGenerator[4];
+    private Image generatorImage;
 
     public ClientGame(TcpClient conn) {
         this.conn = conn;
         initGame();
+        waitGameStart();
     }
 
     public void initGame() {
@@ -47,4 +52,48 @@ public class ClientGame {
 
         frame.setVisible(true);
     }
+
+    public void waitGameStart() {
+        synchronized (this) {
+            while (generatorTotal < 4 && playerTotal < 4 && status) {
+                try {
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
+        conn.send("startGame");
+    }
+    // public void drawPlayer() {
+    //     ImageIcon playerImage = new ImageIcon("");
+    // }
+
+    int generatorTotal = 0;
+    public void initGenerator(String message) {
+        if ()
+        JButton generatorButton = new JButton();
+        generatorButton.setPreferredSize(new Dimension(50,120));
+
+        generatorButton.addMouseListener(new MouseAdapter() {
+            if (SwingUtilities.isLeftMouseButton(e)) {
+                //傳送玩家左鍵點擊的封包給伺服器，伺服器判斷玩家是否在發電機可操作範圍內。
+                conn.send("");
+                
+            }
+        });
+        generatorTotal++;
+    }
+    public void updateGenerator() {
+
+    }
+
+    int playerTotal = 0;
+    public void initPlayer(String message) {
+        
+        playerTotal++;
+    }
+    
+
 }
