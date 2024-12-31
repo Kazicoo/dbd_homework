@@ -22,17 +22,17 @@ public class ServerGame {
         }
 
         while(count < 4){
-            int relativeLocation = rand.nextInt(9);
+            int position = rand.nextInt(9);
             boolean isValid = true;
 
             for (int i = 0; i < count; i++) {
-                if (players[i].getRelativeLocation() == relativeLocation) {
+                if (players[i].getRelativeLocation() == position) {
                     isValid = false;
                     break;
                 }
             }
             if (isValid) {
-                players[count].setRelativeLocation(relativeLocation);
+                players[count].setRelativeLocation(position);
                 count++;
             }
         }
@@ -48,18 +48,18 @@ public class ServerGame {
         int count = 0;
 
         while (count < 4) {
-            int relativeLocation = rand.nextInt(9); 
+            int position = rand.nextInt(9); 
             boolean isValid = true;
 
             for (int i = 0; i < count; i++) {
-                if (generators[i].getRelativeLocation() == relativeLocation) { 
+                if (generators[i].getRelativeLocation() == position) { 
                     isValid = false;
                     break;
                 }
             }
             if (isValid) {
                 generators[count] = new ServerGenerator(count);
-                generators[count].setRelativeLocation(relativeLocation);
+                generators[count].setRelativeLocation(position);
                 count++;
             }
         }
