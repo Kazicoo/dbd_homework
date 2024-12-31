@@ -18,11 +18,19 @@ public class ClientGameObject {
         this.relativeLocationY = y;
     }
 
+    public void setX(int x) {
+        this.relativeLocationX = x;
+    }
+
+    public void setY(int y) {
+        this.relativeLocationY = y;
+    }
+
     public int getX() {
-        return relativeLocationX;
+        return this.relativeLocationX;
     }
 
     public int getY() {
-        return relativeLocationY;
+        return this.relativeLocationY;
     }
 }

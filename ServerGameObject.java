@@ -18,6 +18,14 @@ public class ServerGameObject {
         this.relativeLocationY = y;
     }
 
+    public void setX(int x) {
+        this.relativeLocationX = x;
+    }
+
+    public void setY(int y) {
+        this.relativeLocationY = y;
+    }
+
     public int getX() {
         return relativeLocationX;
     }
