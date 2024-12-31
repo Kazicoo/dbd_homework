@@ -3,10 +3,7 @@
     import java.awt.event.*;
     import javax.swing.*;
     import javax.swing.border.*;       
-    import java.awt.*;                  
-    import java.awt.event.*;            
     import javax.swing.plaf.basic.*;   
-    import java.awt.Color;              
 
 
     public class setupGUI {
