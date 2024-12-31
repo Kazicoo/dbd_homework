@@ -75,6 +75,19 @@ public class Client implements Comm.TcpClientCallback {
         });
       }
     }
+    if (message.startsWith("initGameObject")) {
+      int initGameObjectCount = 0;
+      while (initGameObjectCount < 9) {
+        if ("player".equals(parts[1])) ClientGame.initPlayer(message);
+        //  ClientPlayer players = new ClientPlayer(initGameObjectCount) ;
+        //  players.setRelativeLocation(Integer.parseInt(parts[2]),Integer.parseInt(parts[3]));
+        //  players.getId(); 
+        if ("generator".equals(parts[1])) ClientGame.initGenerator(message);
+          // generator.setRelativeLocation(Integer.parseInt(parts[2]),Integer.parseInt(parts[3]));
+          // generator.getId();
+      }
+    }
+
     
     System.out.println("Server sent: " + message);
   }
