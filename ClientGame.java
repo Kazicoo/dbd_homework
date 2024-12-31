@@ -6,8 +6,8 @@ import javax.swing.*;
 public class ClientGame implements ActionListener{
     private TcpClient conn;
     private JFrame frame;
-    private final ClientPlayer clientPlayers[] = new ClientPlayer[4];
-    private final ClientGenerator generators[] = new ClientGenerator[4];
+    private final ClientPlayer clientPlayers[];
+    private final ClientGenerator generators[];
     private Image generatorImage;
 
     public ClientGame(TcpClient conn) {
@@ -72,18 +72,31 @@ public class ClientGame implements ActionListener{
 
     int generatorTotal = 0;
     public void initGenerator(String message) {
-        if ()
+        String[] parts = message.split(";");
+
+        generators = new ClientGenerator[generatorTotal];
+
+        for (int i = 0;i < generatorTotal;i++) {
+            generators[i] = new ClientGenerator();
+
+            generators[i].setRelativeLocation(Integer.parseInt(parts[2]),Integer.parseInt(parts[3]));
+            
+            JButton generatorButton = new JButton("Generator " + generators[i].getId());
+            generatorButton.setPreferredSize(new Dimension(generators[i].getX(),generators[i].getY()));
+            
+        generatorTotal++;
+        }
+        
         JButton generatorButton = new JButton();
         generatorButton.setPreferredSize(new Dimension(50,120));
 
         generatorButton.addMouseListener(new MouseAdapter() {
             if (SwingUtilities.isLeftMouseButton(e)) {
-                //傳送玩家左鍵點擊的封包給伺服器，伺服器判斷玩家是否在發電機可操作範圍內。
+                //傳送玩家左鍵點擊發電機的封包給伺服器，伺服器判斷玩家是否在發電機可操作範圍內。
                 conn.send("");
                 
             }
         });
-        generatorTotal++;
     }
     public void updateGenerator() {
 
