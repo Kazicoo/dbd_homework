@@ -67,13 +67,11 @@ public class Client implements Comm.TcpClientCallback {
     }
 
     if ("startLoading".equals(message)) {
-      if ("startLoading".equals(message)) {
-        initialGUI.startCountdown();
-        initialGUI.closeFrame();
-        SwingUtilities.invokeLater(() -> {
+      initialGUI.startCountdown();
+      initialGUI.closeFrame();
+      SwingUtilities.invokeLater(() -> {
           ClientGame = new ClientGame(client);
-        });
-      }
+      }); 
     }
     
     
