@@ -23,10 +23,11 @@ public class ClientGame {
         int height = screenSize.height;
 
         // 上部面板
-        JPanel topPanel = new JPanel();
+        JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.setPreferredSize(new Dimension(width, height / 20));
         topPanel.setBackground(Color.WHITE);
         topPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+        
 
         // 中部面板
         JPanel middlePanel = new JPanel();
@@ -47,4 +48,21 @@ public class ClientGame {
 
         frame.setVisible(true);
     }
+    // update;health;1
+    // update;generator;fixed;2
+    // update;totalGenerator;3
+    public void updateheaith(int totalhealth) {
+        if(totalhealth == 2) {
+            JLabel healthLabel = new JLabel("血量: I I");
+            healthLabel.add(healthLabel, BorderLayout.WEST);
+            healthLabel.setFont(new Font("Serif", Font.PLAIN, 20));
+            
+        }
+        else if (totalhealth == 0) {
+            JOptionPane.showMessageDialog(frame, "You are dead!");
+            frame.setFont(new Font("Serif", Font.PLAIN, 20));
+            
+        }
+    }
+
 }
