@@ -154,7 +154,7 @@
 
             // 添加規則內容到規則面板
             rulesPanel.add(rulesLabel); // 添加彈性空間
-            rulesPanel.setPreferredSize(new Dimension(10000, 600));
+            rulesPanel.setPreferredSize(new Dimension(1000, 600));
             rulesPanel.setVisible(true);
 
             // 設置滾動面板
