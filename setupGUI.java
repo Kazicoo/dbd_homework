@@ -304,6 +304,7 @@
                                 if (i == 0) continue;
                                 characterButtons[i].setEnabled(false);
                             }
+                            // 殺手圖案
                         }
                         case "p1" -> {
                             characterButtons[1].setBackground(Color.GREEN);
@@ -340,6 +341,7 @@
                                 if (i == 0) continue;
                                 characterButtons[i].setEnabled(true);
                             }
+                            // 殺手圖案撤銷
                         }
                         case "p1" -> {
                             characterButtons[1].setBackground(Color.LIGHT_GRAY);
