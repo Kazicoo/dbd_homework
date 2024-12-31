@@ -311,8 +311,8 @@
                             for (int i = 0; i < characterButtons.length; i++) {
                                 if (i == 1) continue;
                                 characterButtons[i].setEnabled(false);
-                                
-                            }
+                                }
+
                         }
                         case "p2" -> {
                             characterButtons[2].setBackground(Color.GREEN);

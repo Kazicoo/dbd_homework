@@ -66,16 +66,17 @@ public class ClientGame {
             
         }
     }
-    private final String[] chars = {"killer", "p1", "p2", "p3"};
+    private String role;
     private int count = 0;
     // 收到initGameObject時 count+1
     public void initGameObject(String[] part, int id) {
-    count++;
-    // 每一次都判斷 part[4].equals(""+id)
-    if (part[4].equals("" + id)) {
-        // 成立的話 就讓role = chars[count];
-        String role = chars[count];
-        // 這裡可以加入其他處理邏輯
+        String[] chars = {"killer", "p1", "p2", "p3"};
+        // 每一次都判斷 part[4].equals(""+id)
+        if (part[4].equals("" + id)) {
+            // 成立的話 就讓role = chars[count];
+            role = chars[count];
+            // 這裡可以加入其他處理邏輯
         }
+        count++;
     }
 }
