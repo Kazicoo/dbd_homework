@@ -44,8 +44,6 @@ public class Server implements Comm.TcpServerCallback {
         server.broadcast("startGame");
       }
     }
-
-    System.out.println(readyCount);
     System.out.println("Client " + id + " sent: " + message);
     server.send(id, "Echo: " + message);
   }
