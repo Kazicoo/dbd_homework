@@ -1,7 +1,10 @@
+import javax.swing.ImageIcon;
+
 public class ClientGameObject {
     private final int id;
     private int relativeLocationX;
     private int relativeLocationY;  
+    private ImageIcon icon;
 
     public ClientGameObject(int id) {
         this.id = id;
@@ -32,5 +35,13 @@ public class ClientGameObject {
 
     public int getY() {
         return this.relativeLocationY;
+    }
+
+     public void setIcon(ImageIcon icon) {
+        this.icon = icon;
+    }
+
+    public ImageIcon getIcon() {
+        return icon;
     }
 }

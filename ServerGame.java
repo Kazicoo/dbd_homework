@@ -5,6 +5,7 @@ public class ServerGame {
     private int[] idRole = new int[4];
     private final ServerPlayer players[] = new ServerPlayer[4];
     private final ServerGenerator[] generators = new ServerGenerator[4];
+    private final int SIZE = 60;
     Random rand = new Random();
 
     public ServerGame(Server server) {
@@ -16,15 +17,15 @@ public class ServerGame {
     public void loadingPlayerLocation(){
         int count = 0;
         int[][] positionMap = new int[9][2];
-        positionMap[0] = new int[]{1000, 1000};
-        positionMap[1] = new int[]{1000, 1000};
-        positionMap[2] = new int[]{1000, 1000};
-        positionMap[3] = new int[]{1000, 1000};
-        positionMap[4] = new int[]{1000, 1000};
-        positionMap[5] = new int[]{1000, 1000};
-        positionMap[6] = new int[]{1000, 1000};
-        positionMap[7] = new int[]{1000, 1000};
-        positionMap[8] = new int[]{1000, 1000};
+        positionMap[0] = new int[]{16*SIZE, 10*SIZE};
+        positionMap[1] = new int[]{SIZE, SIZE};
+        positionMap[2] = new int[]{SIZE, SIZE};
+        positionMap[3] = new int[]{SIZE, SIZE};
+        positionMap[4] = new int[]{SIZE, SIZE};
+        positionMap[5] = new int[]{SIZE, SIZE};
+        positionMap[6] = new int[]{SIZE, SIZE};
+        positionMap[7] = new int[]{SIZE, SIZE};
+        positionMap[8] = new int[]{SIZE, SIZE};
 
         int[] usedPosition = new int[4];
 
@@ -64,15 +65,15 @@ public class ServerGame {
     public void loadingGeneratorLocation(){
         int count = 0;
         int[][] positionMap = new int[9][2];
-        positionMap[0] = new int[]{1000, 1000};
-        positionMap[1] = new int[]{1000, 1000};
-        positionMap[2] = new int[]{1000, 1000};
-        positionMap[3] = new int[]{1000, 1000};
-        positionMap[4] = new int[]{1000, 1000};
-        positionMap[5] = new int[]{1000, 1000};
-        positionMap[6] = new int[]{1000, 1000};
-        positionMap[7] = new int[]{1000, 1000};
-        positionMap[8] = new int[]{1000, 1000};
+        positionMap[0] = new int[]{9*SIZE, 10*SIZE};
+        positionMap[1] = new int[]{SIZE, SIZE};
+        positionMap[2] = new int[]{SIZE, SIZE};
+        positionMap[3] = new int[]{SIZE, SIZE};
+        positionMap[4] = new int[]{SIZE, SIZE};
+        positionMap[5] = new int[]{SIZE, SIZE};
+        positionMap[6] = new int[]{SIZE, SIZE};
+        positionMap[7] = new int[]{SIZE, SIZE};
+        positionMap[8] = new int[]{SIZE, SIZE};
 
         int[] usedPosition = new int[4];
 

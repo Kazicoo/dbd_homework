@@ -41,6 +41,11 @@ public class Client implements Comm.TcpClientCallback {
   public void onMessage(String message) {
     String[] parts = message.split(";");
     
+    if (message.startsWith("id")) {
+      String idStr = parts[1];
+      id = Integer.parseInt(idStr);
+    }
+    
     synchronized (this) {
       while (initialGUI == null) {
         try {
@@ -50,12 +55,6 @@ public class Client implements Comm.TcpClientCallback {
         }
       }
     }
-    
-    if (message.startsWith("id")) {
-      String idStr = parts[1];
-      id = Integer.parseInt(idStr);
-    }
-
 
     if (message.startsWith("totalPlayers")) {
       int totalPlayers = Integer.parseInt(parts[1]);
@@ -70,20 +69,60 @@ public class Client implements Comm.TcpClientCallback {
     if ("startLoading".equals(message)) {
       initialGUI.startCountdown();
       initialGUI.closeFrame();
-      SwingUtilities.invokeLater(() -> {
-          ClientGame = new ClientGame(client);
-      }); 
+      ClientGame = new ClientGame(client);
+      // 等 ClientGame 初始化完成後再執行後續操作
     }
+<<<<<<< HEAD
     
   
+=======
+
+    if (message.startsWith("initGameObject")) {
+      if (parts.length == 5) { // 確保格式正確
+          String type = parts[1]; // 對象類型
+          int x = Integer.parseInt(parts[2]); // X 座標
+          int y = Integer.parseInt(parts[3]); // Y 座標
+          int id = Integer.parseInt(parts[4]); // 對象 ID
+  
+          if ("generator".equals(type)) {
+              // 初始化發電機
+              System.out.println("Initializing generator at (" + x + ", " + y + ") with ID " + id);
+              ClientGame.initGenerator(message);
+          } else if ("player".equals(type)) {
+              // 初始化玩家
+              if (id == 0) {
+                System.out.println("Initializing killer at (" + x + ", " + y + ") with ID " + id);
+                ClientGame.initKiller(message);
+              } else {
+                System.out.println("Initializing player at (" + x + ", " + y + ") with ID " + id);
+                ClientGame.initHuman(message);
+              }
+          } else {
+              System.out.println("Unknown type: " + type);
+          }
+      } else {
+          System.out.println("Invalid initGameObject message format: " + message);
+      } 
+    }
+
+    if("updatehealth".equals(message)){
+      ClientGame.updatehealth(id);
+      if("minus".equals(parts[1])){
+        int totalhealth = Integer.parseInt(parts[2]);
+        ClientGame.updatehealth(totalhealth);
+      }
+    }
+
+    
+>>>>>>> 3a936eaecf15ffd418983fec612e1f454b100a70
     System.out.println("Server sent: " + message);
-  }                                                                                                                   
+  }
 
   @Override
   public void onConnect() {
     System.out.println("Connected to server");
+    
   }
-
   @Override
   public void onDisconnect() {
     System.out.println("Disconnected from server");
