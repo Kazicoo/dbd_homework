@@ -1,4 +1,4 @@
-public class ClientKiller extends ClientGameObject {
+public class ClientKiller extends ClientPlayer {
     
     public ClientKiller(int id) {
         super(id);

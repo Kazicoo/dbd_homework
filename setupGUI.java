@@ -3,10 +3,7 @@
     import java.awt.event.*;
     import javax.swing.*;
     import javax.swing.border.*;       
-    import java.awt.*;                  
-    import java.awt.event.*;            
     import javax.swing.plaf.basic.*;   
-    import java.awt.Color;              
 
 
     public class setupGUI {
@@ -157,7 +154,7 @@
 
             // 添加規則內容到規則面板
             rulesPanel.add(rulesLabel); // 添加彈性空間
-            rulesPanel.setPreferredSize(new Dimension(10000, 600));
+            rulesPanel.setPreferredSize(new Dimension(1000, 600));
             rulesPanel.setVisible(true);
 
             // 設置滾動面板
@@ -314,6 +311,7 @@
                             for (int i = 0; i < characterButtons.length; i++) {
                                 if (i == 1) continue;
                                 characterButtons[i].setEnabled(false);
+                                
                             }
                         }
                         case "p2" -> {

@@ -17,9 +17,9 @@ public class Server implements Comm.TcpServerCallback {
         // 從這裡開始遊戲(即等待所有玩家準備完成後，伺服器會告訴前端準備完成)
         server.waitGameStart();
         serverGame = new ServerGame(server);
-      // 把發電機跟玩家位置傳送給客戶端
-      serverGame.loadingGeneratorLocation();
-      serverGame.loadingPlayerLocation();
+        // 把發電機跟玩家位置傳送給客戶端
+        serverGame.loadingGeneratorLocation();
+        serverGame.loadingPlayerLocation();
     } catch (IOException e) {
       System.out.println("Failed to create server: " + e.getMessage());
     }
