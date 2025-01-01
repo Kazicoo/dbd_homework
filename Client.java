@@ -41,6 +41,11 @@ public class Client implements Comm.TcpClientCallback {
   public void onMessage(String message) {
     String[] parts = message.split(";");
     
+    if (message.startsWith("id")) {
+      String idStr = parts[1];
+      id = Integer.parseInt(idStr);
+    }
+    
     synchronized (this) {
       while (initialGUI == null) {
         try {
@@ -50,12 +55,6 @@ public class Client implements Comm.TcpClientCallback {
         }
       }
     }
-    
-    if (message.startsWith("id")) {
-      String idStr = parts[1];
-      id = Integer.parseInt(idStr);
-    }
-
 
     if (message.startsWith("totalPlayers")) {
       int totalPlayers = Integer.parseInt(parts[1]);
@@ -117,8 +116,8 @@ public class Client implements Comm.TcpClientCallback {
   @Override
   public void onConnect() {
     System.out.println("Connected to server");
+    
   }
-
   @Override
   public void onDisconnect() {
     System.out.println("Disconnected from server");
