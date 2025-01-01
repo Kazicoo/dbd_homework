@@ -87,8 +87,13 @@ public class Client implements Comm.TcpClientCallback {
               ClientGame.initGenerator(message);
           } else if ("player".equals(type)) {
               // 初始化玩家
-              System.out.println("Initializing player at (" + x + ", " + y + ") with ID " + id);
-              ClientGame.initPlayer(message);
+              if (id == 0) {
+                System.out.println("Initializing killer at (" + x + ", " + y + ") with ID " + id);
+                ClientGame.initKiller(message);
+              } else {
+                System.out.println("Initializing player at (" + x + ", " + y + ") with ID " + id);
+                ClientGame.initHuman(message);
+              }
           } else {
               System.out.println("Unknown type: " + type);
           }
