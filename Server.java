@@ -3,6 +3,7 @@ import java.io.*;
 
 public class Server implements Comm.TcpServerCallback { 
   private int readyCount = 0;
+  private int startCount = 0;
   private final String[] chars = {"killer", "p1", "p2", "p3"};
   private final boolean[] characterSelected = new boolean[4];
   private final int[] idRole = new int[4];
@@ -36,9 +37,17 @@ public class Server implements Comm.TcpServerCallback {
     if (message.startsWith("updateReadyState")) {
       updateReadyState(message, id);
     } 
+
+    if (message.startsWith("startGame")) {
+      startCount++;
+      if (startCount == 4) {
+        server.broadcast("startGame");
+      }
+    }
+
     System.out.println(readyCount);
     System.out.println("Client " + id + " sent: " + message);
-    server.send(id, "Echo: " + message); 
+    server.send(id, "Echo: " + message);
   }
 
   @Override
