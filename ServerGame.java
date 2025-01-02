@@ -66,15 +66,15 @@ public class ServerGame {
     public void loadingGeneratorLocation(){
         int count = 0;
         int[][] positionMap = new int[9][2];
-        positionMap[0] = new int[]{SIZE, SIZE};
-        positionMap[1] = new int[]{SIZE, SIZE};
-        positionMap[2] = new int[]{SIZE, SIZE};
-        positionMap[3] = new int[]{SIZE, SIZE};
-        positionMap[4] = new int[]{SIZE, SIZE};
-        positionMap[5] = new int[]{SIZE, SIZE};
-        positionMap[6] = new int[]{SIZE, SIZE};
-        positionMap[7] = new int[]{SIZE, SIZE};
-        positionMap[8] = new int[]{SIZE, SIZE};
+        positionMap[0] = new int[]{9*SIZE, 10*SIZE};
+        positionMap[1] = new int[]{48*SIZE, 7*SIZE};
+        positionMap[2] = new int[]{81*SIZE, 10*SIZE};
+        positionMap[3] = new int[]{8*SIZE, 26*SIZE};
+        positionMap[4] = new int[]{44*SIZE, 27*SIZE};
+        positionMap[5] = new int[]{70*SIZE, 30*SIZE};
+        positionMap[6] = new int[]{20*SIZE, 47*SIZE};
+        positionMap[7] = new int[]{54*SIZE, 40*SIZE};
+        positionMap[8] = new int[]{93*SIZE, 47*SIZE};
 
         int[] usedPosition = new int[4];
 
