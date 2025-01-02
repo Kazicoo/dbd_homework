@@ -25,25 +25,51 @@ public class ClientGame {
         waitGameStart();
     }
 
-    public void initGame() {
+
+    public void initGame() { 
         frame = new JFrame("迷途逃生");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setUndecorated(true);
         frame.setLayout(new BorderLayout());
-        
-        GamePanel gamePanel = new GamePanel(this);
-
+    
+        // 獲取螢幕解析度
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = screenSize.width;
-        int height = screenSize.height;
-
+        int screenWidth = screenSize.width;
+        int screenHeight = screenSize.height;
+    
+        // 計算中部面板的高度（不縮放地圖）
+        int topBarHeight = screenHeight / 20; // 頂部狀態欄高度
+        int bottomBarHeight = screenHeight / 20; // 底部狀態欄高度
+        int middlePanelHeight = screenHeight - topBarHeight - bottomBarHeight;
+    
         // 上部面板
-        topPanel = new JPanel(new BorderLayout());
-        topPanel.setPreferredSize(new Dimension(width, height / 20));
-        topPanel.setBackground(Color.WHITE);
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setPreferredSize(new Dimension(screenWidth, topBarHeight));
+        topPanel.setBackground(Color.GRAY); // 可自定義背景顏色
         topPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-
+    
+        // 中部面板
+        middlePanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                // 假設你有背景圖片或地圖圖片，可以在這裡繪製
+                Image backgroundImage = new ImageIcon("Graphic/GuideLine.png").getImage();
+                g.drawImage(backgroundImage, 0, 0, 6000, 3600, this);
+            }
+        };
+        middlePanel.setLayout(null); // 使用絕對佈局
+        middlePanel.setPreferredSize(new Dimension(6000, 3600));
+        middlePanel.setBackground(Color.WHITE); // 可自定義背景顏色
+        middlePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+    
+        // 下部面板
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setPreferredSize(new Dimension(screenWidth, bottomBarHeight));
+        bottomPanel.setBackground(Color.GRAY); // 可自定義背景顏色
+        bottomPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+    
         // 左側面板 (顯示血量)
         leftPanel = new JPanel();
         leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
@@ -54,32 +80,30 @@ public class ClientGame {
         generatorLabel = new JLabel("Generators to fix: " + generatorCount);
         generatorLabel.setFont(new Font("Arial", Font.BOLD, 18));
         topPanel.add(generatorLabel, BorderLayout.EAST);
-
-        // 中部面板
-        JPanel middlePanel = new JPanel();
-         
-
-        // 中部面板
-        middlePanel = new JPanel();
-        middlePanel.setLayout(null);  // 設定為絕對佈局
-        middlePanel.setPreferredSize(new Dimension(width, 2 * height / 3));
-        middlePanel.setBackground(Color.WHITE);
-        middlePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-        
-
-        // 下部面板
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.setPreferredSize(new Dimension(width, height / 20));
-        bottomPanel.setBackground(Color.WHITE);
-        bottomPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-
         // 添加面板到框架
         frame.add(topPanel, BorderLayout.NORTH);
         frame.add(middlePanel, BorderLayout.CENTER);
         frame.add(bottomPanel, BorderLayout.SOUTH);
-        frame.add(gamePanel, BorderLayout.CENTER);
+    
+        // 顯示框架
         frame.setVisible(true);
     }
+    
+    //正確waitGameStart封包傳送邏輯
+    // public void waitGameStart() {
+    //     synchronized (this) {
+    //         while (generatorTotal != 4 || playerTotal != 4) {
+    //             try {
+    //                 wait();
+    //             } catch (InterruptedException e) {
+    //                 e.printStackTrace();
+    //             }
+    //         }
+    //     }
+        
+    //     conn.send("startGame");
+    // 
+
 
     public void waitGameStart() {
         synchronized (this) {
@@ -113,41 +137,39 @@ public class ClientGame {
             System.out.println("Error parsing generator message: " + e.getMessage());
             return;
         }
-
-        if (generatorTotal >= generators.length) {
-            System.out.println("Maximum generators reached.");
-            return;
-        }
-
+        
         try {
             int id = Integer.parseInt(parts[4]);
             int x = Integer.parseInt(parts[2]);
             int y = Integer.parseInt(parts[3]);
-
+            
             for (int i = 0; i < generators.length; i++) {
                 if (generators[i] == null) {
                     // 初始化發電機物件
                     generators[i] = new ClientGenerator(id);
-                    generators[i].setRelativeLocation(x, y);
-
-                        // 初始化按鈕
-                        // 載入圖片作為按鈕背景
+                    generators[i].setRelativeLocation(9 * (i+1) * x, 10 * (i+1) * y);
+                    
+                    // 初始化按鈕
+                    // 載入圖片作為按鈕背景
                     ImageIcon generatorIcon = new ImageIcon("Graphic/generator.PNG");
                     JButton generatorButton = new JButton(generatorIcon);
 
+                    int imageWidth = generatorIcon.getIconWidth();
+                    int imageHeight = generatorIcon.getIconHeight();
+
                     // 設定按鈕的位置和大小
-                    generatorButton.setBounds(x, y, 100, 50);
-                    generatorButton.setOpaque(false);            // 讓按鈕背景透明
+                    generatorButton.setBounds(generators[i].getX(), generators[i].getY(), imageWidth, imageHeight);
+                    generatorButton.setOpaque(false);     // 讓按鈕背景透明
                     generatorButton.setContentAreaFilled(false); // 移除按鈕預設的背景
                     generatorButton.setBorderPainted(false);     // 移除按鈕邊框
-
+                    
                     // 添加到面板
-                    frame.add(generatorButton);
-                    frame.revalidate();
-                    frame.repaint();
-
-                        // 添加互動邏輯
-                        int index = i;
+                    middlePanel.add(generatorButton);
+                    middlePanel.revalidate();
+                    middlePanel.repaint();
+                    
+                    // 添加互動邏輯
+                    int index = i;
                     generatorButton.addMouseListener(new MouseAdapter() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
@@ -158,7 +180,13 @@ public class ClientGame {
                     });
 
                     generatorTotal++;
-                    System.out.println("Generator initialized: ID " + id + " at (" + x + ", " + y + ")");
+                    
+                    System.out.println("Generator initialized: ID " + id + " at (" + generators[i].getX() + ", " + generators[i].getY() + ")");
+                    
+                    if (generatorTotal == generators.length) {
+                        System.out.println("Maximum generators reached.");
+                    }
+                    
                     break;
                 }
             }
@@ -276,10 +304,10 @@ public class ClientGame {
         healthLabel.add(healthLabel, BorderLayout.WEST);
         healthLabel.setFont(new Font("Serif", Font.PLAIN, 20));
         if(totalhealth == 2) {
-
+        
         }
+   
     }
-
     // 處理伺服器發來的封包
     public void initGameObject(String[] part) {
         String objectType = part[1]; // 封包中的物件類型

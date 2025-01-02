@@ -39,6 +39,11 @@ public class Server implements Comm.TcpServerCallback {
     } 
 
     if (message.startsWith("startGame")) {
+      try {
+        Thread.sleep(50);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
       startCount++;
       if (startCount == 4) {
         server.broadcast("startGame");
