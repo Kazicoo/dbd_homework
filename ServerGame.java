@@ -3,6 +3,7 @@ import java.util.Random;
 public class ServerGame {
     private final Server server;
     private int[] idRole = new int[4];
+    private final String[] chars = {"killer", "p1", "p2", "p3"};
     private final ServerPlayer players[] = new ServerPlayer[4];
     private final ServerGenerator[] generators = new ServerGenerator[4];
     private final int SIZE = 60;
@@ -99,6 +100,20 @@ public class ServerGame {
             server.broadcastToClient("initGameObject;generator;" +
             generator.getX() + ";" + generator.getY() + ";" + 
             generator.getId());
+        }
+    }
+
+    public void initHealthStatus() {
+        for (int i = 1; i < chars.length; i++) {
+            server.broadcastToClient("updateGameObject;health;2;" + chars[i]);
+        }
+    }
+    // 血量改變時
+    public void setHealthStatus(int health, int id) {
+        for (int i = 1; i < idRole.length; i++) {
+            if (id == idRole[i]) {
+                server.broadcastToClient("updateGameObject;health;" + health + ";" + chars[i]);
+            }
         }
     }
 }
