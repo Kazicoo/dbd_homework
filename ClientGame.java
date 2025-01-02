@@ -1,26 +1,21 @@
 import Comm.TcpClient;
 import java.awt.*;
 import javax.swing.*;
-import java.util.HashMap;
-import java.util.Map;
 import java.awt.event.*;
-import javax.swing.*;   
+
 
 public class ClientGame {
     private TcpClient conn;
     private JFrame frame;
-    private JPanel topPanel;
-    private JPanel leftPanel; // 用於顯示血量
     private JLabel generatorLabel; // 用於顯示發電機數量
+    private JLabel healthLabel1,healthLabel2,healthLabel3; // 用於顯示玩家血量
     private int generatorCount = 4; // 初始發電機數量
-    private Map<Integer, JLabel> playerHealthLabels; // 儲存玩家血量提示
-    private Map<Integer, Integer> playerHealth; // 儲存玩家的血量
+    private int healthcount = 2; // 初始玩家血量
+    private String role;
     JPanel middlePanel;
 
     public ClientGame(TcpClient conn) {
         this.conn = conn;
-        this.playerHealthLabels = new HashMap<>();
-        this.playerHealth = new HashMap<>();
         initGame();
         waitGameStart();
     }
@@ -41,7 +36,6 @@ public class ClientGame {
         // 計算中部面板的高度（不縮放地圖）
         int topBarHeight = screenHeight / 20; // 頂部狀態欄高度
         int bottomBarHeight = screenHeight / 20; // 底部狀態欄高度
-        int middlePanelHeight = screenHeight - topBarHeight - bottomBarHeight;
     
         // 上部面板
         JPanel topPanel = new JPanel(new BorderLayout());
@@ -63,6 +57,14 @@ public class ClientGame {
         middlePanel.setPreferredSize(new Dimension(6000, 3600));
         middlePanel.setBackground(Color.WHITE); // 可自定義背景顏色
         middlePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+        
+        // 新增 healthLabel
+        healthLabel1 = createHealthLabel("p1", healthcount, 10, 5);
+        healthLabel2 = createHealthLabel("p2", healthcount, 10, 40);
+        healthLabel3 = createHealthLabel("p3", healthcount, 10, 75);
+        middlePanel.add(healthLabel1);
+        middlePanel.add(healthLabel2);
+        middlePanel.add(healthLabel3);
     
         // 下部面板
         JPanel bottomPanel = new JPanel();
@@ -70,23 +72,34 @@ public class ClientGame {
         bottomPanel.setBackground(Color.GRAY); // 可自定義背景顏色
         bottomPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
     
-        // 左側面板 (顯示血量)
-        leftPanel = new JPanel();
-        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-        leftPanel.setBackground(Color.WHITE);
-        topPanel.add(leftPanel, BorderLayout.WEST);
 
         // 發電機數量顯示 (右上角)
-        generatorLabel = new JLabel("Generators to fix: " + generatorCount);
-        generatorLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        generatorLabel = createGeneratorLabel("Generator", generatorCount, screenWidth - 200, 5);
         topPanel.add(generatorLabel, BorderLayout.EAST);
         // 添加面板到框架
         frame.add(topPanel, BorderLayout.NORTH);
         frame.add(middlePanel, BorderLayout.CENTER);
         frame.add(bottomPanel, BorderLayout.SOUTH);
-    
+        
         // 顯示框架
         frame.setVisible(true);
+        
+    }
+
+
+    private JLabel createHealthLabel(String role, int healthcount, int x, int y) {
+        JLabel healthLabel = new JLabel(role + " Health: " + healthcount);
+        healthLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        healthLabel.setBounds(x, y, 200, 30); // 設定位置和大小
+        healthLabel.setForeground(Color.RED); // 可自定義文字顏色
+        return healthLabel;
+    }
+    private JLabel createGeneratorLabel(String role, int healthcount, int x, int y) {
+        JLabel generatorLabel = new JLabel(role + " Health: " + healthcount);
+        generatorLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        generatorLabel.setBounds(x, y, 200, 30); // 設定位置和大小
+        generatorLabel.setForeground(Color.RED); // 可自定義文字顏色
+        return generatorLabel;
     }
     
     //正確waitGameStart封包傳送邏輯
@@ -205,6 +218,7 @@ public class ClientGame {
     private final ClientHuman[] players = new ClientHuman[3];
     
     public void initHuman(String message) {
+        
         String parts[];
         
         try {
@@ -244,6 +258,7 @@ public class ClientGame {
             System.out.println("Error parsing coordinates or ID: " + e.getMessage());
         }
     }
+    
     
     public ClientKiller clientKiller;
 
@@ -296,59 +311,31 @@ public class ClientGame {
 
 
 
-    // update;health;1
-    // update;generator;fixed;2
-    // update;totalGenerator;3
-    public void updatehealth(int totalhealth) {
-        JLabel healthLabel = new JLabel("血量: "+totalhealth);
-        healthLabel.add(healthLabel, BorderLayout.WEST);
-        healthLabel.setFont(new Font("Serif", Font.PLAIN, 20));
-        if(totalhealth == 2) {
-        
-        }
-   
-    }
-    // 處理伺服器發來的封包
-    public void initGameObject(String[] part) {
-        String objectType = part[1]; // 封包中的物件類型
-        int objectId = Integer.parseInt(part[4]); // 封包中的 ID
+    private int count = 0;
 
-        if (objectType.equals("generator")) {
-            // 更新發電機數量
-            generatorCount--;
-            updateGeneratorLabel();
-        } else if (objectType.equals("player")) {
-            // 生成或更新玩家血量提示
-            if (!playerHealth.containsKey(objectId)) {
-                playerHealth.put(objectId, 100); // 初始血量 100
-            }
-            addPlayerHealthHint(objectId);
+// 收到 initGameObject 時呼叫此方法
+    public void initstatusbar(String[] part, int id, JPanel panel) {
+        String[] chars = {"killer", "p1", "p2", "p3"};
+
+        if (part[4].equals("" + id)) {
+            role = chars[count];
+            int yPosition = 5 + count * 35; // 動態調整標籤位置，避免重疊
+
+            JLabel healthLabel = createHealthLabel(role, healthcount, 10, yPosition);
+            JLabel generatorLabel = createGeneratorLabel(role, generatorCount, 10, yPosition);
+            panel.add(healthLabel); // 將標籤添加到指定面板
+            panel.add(generatorLabel);
+            panel.revalidate();
+            panel.repaint();
+
+            count++;
         }
     }
 
-    // 更新發電機數量顯示
-    private void updateGeneratorLabel() {
-        generatorLabel.setText("Generators to fix: " + generatorCount);
-    }
 
-    // 添加或更新玩家血量提示
-    private void addPlayerHealthHint(int playerId) {
-        // 如果尚未為該玩家創建血量提示，則創建
-        if (!playerHealthLabels.containsKey(playerId)) {
-            JLabel playerLabel = new JLabel("Player " + playerId + " HP: " + playerHealth.get(playerId));
-            playerLabel.setFont(new Font("Arial", Font.BOLD, 18));
-            leftPanel.add(playerLabel); // 添加到左側面板
-            playerHealthLabels.put(playerId, playerLabel); // 記錄到 Map 中
-        } else {
-            // 更新已存在的血量提示
-            JLabel existingLabel = playerHealthLabels.get(playerId);
-            existingLabel.setText("Player " + playerId + " HP: " + playerHealth.get(playerId));
-        }
 
-        // 刷新左側面板
-        leftPanel.revalidate();
-        leftPanel.repaint();
-    }
-
-    
 }
+    
+    
+    
+

@@ -100,13 +100,6 @@ public class Client implements Comm.TcpClientCallback {
       } 
     }
 
-    if("updatehealth".equals(message)){
-      ClientGame.updatehealth(id);
-      if("minus".equals(parts[1])){
-        int totalhealth = Integer.parseInt(parts[2]);
-        ClientGame.updatehealth(totalhealth);
-      }
-    }
 
     
     System.out.println("Server sent: " + message);
