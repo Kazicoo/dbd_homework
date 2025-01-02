@@ -40,11 +40,6 @@ public class Server implements Comm.TcpServerCallback {
     } 
 
     if (message.startsWith("startGame")) {
-      try {
-        Thread.sleep(50);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
       startCount++;
       if (startCount == 4) {
         server.broadcast("startGame");
@@ -90,7 +85,14 @@ public class Server implements Comm.TcpServerCallback {
               e.printStackTrace();
           }
       }
-    } 
+    }
+
+    try {
+      Thread.sleep(60);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+
     // 開始遊戲，告訴前端遊戲開始
     server.broadcast("startLoading");
   }
