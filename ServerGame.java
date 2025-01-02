@@ -18,14 +18,14 @@ public class ServerGame {
         int count = 0;
         int[][] positionMap = new int[9][2];
         positionMap[0] = new int[]{16*SIZE, 10*SIZE};
-        positionMap[1] = new int[]{SIZE, SIZE};
-        positionMap[2] = new int[]{SIZE, SIZE};
-        positionMap[3] = new int[]{SIZE, SIZE};
-        positionMap[4] = new int[]{SIZE, SIZE};
-        positionMap[5] = new int[]{SIZE, SIZE};
-        positionMap[6] = new int[]{SIZE, SIZE};
-        positionMap[7] = new int[]{SIZE, SIZE};
-        positionMap[8] = new int[]{SIZE, SIZE};
+        positionMap[1] = new int[]{53*SIZE, 5*SIZE};
+        positionMap[2] = new int[]{83*SIZE, 10*SIZE};
+        positionMap[3] = new int[]{29*SIZE, 28*SIZE};
+        positionMap[4] = new int[]{48*SIZE, 28*SIZE};
+        positionMap[5] = new int[]{74*SIZE, 31*SIZE};
+        positionMap[6] = new int[]{23*SIZE, 42*SIZE};
+        positionMap[7] = new int[]{50*SIZE, 50*SIZE};
+        positionMap[8] = new int[]{89*SIZE, 43*SIZE};
 
         int[] usedPosition = new int[4];
 
