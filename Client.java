@@ -1,6 +1,5 @@
 import java.io.*;
 import java.util.Scanner;
-import javax.swing.SwingUtilities;
 
 
 public class Client implements Comm.TcpClientCallback {
@@ -72,10 +71,6 @@ public class Client implements Comm.TcpClientCallback {
       ClientGame = new ClientGame(client);
       // 等 ClientGame 初始化完成後再執行後續操作
     }
-<<<<<<< HEAD
-    
-  
-=======
 
     if (message.startsWith("initGameObject")) {
       if (parts.length == 5) { // 確保格式正確
@@ -114,7 +109,6 @@ public class Client implements Comm.TcpClientCallback {
     }
 
     
->>>>>>> 3a936eaecf15ffd418983fec612e1f454b100a70
     System.out.println("Server sent: " + message);
   }
 

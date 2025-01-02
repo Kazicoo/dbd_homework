@@ -1,38 +1,28 @@
 import Comm.TcpClient;
 import java.awt.*;
-<<<<<<< HEAD
 import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
-=======
 import java.awt.event.*;
 import javax.swing.*;   
->>>>>>> 3a936eaecf15ffd418983fec612e1f454b100a70
 
 public class ClientGame {
     private TcpClient conn;
     private JFrame frame;
-<<<<<<< HEAD
     private JPanel topPanel;
     private JPanel leftPanel; // 用於顯示血量
     private JLabel generatorLabel; // 用於顯示發電機數量
     private int generatorCount = 4; // 初始發電機數量
     private Map<Integer, JLabel> playerHealthLabels; // 儲存玩家血量提示
     private Map<Integer, Integer> playerHealth; // 儲存玩家的血量
-=======
     JPanel middlePanel;
->>>>>>> 3a936eaecf15ffd418983fec612e1f454b100a70
 
     public ClientGame(TcpClient conn) {
         this.conn = conn;
         this.playerHealthLabels = new HashMap<>();
         this.playerHealth = new HashMap<>();
         initGame();
-<<<<<<< HEAD
-        
-=======
         waitGameStart();
->>>>>>> 3a936eaecf15ffd418983fec612e1f454b100a70
     }
 
     public void initGame() {
@@ -53,7 +43,6 @@ public class ClientGame {
         topPanel.setPreferredSize(new Dimension(width, height / 20));
         topPanel.setBackground(Color.WHITE);
         topPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-<<<<<<< HEAD
 
         // 左側面板 (顯示血量)
         leftPanel = new JPanel();
@@ -68,13 +57,11 @@ public class ClientGame {
 
         // 中部面板
         JPanel middlePanel = new JPanel();
-=======
          
 
         // 中部面板
         middlePanel = new JPanel();
         middlePanel.setLayout(null);  // 設定為絕對佈局
->>>>>>> 3a936eaecf15ffd418983fec612e1f454b100a70
         middlePanel.setPreferredSize(new Dimension(width, 2 * height / 3));
         middlePanel.setBackground(Color.WHITE);
         middlePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
@@ -93,8 +80,6 @@ public class ClientGame {
         frame.add(gamePanel, BorderLayout.CENTER);
         frame.setVisible(true);
     }
-<<<<<<< HEAD
-=======
 
     public void waitGameStart() {
         synchronized (this) {
@@ -290,10 +275,8 @@ public class ClientGame {
         JLabel healthLabel = new JLabel("血量: "+totalhealth);
         healthLabel.add(healthLabel, BorderLayout.WEST);
         healthLabel.setFont(new Font("Serif", Font.PLAIN, 20));
-        if(totalhealth == 2) {
->>>>>>> 3a936eaecf15ffd418983fec612e1f454b100a70
-
-   
+        if(totalhealth == 2) {{}
+    }
 
     // 處理伺服器發來的封包
     public void initGameObject(String[] part) {
