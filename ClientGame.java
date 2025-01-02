@@ -1,21 +1,32 @@
 import Comm.TcpClient;
 import java.awt.*;
+import javax.swing.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.awt.event.*;
 import javax.swing.*;   
 
 public class ClientGame {
     private TcpClient conn;
     private JFrame frame;
+    private JPanel topPanel;
+    private JPanel leftPanel; // 用於顯示血量
+    private JLabel generatorLabel; // 用於顯示發電機數量
+    private int generatorCount = 4; // 初始發電機數量
+    private Map<Integer, JLabel> playerHealthLabels; // 儲存玩家血量提示
+    private Map<Integer, Integer> playerHealth; // 儲存玩家的血量
     JPanel middlePanel;
 
     public ClientGame(TcpClient conn) {
         this.conn = conn;
+        this.playerHealthLabels = new HashMap<>();
+        this.playerHealth = new HashMap<>();
         initGame();
         waitGameStart();
     }
 
 
-    public void initGame() {
+    public void initGame() { 
         frame = new JFrame("迷途逃生");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -44,7 +55,7 @@ public class ClientGame {
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 // 假設你有背景圖片或地圖圖片，可以在這裡繪製
-                Image backgroundImage = new ImageIcon("Graphic/guideLine.png").getImage();
+                Image backgroundImage = new ImageIcon("Graphic/GuideLine.png").getImage();
                 g.drawImage(backgroundImage, 0, 0, 6000, 3600, this);
             }
         };
@@ -59,6 +70,16 @@ public class ClientGame {
         bottomPanel.setBackground(Color.GRAY); // 可自定義背景顏色
         bottomPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
     
+        // 左側面板 (顯示血量)
+        leftPanel = new JPanel();
+        leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+        leftPanel.setBackground(Color.WHITE);
+        topPanel.add(leftPanel, BorderLayout.WEST);
+
+        // 發電機數量顯示 (右上角)
+        generatorLabel = new JLabel("Generators to fix: " + generatorCount);
+        generatorLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        topPanel.add(generatorLabel, BorderLayout.EAST);
         // 添加面板到框架
         frame.add(topPanel, BorderLayout.NORTH);
         frame.add(middlePanel, BorderLayout.CENTER);
@@ -82,6 +103,7 @@ public class ClientGame {
         
     //     conn.send("startGame");
     // 
+
 
     public void waitGameStart() {
         synchronized (this) {
@@ -137,7 +159,7 @@ public class ClientGame {
 
                     // 設定按鈕的位置和大小
                     generatorButton.setBounds(generators[i].getX(), generators[i].getY(), imageWidth, imageHeight);
-                    generatorButton.setOpaque(false);            // 讓按鈕背景透明
+                    generatorButton.setOpaque(false);     // 讓按鈕背景透明
                     generatorButton.setContentAreaFilled(false); // 移除按鈕預設的背景
                     generatorButton.setBorderPainted(false);     // 移除按鈕邊框
                     
@@ -282,27 +304,51 @@ public class ClientGame {
         healthLabel.add(healthLabel, BorderLayout.WEST);
         healthLabel.setFont(new Font("Serif", Font.PLAIN, 20));
         if(totalhealth == 2) {
+        
+        }
+   
+    }
+    // 處理伺服器發來的封包
+    public void initGameObject(String[] part) {
+        String objectType = part[1]; // 封包中的物件類型
+        int objectId = Integer.parseInt(part[4]); // 封包中的 ID
 
-        }if(totalhealth == 1) {
-            
-        }
-        else if (totalhealth == 0) {
-            JOptionPane.showMessageDialog(frame, "You are dead!");
-            frame.setFont(new Font("Serif", Font.PLAIN, 20));
-            
+        if (objectType.equals("generator")) {
+            // 更新發電機數量
+            generatorCount--;
+            updateGeneratorLabel();
+        } else if (objectType.equals("player")) {
+            // 生成或更新玩家血量提示
+            if (!playerHealth.containsKey(objectId)) {
+                playerHealth.put(objectId, 100); // 初始血量 100
+            }
+            addPlayerHealthHint(objectId);
         }
     }
-    private String role;
-    private int count = 0;
-    // 收到initGameObject時 count+1
-    public void initGameObject(String[] part, int id) {
-        String[] chars = {"killer", "p1", "p2", "p3"};
-        // 每一次都判斷 part[4].equals(""+id)
-        if (part[4].equals("" + id)) {
-            // 成立的話 就讓role = chars[count];
-            role = chars[count];
-            // 這裡可以加入其他處理邏輯
-        }
-        count++;
+
+    // 更新發電機數量顯示
+    private void updateGeneratorLabel() {
+        generatorLabel.setText("Generators to fix: " + generatorCount);
     }
+
+    // 添加或更新玩家血量提示
+    private void addPlayerHealthHint(int playerId) {
+        // 如果尚未為該玩家創建血量提示，則創建
+        if (!playerHealthLabels.containsKey(playerId)) {
+            JLabel playerLabel = new JLabel("Player " + playerId + " HP: " + playerHealth.get(playerId));
+            playerLabel.setFont(new Font("Arial", Font.BOLD, 18));
+            leftPanel.add(playerLabel); // 添加到左側面板
+            playerHealthLabels.put(playerId, playerLabel); // 記錄到 Map 中
+        } else {
+            // 更新已存在的血量提示
+            JLabel existingLabel = playerHealthLabels.get(playerId);
+            existingLabel.setText("Player " + playerId + " HP: " + playerHealth.get(playerId));
+        }
+
+        // 刷新左側面板
+        leftPanel.revalidate();
+        leftPanel.repaint();
+    }
+
+    
 }
