@@ -160,7 +160,7 @@ public class ServerGame {
 
     private void updateGameLogic() {
         for (ServerPlayer player : players) {
-            if (player != null) {
+            if (player != null && (player.getDx() != 0 || player.getDy() != 0)) {
                 // 更新玩家位置
                 player.updatePosition();
     
