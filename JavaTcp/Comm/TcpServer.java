@@ -70,10 +70,6 @@ public class TcpServer {
   }
 
   public void send(int id, String message) {
-    System.out.println(id >= 0);
-    System.out.println(id < clients.length);
-    System.out.println(clients[id] != null);
-    System.out.println(id);
     System.out.println(message);
     if (id >= 0 && id < clients.length && clients[id] != null) {
       clients[id].send(message);
