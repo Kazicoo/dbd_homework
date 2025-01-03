@@ -391,6 +391,53 @@ public class ClientGame {
     }
     
     
+    public void updateHealth(String message) {
+        String[] parts = message.split(";");
+        
+        if (parts.length < 4 || !"updateGameObject".equals(parts[0]) || !"health".equals(parts[1])) {
+            System.out.println("無效的血量更新訊息格式。");
+            return;
+        }
+    
+        String healthValue = parts[2];
+        String role = parts[3];
+    
+        // 解析血量值
+        int health = Integer.parseInt(healthValue.split(":")[1]);
+        String status = "";
+    
+        // 根據血量設定狀態
+        switch (health) {
+            case 2:
+                status = "(健康)";
+                break;
+            case 1:
+                status = "(受傷)";
+                break;
+            case 0:
+                status = "(倒地)";
+                break;
+           
+        }
+    
+        // 更新對應角色的血量和狀態
+        switch (role) {
+            case "p1":
+                healthLabel1.setText("p1 Health: " + health + " " + status);
+                break;
+            case "p2":
+                healthLabel2.setText("p2 Health: " + health + " " + status);
+                break;
+            case "p3":
+                healthLabel3.setText("p3 Health: " + health + " " + status);
+                break;
+           
+        }
+    
+        // 刷新面板以顯示更新內容
+        middlePanel.revalidate();
+        middlePanel.repaint();
+    }
     
 
 
@@ -407,10 +454,10 @@ public class ClientGame {
 
             JLabel healthLabel = createHealthLabel(role, healthcount, 10, yPosition);
             JLabel generatorLabel = createGeneratorLabel(role, generatorCount, 10, yPosition);
-            panel.add(healthLabel); // 將標籤添加到指定面板
-            panel.add(generatorLabel);
-            panel.revalidate();
-            panel.repaint();
+            middlePanel.add(healthLabel); // 將標籤添加到指定面板
+            middlePanel.add(generatorLabel);
+            middlePanel.revalidate();
+            middlePanel.repaint();
 
             count++;
         }
