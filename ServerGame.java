@@ -12,6 +12,10 @@ public class ServerGame {
     private Timer gameLoopTimer;
     Random rand = new Random();
 
+    private static final int GRID_WIDTH = 100;
+    private static final int GRID_HEIGHT = 60;
+    private final int[][] grid = new int[GRID_WIDTH][GRID_HEIGHT];
+
     public ServerGame(Server server) {
         this.server = server;
         this.idRole = server.getidRole();
