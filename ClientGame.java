@@ -234,8 +234,8 @@ public class ClientGame {
     int playerTotal = 0;
     int humanTotal = 0;
     int killerTotal = 0;
+    int killerID = 0;
     public final ClientHuman[] players = new ClientHuman[3];
-    public ImageIcon[] player = new ImageIcon[3];
     
     public void initHuman(String message) {
         
@@ -266,18 +266,16 @@ public class ClientGame {
                 players[i] = new ClientHuman(id);
                 players[i].setRelativeLocation(x, y);
                 
-                switch (id) {
-                    case 1:
-                        players[i].setIcon(new ImageIcon("Graphic/p1.png"));
-                        break;
-                    case 2:
-                        players[i].setIcon(new ImageIcon("Graphic/p2.png"));
-                        break;
-                    case 3:
-                        players[i].setIcon(new ImageIcon("Graphic/p3.png"));
-                        break;
-                }
                 
+                if (players[i].getId() == 1) {
+                    players[i].setIcon(new ImageIcon("Graphic/p1.png"));
+                }
+                if (players[i].getId() == 2) {
+                    players[i].setIcon(new ImageIcon("Graphic/p2.png"));
+                }
+                if (players[i].getId() == 3) {
+                    players[i].setIcon(new ImageIcon("Graphic/p3.png"));
+                }
                 synchronized (this) {
                     humanTotal++;
                     if (generatorTotal == 4 && playerTotal == 4) {
@@ -315,7 +313,7 @@ public class ClientGame {
             int x = Integer.parseInt(parts[2]);
             int y = Integer.parseInt(parts[3]);
     
-
+                killerID = id;
                 clientKiller = new ClientKiller(id);
                 clientKiller.setRelativeLocation(x, y);
     
@@ -341,6 +339,39 @@ public class ClientGame {
         playerTotal = killerTotal + humanTotal;
         return playerTotal;
     }
+
+    public void updatePlayerPosition(String message) {
+        String[] parts;
+        parts = message.split(";");
+           
+        try {
+            int x = Integer.parseInt(parts[2]); // 新的 x 座標
+            int y = Integer.parseInt(parts[3]); // 新的 y 座標
+            int id = Integer.parseInt(parts[4]); // 玩家或殺手 ID
+        
+            // 檢查是否更新玩家或殺手位置
+            synchronized (this) {
+                if (id == killerID && clientKiller != null) {
+                    clientKiller.setRelativeLocation(x, y);
+                } else {
+                    for (ClientHuman player : players) {
+                        if (player != null && player.getId() == id) {
+                            player.setRelativeLocation(x, y);
+                            break;
+                        }
+                    }
+                }
+            }
+        
+            // 重繪遊戲畫面
+            gamePanel.repaint();
+            if(id == killerID) {
+                System.out.println("killer Position updated: ID " + id + " to (" + x + ", " + y + ")");
+            } else System.out.println("player Position updated: ID " + id + " to (" + x + ", " + y + ")");
+        } catch (NumberFormatException e) {
+            System.out.println("Error parsing coordinates or ID: " + e.getMessage());
+        }
+    }        
     
     public void initKeyListener() {
         frame.addKeyListener(new KeyAdapter() {
