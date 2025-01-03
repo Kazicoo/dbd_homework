@@ -18,9 +18,10 @@ public class Server implements Comm.TcpServerCallback {
         // 從這裡開始遊戲(即等待所有玩家準備完成後，伺服器會告訴前端準備完成)
         server.waitGameStart();
         serverGame = new ServerGame(server);
-        // 把發電機跟玩家位置傳送給客戶端
+        // 當伺服器發送startLoading給客戶端後，要初始化遊戲資訊
         serverGame.loadingGeneratorLocation();
         serverGame.loadingPlayerLocation();
+        serverGame.initHealthStatus();
     } catch (IOException e) {
       System.out.println("Failed to create server: " + e.getMessage());
     }
@@ -39,11 +40,6 @@ public class Server implements Comm.TcpServerCallback {
     } 
 
     if (message.startsWith("startGame")) {
-      try {
-        Thread.sleep(50);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
       startCount++;
       if (startCount == 4) {
         server.broadcast("startGame");
@@ -89,7 +85,14 @@ public class Server implements Comm.TcpServerCallback {
               e.printStackTrace();
           }
       }
-    } 
+    }
+
+    try {
+      Thread.sleep(60);
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+
     // 開始遊戲，告訴前端遊戲開始
     server.broadcast("startLoading");
   }

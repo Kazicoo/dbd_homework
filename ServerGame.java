@@ -3,6 +3,7 @@ import java.util.Random;
 public class ServerGame {
     private final Server server;
     private int[] idRole = new int[4];
+    private final String[] chars = {"killer", "p1", "p2", "p3"};
     private final ServerPlayer players[] = new ServerPlayer[4];
     private final ServerGenerator[] generators = new ServerGenerator[4];
     private final int SIZE = 60;
@@ -18,14 +19,14 @@ public class ServerGame {
         int count = 0;
         int[][] positionMap = new int[9][2];
         positionMap[0] = new int[]{16*SIZE, 10*SIZE};
-        positionMap[1] = new int[]{SIZE, SIZE};
-        positionMap[2] = new int[]{SIZE, SIZE};
-        positionMap[3] = new int[]{SIZE, SIZE};
-        positionMap[4] = new int[]{SIZE, SIZE};
-        positionMap[5] = new int[]{SIZE, SIZE};
-        positionMap[6] = new int[]{SIZE, SIZE};
-        positionMap[7] = new int[]{SIZE, SIZE};
-        positionMap[8] = new int[]{SIZE, SIZE};
+        positionMap[1] = new int[]{53*SIZE, 5*SIZE};
+        positionMap[2] = new int[]{83*SIZE, 10*SIZE};
+        positionMap[3] = new int[]{29*SIZE, 28*SIZE};
+        positionMap[4] = new int[]{48*SIZE, 28*SIZE};
+        positionMap[5] = new int[]{74*SIZE, 31*SIZE};
+        positionMap[6] = new int[]{23*SIZE, 42*SIZE};
+        positionMap[7] = new int[]{50*SIZE, 50*SIZE};
+        positionMap[8] = new int[]{89*SIZE, 43*SIZE};
 
         int[] usedPosition = new int[4];
 
@@ -65,15 +66,15 @@ public class ServerGame {
     public void loadingGeneratorLocation(){
         int count = 0;
         int[][] positionMap = new int[9][2];
-        positionMap[0] = new int[]{SIZE, SIZE};
-        positionMap[1] = new int[]{SIZE, SIZE};
-        positionMap[2] = new int[]{SIZE, SIZE};
-        positionMap[3] = new int[]{SIZE, SIZE};
-        positionMap[4] = new int[]{SIZE, SIZE};
-        positionMap[5] = new int[]{SIZE, SIZE};
-        positionMap[6] = new int[]{SIZE, SIZE};
-        positionMap[7] = new int[]{SIZE, SIZE};
-        positionMap[8] = new int[]{SIZE, SIZE};
+        positionMap[0] = new int[]{9*SIZE, 10*SIZE};
+        positionMap[1] = new int[]{48*SIZE, 7*SIZE};
+        positionMap[2] = new int[]{81*SIZE, 10*SIZE};
+        positionMap[3] = new int[]{8*SIZE, 26*SIZE};
+        positionMap[4] = new int[]{44*SIZE, 27*SIZE};
+        positionMap[5] = new int[]{70*SIZE, 30*SIZE};
+        positionMap[6] = new int[]{20*SIZE, 47*SIZE};
+        positionMap[7] = new int[]{54*SIZE, 40*SIZE};
+        positionMap[8] = new int[]{93*SIZE, 47*SIZE};
 
         int[] usedPosition = new int[4];
 
@@ -99,6 +100,20 @@ public class ServerGame {
             server.broadcastToClient("initGameObject;generator;" +
             generator.getX() + ";" + generator.getY() + ";" + 
             generator.getId());
+        }
+    }
+
+    public void initHealthStatus() {
+        for (int i = 1; i < chars.length; i++) {
+            server.broadcastToClient("updateGameObject;health;2;" + chars[i]);
+        }
+    }
+    // 血量改變時
+    public void setHealthStatus(int health, int id) {
+        for (int i = 1; i < idRole.length; i++) {
+            if (id == idRole[i]) {
+                server.broadcastToClient("updateGameObject;health;" + health + ";" + chars[i]);
+            }
         }
     }
 }
