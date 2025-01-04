@@ -1,6 +1,6 @@
 
 
-public abstract class serverPlayer extends ServerGameObject {
+public abstract class ServerPlayer extends ServerGameObject {
     protected ServerGame game;
 
     private int dx = 0;
@@ -20,7 +20,7 @@ public abstract class serverPlayer extends ServerGameObject {
 
     private Direction facing = Direction.DOWN;
 
-    public serverPlayer(int id, ServerGame game) {
+    public ServerPlayer(int id, ServerGame game) {
         super(id);
         this.game = game;
     }

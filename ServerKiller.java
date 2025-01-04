@@ -1,6 +1,6 @@
 
 
-public class ServerKiller extends serverPlayer {
+public class ServerKiller extends ServerPlayer {
     static final int DEFAULT_MOVE_SPEED = 8;    
     static final int SLOW_MOVE_SPEED = 3;
 
