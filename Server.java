@@ -10,6 +10,8 @@ public class Server implements Comm.TcpServerCallback {
   private int totalPlayers = 0;
   private final Comm.TcpServer server;
   private static ServerGame serverGame;
+  
+  
     
     public static void main(String[] args) {
       try {
@@ -22,6 +24,7 @@ public class Server implements Comm.TcpServerCallback {
         serverGame.loadingGeneratorLocation();
         serverGame.loadingPlayerLocation();
         serverGame.initHealthStatus();
+        serverGame.startGameLoop();
     } catch (IOException e) {
       System.out.println("Failed to create server: " + e.getMessage());
     }
@@ -45,6 +48,15 @@ public class Server implements Comm.TcpServerCallback {
         server.broadcast("startGame");
       }
     }
+
+    if (message.startsWith("KeyDown")) {
+      String key = message.split(";")[1];
+      serverGame.handleKeyInput(id, key, true);
+    } else if (message.startsWith("KeyUp")) {
+      String key = message.split(";")[1];
+      serverGame.handleKeyInput(id, key, false);
+    }
+
     System.out.println("Client " + id + " sent: " + message);
     server.send(id, "Echo: " + message);
   }

@@ -1,13 +1,20 @@
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ServerGame {
     private final Server server;
     private int[] idRole = new int[4];
     private final String[] chars = {"killer", "p1", "p2", "p3"};
-    private final ServerPlayer players[] = new ServerPlayer[4];
+    private final serverPlayer players[] = new serverPlayer[4];
     private final ServerGenerator[] generators = new ServerGenerator[4];
     private final int SIZE = 60;
+    private Timer gameLoopTimer;
     Random rand = new Random();
+
+    private static final int GRID_WIDTH = 100;
+    private static final int GRID_HEIGHT = 60;
+    private final int[][] grid = new int[GRID_WIDTH][GRID_HEIGHT];
 
     public ServerGame(Server server) {
         this.server = server;
@@ -54,7 +61,7 @@ public class ServerGame {
             }
         }
         int index = 0;
-        for (ServerPlayer player : players) {
+        for (serverPlayer player : players) {
             server.broadcastToClient("initGameObject;player;" + 
             player.getX() + ";" + player.getX() + ";" +
             idRole[index]);
@@ -113,6 +120,56 @@ public class ServerGame {
         for (int i = 1; i < idRole.length; i++) {
             if (id == idRole[i]) {
                 server.broadcastToClient("updateGameObject;health;" + health + ";" + chars[i]);
+            }
+        }
+    }
+
+    public void handleKeyInput(int id, String key, boolean isKeyDown) {
+        for (serverPlayer player : players) {
+            if (player != null && player.getId() == id) {
+                int dx = player.getDx();
+                int dy = player.getDy();
+                if (isKeyDown) {
+                    switch (key) {
+                        case "W" -> dy = -1;
+                        case "S" -> dy = 1;
+                        case "A" -> dx = -1;
+                        case "D" -> dx = 1;
+                    }
+                } else {
+                    switch (key) {
+                        case "W", "S" -> dy = 0;
+                        case "A", "D" -> dx = 0;
+                    }
+                }
+                player.setDirection(dx, dy);
+                break;
+            }
+        }
+    } 
+    
+    public void startGameLoop() {
+        gameLoopTimer = new Timer();
+        gameLoopTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    updateGameLogic();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 0, 50); // 每50毫秒执行一次
+    }
+
+    private void updateGameLogic() {
+        for (serverPlayer player : players) {
+            if (player != null && (player.getDx() != 0 || player.getDy() != 0)) {
+                // 更新玩家位置
+                player.updatePosition();
+    
+                // 廣播玩家的新位置
+                server.broadcastToClient("updateGameObject;player;" + player.getX() + ";" + player.getY() + ";" + player.getId());
             }
         }
     }
