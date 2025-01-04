@@ -13,6 +13,8 @@ public class ClientGame {
     private int generatorCount = 4; // 初始發電機數量
     private int healthcount = 2; // 初始玩家血量
     private String role;
+    private int cameraOffsetX = 0;
+    private int cameraOffsetY = 0;
     JPanel middlePanel;
     GamePanel gamePanel = new GamePanel(this);
 
@@ -39,6 +41,7 @@ public class ClientGame {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = screenSize.width;
         int screenHeight = screenSize.height;
+        System.out.println(screenWidth+"|"+screenHeight);
         
         // 計算中部面板的高度（不縮放地圖）
         int topBarHeight = screenHeight / 20; // 頂部狀態欄高度
@@ -87,16 +90,16 @@ public class ClientGame {
         frame.setVisible(true);
         
     }
+    
 
-
-    private JLabel createHealthLabel(String role, int healthcount, int x, int y) {
+    public JLabel createHealthLabel(String role, int healthcount, int x, int y) {
         JLabel healthLabel = new JLabel(role + " Health: " + healthcount);
         healthLabel.setFont(new Font("Arial", Font.BOLD, 18));
         healthLabel.setBounds(x, y, 200, 30); // 設定位置和大小
         healthLabel.setForeground(Color.RED); // 可自定義文字顏色
         return healthLabel;
     }
-    private JLabel createGeneratorLabel(String role, int healthcount, int x, int y) {
+    public JLabel createGeneratorLabel(String role, int healthcount, int x, int y) {
         JLabel generatorLabel = new JLabel(role + " Health: " + healthcount);
         generatorLabel.setFont(new Font("Arial", Font.BOLD, 18));
         generatorLabel.setBounds(x, y, 200, 30); // 設定位置和大小
@@ -129,22 +132,19 @@ public class ClientGame {
         }).start();
     }
     
+    public void updateCameraPosition(int playerX, int playerY) {
+        // 計算偏移量，使角色位於畫面中心
+        cameraOffsetX = playerX - (frame.getWidth() / 2);
+        cameraOffsetY = playerY - (frame.getHeight() / 2);
     
-    
-
-    // public void waitGameStart() {
-    //     synchronized (this) {
-    //         while (generatorTotal == 4 && playerTotal == 4) {
-    //             try {
-    //                 wait();
-    //             } catch (InterruptedException e) {
-    //                 e.printStackTrace();
-    //             }
-    //         }
-    //     }
+        // 限制鏡頭不要超過地圖範圍
+        cameraOffsetX = Math.max(0, Math.min(cameraOffsetX, 6000 - frame.getWidth())); // 6000 是地圖的寬度
+        cameraOffsetY = Math.max(0, Math.min(cameraOffsetY, 3600 - frame.getHeight())); // 3600 是地圖的高度
         
-    //     conn.send("startGame");
-    // }
+        // 更新遊戲面板的顯示範圍
+        gamePanel.setCameraOffset(cameraOffsetX, cameraOffsetY);
+    }
+
 
 
     private int generatorTotal = 0;
@@ -226,9 +226,6 @@ public class ClientGame {
     }
 
     
-    public void updateGenerator() {
-
-    }
 
 
     int playerTotal = 0;
@@ -420,6 +417,7 @@ public class ClientGame {
             }
         });
     }
+    
     
     
     public void updateHealth(String message) {
