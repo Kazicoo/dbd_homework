@@ -8,7 +8,8 @@ public class ServerGame {
     private final String[] chars = {"killer", "p1", "p2", "p3"};
     private final serverPlayer players[] = new serverPlayer[4];
     private final ServerGenerator[] generators = new ServerGenerator[4];
-    private final int SIZE = 60;
+    public static final int GRID_SIZE = 60;
+    public static final float FRAME_PER_SEC = 20;
     private Timer gameLoopTimer;
     Random rand = new Random();
 
@@ -25,22 +26,22 @@ public class ServerGame {
     public void loadingPlayerLocation(){
         int count = 0;
         int[][] positionMap = new int[9][2];
-        positionMap[0] = new int[]{16*SIZE, 10*SIZE};
-        positionMap[1] = new int[]{53*SIZE, 5*SIZE};
-        positionMap[2] = new int[]{83*SIZE, 10*SIZE};
-        positionMap[3] = new int[]{29*SIZE, 28*SIZE};
-        positionMap[4] = new int[]{48*SIZE, 28*SIZE};
-        positionMap[5] = new int[]{74*SIZE, 31*SIZE};
-        positionMap[6] = new int[]{23*SIZE, 42*SIZE};
-        positionMap[7] = new int[]{50*SIZE, 50*SIZE};
-        positionMap[8] = new int[]{89*SIZE, 43*SIZE};
+        positionMap[0] = new int[]{16*GRID_SIZE, 10*GRID_SIZE};
+        positionMap[1] = new int[]{53*GRID_SIZE, 5*GRID_SIZE};
+        positionMap[2] = new int[]{83*GRID_SIZE, 10*GRID_SIZE};
+        positionMap[3] = new int[]{29*GRID_SIZE, 28*GRID_SIZE};
+        positionMap[4] = new int[]{48*GRID_SIZE, 28*GRID_SIZE};
+        positionMap[5] = new int[]{74*GRID_SIZE, 31*GRID_SIZE};
+        positionMap[6] = new int[]{23*GRID_SIZE, 42*GRID_SIZE};
+        positionMap[7] = new int[]{50*GRID_SIZE, 50*GRID_SIZE};
+        positionMap[8] = new int[]{89*GRID_SIZE, 43*GRID_SIZE};
 
         int[] usedPosition = new int[4];
 
-        players[0] = new ServerKiller(idRole[0]);
+        players[0] = new ServerKiller(idRole[0], this);
 
         for (int i = 1; i < 4; i++) {
-            players[i] = new ServerHuman(idRole[i]);
+            players[i] = new ServerHuman(idRole[i], this);
         }
 
         while(count < 4){
@@ -73,15 +74,15 @@ public class ServerGame {
     public void loadingGeneratorLocation(){
         int count = 0;
         int[][] positionMap = new int[9][2];
-        positionMap[0] = new int[]{9*SIZE, 10*SIZE};
-        positionMap[1] = new int[]{48*SIZE, 7*SIZE};
-        positionMap[2] = new int[]{81*SIZE, 10*SIZE};
-        positionMap[3] = new int[]{8*SIZE, 26*SIZE};
-        positionMap[4] = new int[]{44*SIZE, 27*SIZE};
-        positionMap[5] = new int[]{70*SIZE, 30*SIZE};
-        positionMap[6] = new int[]{20*SIZE, 47*SIZE};
-        positionMap[7] = new int[]{54*SIZE, 40*SIZE};
-        positionMap[8] = new int[]{93*SIZE, 47*SIZE};
+        positionMap[0] = new int[]{9*GRID_SIZE, 10*GRID_SIZE};
+        positionMap[1] = new int[]{48*GRID_SIZE, 7*GRID_SIZE};
+        positionMap[2] = new int[]{81*GRID_SIZE, 10*GRID_SIZE};
+        positionMap[3] = new int[]{8*GRID_SIZE, 26*GRID_SIZE};
+        positionMap[4] = new int[]{44*GRID_SIZE, 27*GRID_SIZE};
+        positionMap[5] = new int[]{70*GRID_SIZE, 30*GRID_SIZE};
+        positionMap[6] = new int[]{20*GRID_SIZE, 47*GRID_SIZE};
+        positionMap[7] = new int[]{54*GRID_SIZE, 40*GRID_SIZE};
+        positionMap[8] = new int[]{93*GRID_SIZE, 47*GRID_SIZE};
 
         int[] usedPosition = new int[4];
 
@@ -145,7 +146,11 @@ public class ServerGame {
                 break;
             }
         }
-    } 
+    }
+
+    public void sendMessage(String message) {
+        server.broadcastToClient(message);
+    }
     
     public void startGameLoop() {
         gameLoopTimer = new Timer();
@@ -158,16 +163,30 @@ public class ServerGame {
                     e.printStackTrace();
                 }
             }
-        }, 0, 50); // 每50毫秒执行一次
+        }, 0, 1000 / (int)FRAME_PER_SEC); // 每50毫秒执行一次
     }
 
     private void updateGameLogic() {
         for (serverPlayer player : players) {
-            if (player != null && (player.getDx() != 0 || player.getDy() != 0)) {
-                player.updatePosition();
-                // 廣播玩家的新位置
-                server.broadcastToClient("updateGameObject;player;" + player.getX() + ";" + player.getY() + ";" + player.getId());
-            }
+            player.update();
         }
+    }
+
+    public int[] validateMovement(int x, int y) {
+        int[] result = new int[2];
+        
+        // TODO: 檢查是否合法
+        result[0] = x;
+        result[1] = y;
+
+        return result;
+    }
+    
+    public ServerKiller getKiller() {
+        return (ServerKiller)players[0];
+    }
+
+    public ServerHuman[] getHumans() {
+        return new ServerHuman[]{(ServerHuman)players[1], (ServerHuman)players[2], (ServerHuman)players[3]};
     }
 }
