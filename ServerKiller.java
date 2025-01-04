@@ -48,7 +48,7 @@ public class ServerKiller extends serverPlayer {
         if (attackCounter < ATTACK_CD) {
             attackCounter += 1;
         } else if (attackCounter == ATTACK_CD) {
-            game.sendMessage(message);
+            game.sendMessage("attack;stop");
         }
 
         super.update();
