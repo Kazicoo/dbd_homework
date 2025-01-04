@@ -15,9 +15,11 @@ public class GamePanel extends JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        
         if (backgroundImage != null) {
             g.drawImage(backgroundImage, 0, 0, 6000, 3600, this);
         }
+        
         if (clientGame.clientKiller != null && clientGame.clientKiller.getIcon() != null) {
             ImageIcon killerIcon = clientGame.clientKiller.getIcon();
             int x = clientGame.clientKiller.getX();
@@ -32,6 +34,7 @@ public class GamePanel extends JPanel {
             int x = clientGame.players[i].getX();
             int y = clientGame.players[i].getY();
             playerIcon.paintIcon(this, g, x, y);
+            System.out.println("Drawing player" + clientGame.players[i].getId() +  "at: (" + x + ", " + y + ")");
         }
     }
         System.out.println("paintComponent called");
