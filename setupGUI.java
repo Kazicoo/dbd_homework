@@ -336,6 +336,12 @@
                                 if (i == 3) continue;
                                 characterButtons[i].setEnabled(false);
                             }
+                            ImageIcon p3Image = new ImageIcon("Graphic/p3-stand.PNG");
+                            Image image = p3Image.getImage();
+                            Image scaledImage = image.getScaledInstance(350, 700, Image.SCALE_SMOOTH);
+                            p3Image = new ImageIcon(scaledImage);
+                            imageLabel.setIcon(p3Image); 
+                            imageLabel.setText("");
                         }
                     }
                 } 
@@ -375,6 +381,8 @@
                                 if (i == 3) continue;
                                 characterButtons[i].setEnabled(true);
                             }
+                            imageLabel.setIcon(null); 
+                            imageLabel.setText("請選擇角色");
                         }
                     }
                 }
