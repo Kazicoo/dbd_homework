@@ -89,15 +89,21 @@ public abstract class serverPlayer extends ServerGameObject {
     }
 
     public void update() {
-        int move[] = game.validateMovement(
-            relativeLocationX + (dx * getMoveSpeed()),
-            relativeLocationY + (dy * getMoveSpeed()));
-
-        if (move[0] != 0 || move[1] != 0) {
-            relativeLocationX = move[0];
-            relativeLocationY = move[1];
+        if (dx != 0 || dy != 0) {
+            int newX = relativeLocationX + (dx * getMoveSpeed());
+            int newY = relativeLocationX + (dy * getMoveSpeed());
+            setX(newX);
+            setY(newY);
             game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
         }
+        // int move[] = game.validateMovement(
+        //     relativeLocationX + (dx * getMoveSpeed()),
+        //     relativeLocationY + (dy * getMoveSpeed()));
+        
+        // if (move[0] != 0 || move[1] != 0) {
+        //     relativeLocationX = move[0];
+        //     relativeLocationY = move[1];
+        // }
     }
 
     public boolean inRange(int x, int y, double range, double angle) {
