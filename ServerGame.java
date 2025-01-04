@@ -143,6 +143,7 @@ public class ServerGame {
                         case "A", "D" -> dx = 0;
                     }
                 }
+                player.setDirection(dx, dy);
                 break;
             }
         }
