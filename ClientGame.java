@@ -12,19 +12,20 @@ public class ClientGame {
     private JLabel healthLabel1,healthLabel2,healthLabel3; // 用於顯示玩家血量
     private int generatorCount = 4; // 初始發電機數量
     private int healthcount = 2; // 初始玩家血量
-    private String role;
     JPanel middlePanel;
+    int playerTotal = 0;
+    int killerId = 0;
+    int clientId = 0;
+    private final String[] chars = {"killer", "p1", "p2", "p3"};
+    int idCount = 0;
+    private final int idRole[] = new int[4];
     GamePanel gamePanel = new GamePanel(this);
 
-    
     public ClientGame(TcpClient conn) {
         this.conn = conn;
-        
         initGame();
         initKeyListener();
         waitGameStart();
-        
-
     }
 
 
@@ -59,9 +60,9 @@ public class ClientGame {
         middlePanel.setOpaque(false);
         // 新增 healthLabel
         //將healthbar移動到gamepanel
-        healthLabel1 = createHealthLabel("p1", healthcount, 10, 5);
-        healthLabel2 = createHealthLabel("p2", healthcount, 10, 40);
-        healthLabel3 = createHealthLabel("p3", healthcount, 10, 75);
+        JLabel healthLabel1 = new JLabel();
+        JLabel healthLabel2 = new JLabel();
+        JLabel healthLabel3 = new JLabel();
         gamePanel.add(healthLabel1);
         gamePanel.add(healthLabel2);
         gamePanel.add(healthLabel3);
@@ -80,7 +81,6 @@ public class ClientGame {
         frame.add(topPanel, BorderLayout.NORTH);
         //將healthbar移動到gamepanel
         frame.add(middlePanel);
-
         frame.add(bottomPanel, BorderLayout.SOUTH);
         frame.add(gamePanel, BorderLayout.CENTER);
         // 顯示框架
@@ -89,13 +89,7 @@ public class ClientGame {
     }
 
 
-    private JLabel createHealthLabel(String role, int healthcount, int x, int y) {
-        JLabel healthLabel = new JLabel(role + " Health: " + healthcount);
-        healthLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        healthLabel.setBounds(x, y, 200, 30); // 設定位置和大小
-        healthLabel.setForeground(Color.RED); // 可自定義文字顏色
-        return healthLabel;
-    }
+    
     private JLabel createGeneratorLabel(String role, int healthcount, int x, int y) {
         JLabel generatorLabel = new JLabel(role + " Health: " + healthcount);
         generatorLabel.setFont(new Font("Arial", Font.BOLD, 18));
@@ -108,7 +102,7 @@ public class ClientGame {
         new Thread(() -> {
             while (true) {
                 synchronized (this) {
-                    if (generatorTotal >= 4 && PlayerCount () >= 4) {
+                    if (initGeneratorTotal == 4 && playerTotal == 4) {
                         try {
                             conn.send("startGame");
                             System.out.println("Game started!");
@@ -146,9 +140,9 @@ public class ClientGame {
     //     conn.send("startGame");
     // }
 
-
+    private int initGeneratorTotal = 0; //確保waitgamestart()正確啟動
     private int generatorTotal = 0;
-    private final ClientGenerator[] generators = new ClientGenerator[4];
+    public final ClientGenerator[] generators = new ClientGenerator[4];
 
     public void initGenerator(String message) {
         String[] parts;
@@ -168,22 +162,22 @@ public class ClientGame {
             int x = Integer.parseInt(parts[2]);
             int y = Integer.parseInt(parts[3]);
             
-            for (int i = 0; i < generators.length; i++) {
-                if (generators[i] == null) {
+            
+                
                     // 初始化發電機物件
-                    generators[i] = new ClientGenerator(id);
-                    generators[i].setRelativeLocation(x, y);
+                    generators[generatorTotal] = new ClientGenerator(id);
+                    generators[generatorTotal].setRelativeLocation(x, y);
                     
                     // 初始化按鈕
                     // 載入圖片作為按鈕背景
-                    ImageIcon generatorIcon = new ImageIcon("Graphic/Generator360180.png");
+                    ImageIcon generatorIcon = new ImageIcon("Graphic/Generator-broken.png");
                     JButton generatorButton = new JButton(generatorIcon);
 
                     int imageWidth = generatorIcon.getIconWidth();
                     int imageHeight = generatorIcon.getIconHeight();
 
                     // 設定按鈕的位置和大小
-                    generatorButton.setBounds(generators[i].getX(), generators[i].getY(), imageWidth, imageHeight);
+                    generatorButton.setBounds(generators[generatorTotal].getX(), generators[generatorTotal].getY(), imageWidth, imageHeight);
                     generatorButton.setOpaque(false);     // 讓按鈕背景透明
                     generatorButton.setContentAreaFilled(false); // 移除按鈕預設的背景
                     generatorButton.setBorderPainted(false);     // 移除按鈕邊框
@@ -194,213 +188,125 @@ public class ClientGame {
                     gamePanel.repaint();
                     
                     // 添加互動邏輯
-                    int index = i;
                     generatorButton.addMouseListener(new MouseAdapter() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
                             if (SwingUtilities.isLeftMouseButton(e)) {
-                                conn.send("Clicked;generator;" + generators[index].getId());
+                                conn.send("Clicked;generator;" + generators[generatorTotal].getId());
                             }
                         }
                     });
-
+                    
                     synchronized (this) {
                         generatorTotal++;
+                        initGeneratorTotal++;
                         if (generatorTotal == 4 && playerTotal == 4) {
                             notifyAll(); // 通知等待的線程
                         }
                     }
-                    
-                    System.out.println("Generator initialized: ID " + id + " at (" + generators[i].getX() + ", " + generators[i].getY() + ")");
-                    
                     if (generatorTotal == generators.length) {
                         System.out.println("Maximum generators reached.");
+                        return;
                     }
+                    System.out.println("Generator initialized: ID " + id + " at (" + x + ", " + y + ")");
                     
-                    break;
-                }
-            }
+                    
         } catch (NumberFormatException e) {
             System.out.println("Error parsing coordinates or ID: " + e.getMessage());
         }
     }
 
+
+    int playerCount = 0;
+    ClientPlayer[] clientPlayer = new ClientPlayer[4];
     
-    public void updateGenerator() {
-
-    }
-
-
-    int playerTotal = 0;
-    int humanTotal = 0;
-    int killerTotal = 0;
-    int killerID = 0;
-    public final ClientHuman[] players = new ClientHuman[3];
     
-    public void initHuman(String message) {
-        
-        String parts[];
-        
-        try {
-            parts = message.split(";");
-            if (parts.length < 5 || !"player".equals(parts[1])) {
-                throw new IllegalArgumentException("Invalid player message format.");
-            }
-        } catch (Exception e) {
-            System.out.println("Error parsing player message: " + e.getMessage());
-            return;
-        }
-
-        if (playerTotal == players.length) {
+    public synchronized void initPlayer(String message) {
+        String[] parts = message.split(";");
+        int id = Integer.parseInt(parts[4]);
+        int x = Integer.parseInt(parts[2]);
+        int y = Integer.parseInt(parts[3]);
+    
+        // 這裡檢查是否超過最大玩家數量
+        if (playerCount >= clientPlayer.length) {
             System.out.println("Maximum players reached.");
             return;
         }
-
-        try {
-            int id = Integer.parseInt(parts[4]);
-            int x = Integer.parseInt(parts[2]);
-            int y = Integer.parseInt(parts[3]);
-
-            for (int i = 0; i < players.length; i++) {
-                if (players[i] == null) {
-                players[i] = new ClientHuman(id);
-                players[i].setRelativeLocation(x, y);
-                
-                
-                if (players[i].getId() == 1) {
-                    players[i].setIcon(new ImageIcon("Graphic/p1.png"));
-                }
-                if (players[i].getId() == 2) {
-                    players[i].setIcon(new ImageIcon("Graphic/p2.png"));
-                }
-                if (players[i].getId() == 3) {
-                    players[i].setIcon(new ImageIcon("Graphic/p3.png"));
-                }
-                synchronized (this) {
-                    humanTotal++;
-                    if (generatorTotal == 4 && playerTotal == 4) {
-                        notifyAll();
-                    }
-                }
-                
-                System.out.println("Human initialized: ID " + id + " at (" + x + ", " + y + ")");
-                break;
-                }
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("Error parsing coordinates or ID: " + e.getMessage());
+    
+        // 創建新的 ClientPlayer 並初始化
+        clientPlayer[playerCount] = new ClientPlayer(id);
+        clientPlayer[playerCount].setRelativeLocation(x, y);
+        playerCount++;  // 增加玩家數量
+    
+        // 更新playerTotal並進行同步通知
+        playerTotal++;
+        System.out.println("Player initialized: ID: " + id + " at (" + x + ", " + y + ")");
+    
+        // 如果已經達到4個玩家並且生成器數量也是4，則通知所有等待的線程
+        if (playerTotal == generatorTotal) {
+            notifyAll();
         }
     }
     
     
-    public ClientKiller clientKiller;
 
-    public void initKiller(String message) {
-        String[] parts;
+   
     
-        try {
-            parts = message.split(";");
-            if (parts.length < 5 || !"player".equals(parts[1])) {
-                throw new IllegalArgumentException("Invalid player message format.");
-            }
-        } catch (Exception e) {
-            System.out.println("Error parsing player message: " + e.getMessage());
-            return;
-        }
-    
-        try {
-            int id = Integer.parseInt(parts[4]);
-            int x = Integer.parseInt(parts[2]);
-            int y = Integer.parseInt(parts[3]);
-    
-                killerID = id;
-                clientKiller = new ClientKiller(id);
-                clientKiller.setRelativeLocation(x, y);
-    
-                // 設置圖片
-                ImageIcon killerIcon = new ImageIcon("Graphic/p0.png");
-                clientKiller.setIcon(killerIcon);
-    
-                synchronized (this) {
-                    killerTotal++;
-                    if (generatorTotal == 4 && playerTotal == 4) {
-                        notifyAll();
-                    }
-                }
-                
-                System.out.println("Killer initialized: ID " + id + " at (" + x + ", " + y + ")");
-
-        } catch (NumberFormatException e) {
-            System.out.println("Error parsing coordinates or ID: " + e.getMessage());
-        }
-    }
-    
-    public int PlayerCount () {
-        playerTotal = killerTotal + humanTotal;
-        return playerTotal;
-    }
 
     public void updatePlayerPosition(String message) {
         String[] parts;
         parts = message.split(";");
-           
+        
         try {
             int x = Integer.parseInt(parts[2]); // 新的 x 座標
             int y = Integer.parseInt(parts[3]); // 新的 y 座標
-            int id = Integer.parseInt(parts[4]); // 玩家或殺手 ID
-        
+            int id = Integer.parseInt(parts[4]); // 玩家
+    
             // 檢查是否更新玩家或殺手位置
             synchronized (this) {
-                if (id == killerID && clientKiller != null) {
-                    clientKiller.setRelativeLocation(x, y);
-                } else {
-                    for (ClientHuman player : players) {
-                        if (player != null && player.getId() == id) {
-                            player.setRelativeLocation(x, y);
-                            break;
-                        }
+                for (int i = 0; i < clientPlayer.length; i++) {
+                    if (clientPlayer[i] != null && clientPlayer[i].getId() == id) {
+                        clientPlayer[i].setRelativeLocation(x, y);
                     }
                 }
+    
+                // 重繪遊戲畫面
+                gamePanel.repaint();
             }
-        
-            // 重繪遊戲畫面
-            gamePanel.repaint();
-            if(id == killerID) {
-                System.out.println("killer Position updated: ID " + id + " to (" + x + ", " + y + ")");
-            } else System.out.println("player Position updated: ID " + id + " to (" + x + ", " + y + ")");
         } catch (NumberFormatException e) {
             System.out.println("Error parsing coordinates or ID: " + e.getMessage());
         }
-    }        
+    }
+    
+
     
     public void initKeyListener() {
         frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 char key = Character.toLowerCase(e.getKeyChar());
-                
-                switch (key) {
-                    case 'w':
-                        conn.send("KeyDown;W");
-                        break;
-                    case 'a':
-                        conn.send("KeyDown;A");
-                        break;
-                    case 's':
-                        conn.send("KeyDown;S");
-                        break;
-                    case 'd':
-                        conn.send("KeyDown;D");
-                        break;
-                    default:
-                        System.out.println("Unhandled key press: " + key);
-                }
+                    switch (key) {
+                        case 'w':
+                            conn.send("KeyDown;W");
+                            break;
+                        case 'a':
+                            conn.send("KeyDown;A");
+                            break;
+                        case 's':
+                            conn.send("KeyDown;S");
+                            break;
+                        case 'd':
+                            conn.send("KeyDown;D");
+                            break;
+                        default:
+                            System.out.println("Unhandled key press: " + key);
+                    }
             }
     
             @Override
             public void keyReleased(KeyEvent e) {
                 char key = Character.toLowerCase(e.getKeyChar());
-                
+    
                 switch (key) {
                     case 'w':
                         conn.send("KeyUp;W");
@@ -418,39 +324,122 @@ public class ClientGame {
                         System.out.println("Unhandled key release: " + key);
                 }
             }
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char key = e.getKeyChar();
+                
+                // 檢查是否為空白鍵
+                if (key == KeyEvent.VK_SPACE) {
+                    for (int i = 0; i < clientPlayer.length ; i++) {
+                        if (clientPlayer[i] != null && clientPlayer[i].getRole().equals("killer")) {
+                        conn.send("Attack");
+                        }
+                }
+                } 
+            }
+            
         });
+
+        frame.setFocusable(true);
+        frame.requestFocusInWindow();
+
     }
     
+
+    
+   
     
     
 
 
 
-    private int count = 0;
+    // 收到 initGameObject 時呼叫此方法
+    // updateGameObject;health;<hp: 0, 1, 2>;<human: p1, p2, p3>
 
-// 收到 initGameObject 時呼叫此方法
-    public void initstatusbar(String[] part, int id, JPanel panel) {
-        String[] chars = {"killer", "p1", "p2", "p3"};
-
-        if (part[4].equals("" + id)) {
-            role = chars[count];
-            int yPosition = 5 + count * 35; // 動態調整標籤位置，避免重疊
-
-            JLabel healthLabel = createHealthLabel(role, healthcount, 10, yPosition);
-            JLabel generatorLabel = createGeneratorLabel(role, generatorCount, 10, yPosition);
-            panel.add(healthLabel); // 將標籤添加到指定面板
-            panel.add(generatorLabel);
-            panel.revalidate();
-            panel.repaint();
-
-            count++;
+    public void initHealthStatus(String message) {
+        String[] parts = message.split(";");
+        String healthValue = parts[2];
+        String role = parts[3];
+        
+        // 解析血量值
+        int health = Integer.parseInt(healthValue);
+        
+        String status;
+        
+        // 根據血量設定狀態
+        switch (health) {
+            case 2:
+                status = "(健康)";
+                break;
+            case 1:
+                status = "(受傷)";
+                break;
+            case 0:
+                status = "(倒地)";
+                break;
+           
         }
     }
+    // 定義角色列表
+    //     String[] chars = {"killer", "p1", "p2", "p3"};
 
+    //     // 根據角色初始化狀態欄
+    //     switch (role) {
+    //         case "p1":
+    //             healthLabel1.setText((role + health + " ") + " " + status);
+    //             healthLabel1.setBounds(10 , 5 , 200 ,30);
+    //             gamePanel.add(healthLabel1);                     
+    //             break;
+    //         case "p2":
+    //             healthLabel2.setText((role + health + " ") + " " + status);
+    //             healthLabel2.setBounds(10 , 40 , 200 ,30);
+    //             gamePanel.add(healthLabel2);                      
+    //             break;
+    //         case "p3":
+    //             healthLabel3.setText((role + health + " ") + " " + status);
+    //             healthLabel3.setBounds(10 , 75 , 200 ,30);                        
+    //             gamePanel.add(healthLabel3);
+    //             break;
+    //         default:
+    //             System.out.println("未知的角色: " + role);
+    //             break;
+    //     }
+
+    //     // 更新面板以顯示狀態
+    //     gamePanel.revalidate();
+    //     gamePanel.repaint();
+    // }
 
     
+    
+    public void playerIcon() {
+        ImageIcon p1Icon = new ImageIcon("Graphic/p1front.png");
+        ImageIcon p2Icon = new ImageIcon("Graphic/p2front.png");
+        ImageIcon p3Icon = new ImageIcon("Graphic/p3front.png");
+        ImageIcon killerIcon = new ImageIcon("Graphic/killer.png");
+        for (int i = 0; i < clientPlayer.length;i++){
+                if (clientPlayer[i]!=null && clientPlayer[i].getRole().equals("p1")) {
+                    
+                    clientPlayer[i].setIcon(p1Icon);
+            }
+                if (clientPlayer[i]!=null && clientPlayer[i].getRole().equals("p2")) {
+                    
+                    clientPlayer[i].setIcon(p2Icon);
+            }
+                if (clientPlayer[i]!=null && clientPlayer[i].getRole().equals("p3")) {
+                    
+                    clientPlayer[i].setIcon(p3Icon);
+            }
+            if (clientPlayer[i]!=null && clientPlayer[i].getRole().equals("killer")) {
+                    
+                clientPlayer[i].setIcon(killerIcon);
+            } 
+        }
+    }  
+        
+
 }
-    
     
     
 

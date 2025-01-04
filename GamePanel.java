@@ -19,22 +19,15 @@ public class GamePanel extends JPanel {
         if (backgroundImage != null) {
             g.drawImage(backgroundImage, 0, 0, 6000, 3600, this);
         }
-        
-        if (clientGame.clientKiller != null && clientGame.clientKiller.getIcon() != null) {
-            ImageIcon killerIcon = clientGame.clientKiller.getIcon();
-            int x = clientGame.clientKiller.getX();
-            int y = clientGame.clientKiller.getY();
-            killerIcon.paintIcon(this, g, x, y);
-        }
 
          // 繪製玩家
-    for (int i = 0; i < clientGame.players.length; i++) {
-        if (clientGame.players[i] != null && clientGame.players[i].getIcon() != null) {
-            ImageIcon playerIcon = clientGame.players[i].getIcon();
-            int x = clientGame.players[i].getX();
-            int y = clientGame.players[i].getY();
+    for (int i = 0; i < clientGame.clientPlayer.length; i++) {
+        if (clientGame.clientPlayer[i] != null && clientGame.clientPlayer[i].getIcon() != null) {
+            ImageIcon playerIcon = clientGame.clientPlayer[i].getIcon();
+            int x = clientGame.clientPlayer[i].getX();
+            int y = clientGame.clientPlayer[i].getY();
             playerIcon.paintIcon(this, g, x, y);
-            System.out.println("Drawing player" + clientGame.players[i].getId() +  "at: (" + x + ", " + y + ")");
+            System.out.println("Drawing player" + clientGame.clientPlayer[i].getId() +  "at: (" + x + ", " + y + ")");
         }
     }
         System.out.println("paintComponent called");
