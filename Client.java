@@ -62,10 +62,17 @@ public class Client implements Comm.TcpClientCallback {
     }
     
     if (message.startsWith("updateReadyState")) {
-      if ("ready".equals(parts[1])) initialGUI.playerReady(true, message, id);
-      if ("unready".equals(parts[1])) initialGUI.playerReady(false, message, id);
-      if ("killer".equals(parts[2])) {
-        killerId = Integer.parseInt(parts[3]);  
+      if ("ready".equals(parts[1])) {
+        initialGUI.playerReady(true, message, id);
+        if ("killer".equals(parts[2])) {
+          killerId = Integer.parseInt(parts[3]);  
+        }
+      }
+      if ("unready".equals(parts[1])) {
+        initialGUI.playerReady(false, message, id);
+        if ("killer".equals(parts[2])) {
+          killerId = -1;
+        }
       }
     }
 
@@ -85,15 +92,15 @@ public class Client implements Comm.TcpClientCallback {
   
           if ("generator".equals(type)) {
               // 初始化發電機
-              System.out.println("Initializing generator at (" + x + ", " + y + ") with ID " + id);
+              // System.out.println("Initializing generator at (" + x + ", " + y + ") with ID " + id);
               ClientGame.initGenerator(message);
           } else if ("player".equals(type)) {
               // 初始化玩家
               if (killerId == id) {
-                System.out.println("Initializing killer at (" + x + ", " + y + ") with ID " + id);
+                // System.out.println("Initializing killer at (" + x + ", " + y + ") with ID " + id);
                 ClientGame.initKiller(message);
               } else {
-                System.out.println("Initializing player at (" + x + ", " + y + ") with ID " + id);
+                // System.out.println("Initializing player at (" + x + ", " + y + ") with ID " + id);
                 ClientGame.initHuman(message);
               }
           } else {
