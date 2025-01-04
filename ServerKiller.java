@@ -47,6 +47,8 @@ public class ServerKiller extends serverPlayer {
 
         if (attackCounter < ATTACK_CD) {
             attackCounter += 1;
+        } else if (attackCounter == ATTACK_CD) {
+            game.sendMessage(message);
         }
 
         super.update();
@@ -59,6 +61,8 @@ public class ServerKiller extends serverPlayer {
         resetAttackCounter();
         setSlowMoveSpeed();
         moveSpeedEffectTime = (int)(2 * ServerGame.FRAME_PER_SEC);
+        // 送封包給客戶端
+        game.sendMessage("attack;" + getFacing());
 
         for (ServerHuman human : game.getHumans()) {
             if (inRange(human.getX(), human.getY(), ATTACK_RANGE, ATTACK_ANGLE)) {

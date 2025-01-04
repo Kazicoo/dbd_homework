@@ -7,7 +7,7 @@ public class Client implements Comm.TcpClientCallback {
   private setupGUI initialGUI;
   private int id;
   private ClientGame ClientGame;
-  int killerId;
+  private int killerId;
 
   public static void main(String[] args) {  
     try {
@@ -64,8 +64,9 @@ public class Client implements Comm.TcpClientCallback {
     if (message.startsWith("updateReadyState")) {
       if ("ready".equals(parts[1])) initialGUI.playerReady(true, message, id);
       if ("unready".equals(parts[1])) initialGUI.playerReady(false, message, id);
-      if ("killer".equals(parts[2])) killerId = Integer.parseInt(parts[3]);  
-      
+      if ("killer".equals(parts[2])) {
+        killerId = Integer.parseInt(parts[3]);  
+      }
     }
 
     if ("startLoading".equals(message)) {
