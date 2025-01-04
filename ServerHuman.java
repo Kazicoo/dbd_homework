@@ -3,6 +3,7 @@ public class ServerHuman extends serverPlayer {
 
     public ServerHuman(int id) {
         super(id);
+        setSpeed(6);
     }
 
     public int getHealth() {
