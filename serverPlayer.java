@@ -92,8 +92,7 @@ public abstract class serverPlayer extends ServerGameObject {
         if (dx != 0 || dy != 0) {
             int newX = relativeLocationX + (dx * getMoveSpeed());
             int newY = relativeLocationX + (dy * getMoveSpeed());
-            setX(newX);
-            setY(newY);
+            setRelativeLocation(newX, newY);
             game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
         }
         // int move[] = game.validateMovement(
