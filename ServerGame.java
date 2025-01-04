@@ -142,7 +142,6 @@ public class ServerGame {
                         case "A", "D" -> dx = 0;
                     }
                 }
-                player.setDirection(dx, dy);
                 break;
             }
         }
@@ -165,9 +164,7 @@ public class ServerGame {
     private void updateGameLogic() {
         for (serverPlayer player : players) {
             if (player != null && (player.getDx() != 0 || player.getDy() != 0)) {
-                // 更新玩家位置
                 player.updatePosition();
-    
                 // 廣播玩家的新位置
                 server.broadcastToClient("updateGameObject;player;" + player.getX() + ";" + player.getY() + ";" + player.getId());
             }
