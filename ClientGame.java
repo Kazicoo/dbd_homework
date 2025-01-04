@@ -1,7 +1,7 @@
 import Comm.TcpClient;
 import java.awt.*;
-import javax.swing.*;
 import java.awt.event.*;
+import javax.swing.*;
 
 
 public class ClientGame {
@@ -199,7 +199,7 @@ public class ClientGame {
                         @Override
                         public void mouseClicked(MouseEvent e) {
                             if (SwingUtilities.isLeftMouseButton(e)) {
-                                conn.send("Player clicked generator ID: " + generators[index].getId());
+                                conn.send("Clicked;generator;" + generators[index].getId());
                             }
                         }
                     });

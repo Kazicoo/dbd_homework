@@ -1,7 +1,7 @@
 public class ServerGameObject {
     private final int id;
-    private int relativeLocationX;
-    private int relativeLocationY;  
+    protected int relativeLocationX;
+    protected int relativeLocationY;  
 
     public ServerGameObject(int id) {
         this.id = id;
