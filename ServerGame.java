@@ -164,12 +164,7 @@ public class ServerGame {
     private void updateGameLogic() {
         for (serverPlayer player : players) {
             if (player != null && (player.getDx() != 0 || player.getDy() != 0)) {
-                if (player.getId() == idRole[0]) {
-                    player.updatePosition();
-                }
-                for (int i = 1; i < idRole.length; i++) {
-                    player.updatePosition();
-                }
+                player.updatePosition();
                 // 廣播玩家的新位置
                 server.broadcastToClient("updateGameObject;player;" + player.getX() + ";" + player.getY() + ";" + player.getId());
             }

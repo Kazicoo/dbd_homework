@@ -8,11 +8,11 @@ public class serverPlayer extends ServerGameObject {
     }
 
     public int getDx() {
-        return dx;
+        return this.dx;
     }
 
     public int getDy() {
-        return dy;
+        return this.dy;
     }
 
     public void setDirection(int dx, int dy) {
@@ -21,7 +21,7 @@ public class serverPlayer extends ServerGameObject {
     }
 
     public int getSpeed() {
-        return speed;
+        return this.speed;
     }
 
     public void setSpeed(int speed) {
@@ -29,7 +29,7 @@ public class serverPlayer extends ServerGameObject {
     }
 
     public void updatePosition() {
-        setX(getX() + dx * speed); 
-        setY(getY() + dy * speed);
+        setX(getX() + this.dx * speed); 
+        setY(getY() + this.dy * speed);
     }
 }

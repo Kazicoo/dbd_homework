@@ -3,6 +3,10 @@ public class ServerHuman extends serverPlayer {
 
     public ServerHuman(int id) {
         super(id);
+        initializeSpeed();
+    }
+
+    private void initializeSpeed() {
         setSpeed(6);
     }
 
