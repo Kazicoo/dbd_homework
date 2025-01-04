@@ -133,18 +133,30 @@ public class ClientGame {
     }
     
     public void updateCameraPosition(int playerX, int playerY) {
-        // 計算偏移量，使角色位於畫面中心
-        cameraOffsetX = playerX - (frame.getWidth() / 2);
-        cameraOffsetY = playerY - (frame.getHeight() / 2);
+        // 獲取當前裝置的螢幕解析度
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenWidth = screenSize.width;
+        int screenHeight = screenSize.height;
+    
+        // 計算偏移量
+        cameraOffsetX = playerX - (screenWidth / 2);
+        cameraOffsetY = playerY - (screenHeight / 2);
+        
+        //更新
+        int NEWX = playerX + cameraOffsetX , NEWY = playerY + cameraOffsetY;
+        int dx = NEWX - playerX;
+        int dy = NEWY - playerY;
+        cameraOffsetX -= dx;
+        cameraOffsetY -= dy;
     
         // 限制鏡頭不要超過地圖範圍
-        cameraOffsetX = Math.max(0, Math.min(cameraOffsetX, 6000 - frame.getWidth())); // 6000 是地圖的寬度
-        cameraOffsetY = Math.max(0, Math.min(cameraOffsetY, 3600 - frame.getHeight())); // 3600 是地圖的高度
-        
+        cameraOffsetX = Math.max(0, Math.min(cameraOffsetX, 6000 - screenWidth)); // 6000 是地圖的寬度
+        cameraOffsetY = Math.max(0, Math.min(cameraOffsetY, 3600 - screenHeight)); // 3600 是地圖的高度
+    
         // 更新遊戲面板的顯示範圍
         gamePanel.setCameraOffset(cameraOffsetX, cameraOffsetY);
     }
-
+    
 
 
     private int generatorTotal = 0;
