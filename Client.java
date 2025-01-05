@@ -86,6 +86,16 @@ public class Client implements Comm.TcpClientCallback {
 
     // initGameObject;player;<x: int>;<y: int>;<id: "0" | "1" | "2" | "3">
     if (message.startsWith("initGameObject")) {
+      synchronized (this) {
+            while (!ClientGame.isGamePanelInitialized) {
+                try {
+                    wait(); // 等待通知
+                } catch (InterruptedException e) {
+                    System.out.println("Waiting interrupted: " + e.getMessage());
+                }
+            }
+      }
+
       if (parts.length == 5) { // 確保格式正確
           String type = parts[1]; // 對象類型
           int x = Integer.parseInt(parts[2]); // X 座標
@@ -96,7 +106,7 @@ public class Client implements Comm.TcpClientCallback {
             System.out.println("Initializing generator at (" + x + ", " + y + ") with ID " + ClientGame.generators[generatorCount].getId());
             generatorCount++;  
           } else if ("player".equals(type)) {
-            ClientGame.initPlayer(message);
+            ClientGame.initPlayer(message,id);
             // System.out.println("Initializing player at (" + x + ", " + y + ") with ID " + id);
           }
       } 
@@ -105,6 +115,12 @@ public class Client implements Comm.TcpClientCallback {
     if(message.startsWith("updateGameObject"))  {
       if (parts[1].equals("player")){
         ClientGame.updatePlayerPosition(message);
+      }
+    }
+
+    if(message.startsWith("attack")) {
+      if(parts[1].equals("Facing")) {
+        
       }
     }
     
