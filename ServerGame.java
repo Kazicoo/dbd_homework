@@ -64,7 +64,7 @@ public class ServerGame {
         int index = 0;
         for (ServerPlayer player : players) {
             server.broadcastToClient("initGameObject;player;" + 
-            player.getX() + ";" + player.getX() + ";" +
+            player.getX() + ";" + player.getY() + ";" +
             idRole[index]);
             index++;
         }

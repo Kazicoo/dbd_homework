@@ -179,33 +179,30 @@ public class ClientGame {
             int id = Integer.parseInt(parts[4]);
             int x = Integer.parseInt(parts[2]);
             int y = Integer.parseInt(parts[3]);
-            
-            
-                
-                    // 初始化發電機物件
-                    generators[generatorTotal] = new ClientGenerator(id);
-                    generators[generatorTotal].setRelativeLocation(x, y);
+            // 初始化發電機物件
+            generators[generatorTotal] = new ClientGenerator(id);
+            generators[generatorTotal].setRelativeLocation(x, y);
                     
-                    // 初始化按鈕
-                    // 載入圖片作為按鈕背景
-                    ImageIcon generatorIcon = new ImageIcon("Graphic/Generator-broken.png");
-                    JButton generatorButton = new JButton(generatorIcon);
+            // 初始化按鈕
+            // 載入圖片作為按鈕背景
+            ImageIcon generatorIcon = new ImageIcon("Graphic/Generator-broken.png");
+            JButton generatorButton = new JButton(generatorIcon);
 
-                    int imageWidth = generatorIcon.getIconWidth();
-                    int imageHeight = generatorIcon.getIconHeight();
+            int imageWidth = generatorIcon.getIconWidth();
+            int imageHeight = generatorIcon.getIconHeight();
 
-                    // 設定按鈕的位置和大小
-                    generatorButton.setBounds(generators[generatorTotal].getX(), generators[generatorTotal].getY(), imageWidth, imageHeight);
-                    generatorButton.setOpaque(false);     // 讓按鈕背景透明
-                    generatorButton.setContentAreaFilled(false); // 移除按鈕預設的背景
-                    generatorButton.setBorderPainted(false);     // 移除按鈕邊框
+            // 設定按鈕的位置和大小
+            generatorButton.setBounds(generators[generatorTotal].getX(), generators[generatorTotal].getY(), imageWidth, imageHeight);
+            generatorButton.setOpaque(false);     // 讓按鈕背景透明
+            generatorButton.setContentAreaFilled(false); // 移除按鈕預設的背景
+            generatorButton.setBorderPainted(false);     // 移除按鈕邊框
                     
-                    // 添加到面板
-                    gamePanel.add(generatorButton);
-                    gamePanel.revalidate();
-                    gamePanel.repaint();
+            // 添加到面板
+            gamePanel.add(generatorButton);
+            gamePanel.revalidate();
+            gamePanel.repaint();
                     
-                    // 添加互動邏輯
+            // 添加互動邏輯
                     generatorButton.addMouseListener(new MouseAdapter() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
