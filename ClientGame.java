@@ -5,15 +5,16 @@ import javax.swing.*;
 
 
 public class ClientGame {
-    
+    boolean isGamePanelInitialized = false;
     private TcpClient conn;
     private JFrame frame;
     private JLabel generatorLabel; // 用於顯示發電機數量
     private JLabel healthLabel1,healthLabel2,healthLabel3; // 用於顯示玩家血量
     private int generatorCount = 4; // 初始發電機數量
     private int healthcount = 2; // 初始玩家血量
-    private int cameraOffsetX = 0;
-    private int cameraOffsetY = 0;
+    private String status;
+    private int cameraX = 0;
+    private int cameraY = 0;
     JPanel middlePanel;
     int playerTotal = 0;
     int killerId = 0;
@@ -21,8 +22,7 @@ public class ClientGame {
     private final String[] chars = {"killer", "p1", "p2", "p3"};
     int idCount = 0;
     private final int idRole[] = new int[4];
-    GamePanel gamePanel = new GamePanel(this);
-
+    private GamePanel gamePanel;
     public ClientGame(TcpClient conn) {
         this.conn = conn;
         initGame();
@@ -32,6 +32,8 @@ public class ClientGame {
 
 
     public void initGame() { 
+        this.gamePanel = new GamePanel(this);
+
         frame = new JFrame("迷途逃生");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -89,16 +91,14 @@ public class ClientGame {
         // 顯示框架
         frame.setVisible(true);
         
+        synchronized (this) {
+            isGamePanelInitialized = true;
+            notifyAll(); // 通知等待的線程
+        }
     }
     
 
-    public JLabel createHealthLabel(String role, int healthcount, int x, int y) {
-        JLabel healthLabel = new JLabel(role + " Health: " + healthcount);
-        healthLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        healthLabel.setBounds(x, y, 200, 30); // 設定位置和大小
-        healthLabel.setForeground(Color.RED); // 可自定義文字顏色
-        return healthLabel;
-    }
+    
     public JLabel createGeneratorLabel(String role, int healthcount, int x, int y) {
         JLabel generatorLabel = new JLabel(role + " Health: " + healthcount);
         generatorLabel.setFont(new Font("Arial", Font.BOLD, 18));
@@ -139,16 +139,9 @@ public class ClientGame {
         int screenHeight = screenSize.height;
     
         // 計算偏移量
-        cameraOffsetX = playerX - (screenWidth / 2);
-        cameraOffsetY = playerY - (screenHeight / 2);
+        int cameraOffsetX = playerX - (screenWidth / 2);
+        int cameraOffsetY = playerY - (screenHeight / 2);
         
-        //更新
-        int NEWX = playerX + cameraOffsetX , NEWY = playerY + cameraOffsetY;
-        int dx = NEWX - playerX;
-        int dy = NEWY - playerY;
-        cameraOffsetX -= dx;
-        cameraOffsetY -= dy;
-    
         // 限制鏡頭不要超過地圖範圍
         cameraOffsetX = Math.max(0, Math.min(cameraOffsetX, 6000 - screenWidth)); // 6000 是地圖的寬度
         cameraOffsetY = Math.max(0, Math.min(cameraOffsetY, 3600 - screenHeight)); // 3600 是地圖的高度
@@ -156,9 +149,8 @@ public class ClientGame {
         // 更新遊戲面板的顯示範圍
         gamePanel.setCameraOffset(cameraOffsetX, cameraOffsetY);
     }
-    
 
-    private int initGeneratorTotal = 0; //確保waitgamestart()正確啟動
+    private int initGeneratorTotal = 0; //確保waitgamestart正確啟動
     private int generatorTotal = 0;
     public final ClientGenerator[] generators = new ClientGenerator[4];
 
@@ -246,16 +238,14 @@ public class ClientGame {
         clientPlayers[playerCount].setRelativeLocation(x, y);
         clientPlayers[playerCount].setRole(chars[playerCount]);
         clientPlayers[playerCount].setIsSelf(ClientId == id);
-
-        if (playerCount >= 0 && playerCount < clientPlayers.length && clientPlayers[playerCount] != null) {
-            if (clientPlayers[playerCount].getRole() != null) {
-                playerIcon();
-            }
+        clientPlayers[playerCount].initImage();
+        if (ClientId == id) {
+            updateCameraPosition(x, y);
         }
-        
-
+        System.out.println(clientPlayers[playerCount].getRole());
         playerCount++;
-    
+        
+        
         // 更新playerTotal並進行同步通知
         playerTotal++;
         System.out.println("Player initialized: ID: " + ClientId + " at (" + x + ", " + y + ")");
@@ -270,6 +260,7 @@ public class ClientGame {
         }
     }
 
+    
     public void updatePlayerPosition(String message) {
         String[] parts = message.split(";");
         try {
@@ -282,11 +273,13 @@ public class ClientGame {
                 for (ClientPlayer clientPlayer : clientPlayers) {
                     if (clientPlayer != null && clientPlayer.getId() == id) {
                         clientPlayer.setRelativeLocation(x, y);
+                        // clientPlayer.moveIcon(x,y);
                     }
                 }
                 // 重繪遊戲畫面
                 gamePanel.repaint();
             }
+            updateCameraPosition(x, y);
         } catch (NumberFormatException e) {
             System.out.println("Error parsing coordinates or ID: " + e.getMessage());
         }
@@ -296,70 +289,85 @@ public class ClientGame {
         frame.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                char key = Character.toLowerCase(e.getKeyChar());
-                    switch (key) {
-                        case 'w':
-                            conn.send("KeyDown;W");
-                            break;
-                        case 'a':
-                            conn.send("KeyDown;A");
-                            break;
-                        case 's':
-                            conn.send("KeyDown;S");
-                            break;
-                        case 'd':
-                            conn.send("KeyDown;D");
-                            break;
-                        default:
-                            System.out.println("Unhandled key press: " + key);
+                char key = Character.toUpperCase(e.getKeyChar()); // 將小寫字母轉換為大寫
+    
+                // 確認玩家是當前玩家
+                for (ClientPlayer player : clientPlayers) {
+                    if (player != null && player.getIsSelf()) {
+                        // 使用傳入的方向來更新玩家的移動
+                        switch (key) {
+                            case 'W':  // 向上移動
+                                // player.updateMovement("W");
+                                conn.send("KeyDown;W");
+                                break;
+                            case 'A':  // 向左移動
+                                // player.updateMovement("A");
+                                conn.send("KeyDown;A");
+                                break;
+                            case 'S':  // 向下移動
+                                // player.updateMovement("S");
+                                conn.send("KeyDown;S");
+                                break;
+                            case 'D':  // 向右移動
+                                // player.updateMovement("D");
+                                conn.send("KeyDown;D");
+                                break;
+                            default:
+                                System.out.println("Unhandled key press: " + key);
+                        }
                     }
+                }
             }
     
             @Override
             public void keyReleased(KeyEvent e) {
-                char key = Character.toLowerCase(e.getKeyChar());
+                char key = Character.toUpperCase(e.getKeyChar());
     
-                switch (key) {
-                    case 'w':
-                        conn.send("KeyUp;W");
-                        break;
-                    case 'a':
-                        conn.send("KeyUp;A");
-                        break;
-                    case 's':
-                        conn.send("KeyUp;S");
-                        break;
-                    case 'd':
-                        conn.send("KeyUp;D");
-                        break;
-                    default:
-                        System.out.println("Unhandled key release: " + key);
+                for (ClientPlayer player : clientPlayers) {
+                    if (player != null && player.getIsSelf()) {
+                        // 當按鍵被釋放時更新玩家狀態
+                        switch (key) {
+                            case 'W':
+                                conn.send("KeyUp;W");
+                                break;
+                            case 'A':
+                                conn.send("KeyUp;A");
+                                break;
+                            case 'S':
+                                conn.send("KeyUp;S");
+                                break;
+                            case 'D':
+                                conn.send("KeyUp;D");
+                                break;
+                            default:
+                                System.out.println("Unhandled key release: " + key);
+                        }
+                    }
                 }
             }
-
+    
             @Override
             public void keyTyped(KeyEvent e) {
                 char key = e.getKeyChar();
-                
+    
                 // 檢查是否為空白鍵
                 if (key == KeyEvent.VK_SPACE) {
-                    for (int i = 0; i < clientPlayers.length ; i++) {
-                        if (clientPlayers[i] != null 
-                        && "killer".equals(clientPlayers[i].getRole()) 
-                        && clientPlayers[i].getIsSelf()== true) {
-                        conn.send("Attack");
-                        
+                    for (ClientPlayer player : clientPlayers) {
+                        if (player != null && "killer".equals(player.getRole()) && player.getIsSelf()) {
+                            conn.send("attack");
+                            player.setAction("attack");
                         }
+                    }
                 }
-                } 
             }
-            
+    
         });
-
+    
         frame.setFocusable(true);
         frame.requestFocusInWindow();
-
     }
+    
+    
     
     public void updateHealth(String message) {
         String[] parts = message.split(";");
@@ -420,7 +428,7 @@ public class ClientGame {
         // 解析血量值
         int health = Integer.parseInt(healthValue);
         
-        String status;
+        
         
         // 根據血量設定狀態
         switch (health) {
@@ -430,17 +438,17 @@ public class ClientGame {
            
         }
     }
-    // 定義角色列表
-    //     String[] chars = {"killer", "p1", "p2", "p3"};
+    // //定義角色列表
+    //      String[] chars = {"killer", "p1", "p2", "p3"};
 
     //     // 根據角色初始化狀態欄
     //     switch (role) {
     //         case "p1":
-    //             healthLabel1.setText((role + health + " ") + " " + status);
-    //             healthLabel1.setBounds(10 , 5 , 200 ,30);
-    //             gamePanel.add(healthLabel1);                     
-    //             break;
-    //         case "p2":
+    //              healthLabel1.setText((role + health + " ") + " " + status);
+    //              healthLabel1.setBounds(10 , 5 , 200 ,30);
+    //              gamePanel.add(healthLabel1);                     
+    //              break;
+    // /         case "p2":
     //             healthLabel2.setText((role + health + " ") + " " + status);
     //             healthLabel2.setBounds(10 , 40 , 200 ,30);
     //             gamePanel.add(healthLabel2);                      
@@ -460,26 +468,7 @@ public class ClientGame {
     //     gamePanel.repaint();
     // }
     
-    public void playerIcon() {
-        ImageIcon p1Icon = new ImageIcon("Graphic/Human/p1/p1-front.png");
-        ImageIcon p2Icon = new ImageIcon("Graphic/Human/p2/p2-front.png");
-        ImageIcon p3Icon = new ImageIcon("Graphic/Human/p3/p3-front.png");
-        ImageIcon killerIcon = new ImageIcon("Graphic/Killer/killer-left.png");
-        for (ClientPlayer clientPlayer1 : clientPlayers) {
-            if (clientPlayer1 != null && clientPlayer1.getRole().equals("p1")) {
-                clientPlayer1.setIcon(p1Icon);
-            }
-            if (clientPlayer1 != null && clientPlayer1.getRole().equals("p2")) {
-                clientPlayer1.setIcon(p2Icon);
-            }
-            if (clientPlayer1 != null && clientPlayer1.getRole().equals("p3")) {
-                clientPlayer1.setIcon(p3Icon);
-            }
-            if (clientPlayer1 != null && clientPlayer1.getRole().equals("killer")) {
-                clientPlayer1.setIcon(killerIcon);
-            } 
-        }
-    }          
+        
 }
     
     
