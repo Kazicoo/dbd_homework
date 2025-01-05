@@ -357,11 +357,6 @@ public class ClientGame {
 
     }
     
-
-    
-   
-    
-    
     public void updateHealth(String message) {
         String[] parts = message.split(";");
         
@@ -408,10 +403,7 @@ public class ClientGame {
         // 刷新面板以顯示更新內容
         middlePanel.revalidate();
         middlePanel.repaint();
-    }
-    
-
-
+    } 
 
     // 收到 initGameObject 時呼叫此方法
     // updateGameObject;health;<hp: 0, 1, 2>;<human: p1, p2, p3>
@@ -428,15 +420,9 @@ public class ClientGame {
         
         // 根據血量設定狀態
         switch (health) {
-            case 2:
-                status = "(健康)";
-                break;
-            case 1:
-                status = "(受傷)";
-                break;
-            case 0:
-                status = "(倒地)";
-                break;
+            case 2 -> status = "(健康)";
+            case 1 -> status = "(受傷)";
+            case 0 -> status = "(倒地)";
            
         }
     }
@@ -469,35 +455,27 @@ public class ClientGame {
     //     gamePanel.revalidate();
     //     gamePanel.repaint();
     // }
-
-    
     
     public void playerIcon() {
         ImageIcon p1Icon = new ImageIcon("Graphic/p1front.png");
         ImageIcon p2Icon = new ImageIcon("Graphic/p2front.png");
         ImageIcon p3Icon = new ImageIcon("Graphic/p3front.png");
         ImageIcon killerIcon = new ImageIcon("Graphic/killer.png");
-        for (int i = 0; i < clientPlayer.length;i++){
-                if (clientPlayer[i]!=null && clientPlayer[i].getRole().equals("p1")) {
-                    
-                    clientPlayer[i].setIcon(p1Icon);
+        for (ClientPlayer clientPlayer1 : clientPlayer) {
+            if (clientPlayer1 != null && clientPlayer1.getRole().equals("p1")) {
+                clientPlayer1.setIcon(p1Icon);
             }
-                if (clientPlayer[i]!=null && clientPlayer[i].getRole().equals("p2")) {
-                    
-                    clientPlayer[i].setIcon(p2Icon);
+            if (clientPlayer1 != null && clientPlayer1.getRole().equals("p2")) {
+                clientPlayer1.setIcon(p2Icon);
             }
-                if (clientPlayer[i]!=null && clientPlayer[i].getRole().equals("p3")) {
-                    
-                    clientPlayer[i].setIcon(p3Icon);
+            if (clientPlayer1 != null && clientPlayer1.getRole().equals("p3")) {
+                clientPlayer1.setIcon(p3Icon);
             }
-            if (clientPlayer[i]!=null && clientPlayer[i].getRole().equals("killer")) {
-                    
-                clientPlayer[i].setIcon(killerIcon);
+            if (clientPlayer1 != null && clientPlayer1.getRole().equals("killer")) {
+                clientPlayer1.setIcon(killerIcon);
             } 
         }
-    }  
-        
-
+    }          
 }
     
     
