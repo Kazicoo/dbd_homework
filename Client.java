@@ -4,16 +4,11 @@ import java.util.Scanner;
 
 public class Client implements Comm.TcpClientCallback {
   private Comm.TcpClient client;
-  private setupGUI initialGUI;
+  private final setupGUI initialGUI;
   private int id;
   private ClientGame ClientGame;
-  private int killerId;
-  private int generatorId= 0;
   private int generatorCount = 0;
-  String humanImage[] = new String[3];
-  String killerImage;
   public static String[] chars = {"killer", "p1", "p2", "p3"};
-  String role;
   
   public static void main(String[] args) {  
     try {
@@ -72,13 +67,12 @@ public class Client implements Comm.TcpClientCallback {
       if ("ready".equals(parts[1])) {
         initialGUI.playerReady(true, message, id);
         if ("killer".equals(parts[2])) {
-          killerId = Integer.parseInt(parts[3]);  
+            Integer.parseInt(parts[3]);  
         }
       }
       if ("unready".equals(parts[1])) {
         initialGUI.playerReady(false, message, id);
         if ("killer".equals(parts[2])) {
-          killerId = -1;
         }
       }
     }
@@ -109,7 +103,6 @@ public class Client implements Comm.TcpClientCallback {
     }
 
     if(message.startsWith("updateGameObject"))  {
-      String[] updateGameObjectLogic = message.split(";");
       if (parts[1].equals("player")){
         ClientGame.updatePlayerPosition(message);
       }
