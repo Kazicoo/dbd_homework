@@ -12,7 +12,6 @@ public class ClientGame {
     private JLabel healthLabel1,healthLabel2,healthLabel3; // 用於顯示玩家血量
     private int generatorCount = 4; // 初始發電機數量
     private int healthcount = 2; // 初始玩家血量
-    private String role;
     private int cameraOffsetX = 0;
     private int cameraOffsetY = 0;
     JPanel middlePanel;
@@ -249,6 +248,7 @@ public class ClientGame {
         // 創建新的 ClientPlayer 並初始化
         clientPlayer[playerCount] = new ClientPlayer(id);
         clientPlayer[playerCount].setRelativeLocation(x, y);
+        clientPlayer[playerCount].setRole(chars[playerCount]);
         playerCount++;
     
         // 更新playerTotal並進行同步通知

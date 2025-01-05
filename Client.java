@@ -1,8 +1,6 @@
 import java.io.*;
 import java.util.Scanner;
 
-import javax.swing.ImageIcon;
-
 
 public class Client implements Comm.TcpClientCallback {
   private Comm.TcpClient client;
@@ -14,7 +12,7 @@ public class Client implements Comm.TcpClientCallback {
   private int generatorCount = 0;
   String humanImage[] = new String[3];
   String killerImage;
-  private final String[] chars = {"killer", "p1", "p2", "p3"};
+  public static String[] chars = {"killer", "p1", "p2", "p3"};
   int count = 0;
   String role;
   
@@ -100,21 +98,16 @@ public class Client implements Comm.TcpClientCallback {
           int x = Integer.parseInt(parts[2]); // X 座標
           int y = Integer.parseInt(parts[3]); // Y 座標
           if ("generator".equals(type)) {
-              // 初始化發電機
-              ClientGame.initGenerator(message);
-              System.out.println("Initializing generator at (" + x + ", " + y + ") with ID " + ClientGame.generators[generatorCount].getId());
-              generatorCount++;
-              
+            // 初始化發電機
+            ClientGame.initGenerator(message);
+            System.out.println("Initializing generator at (" + x + ", " + y + ") with ID " + ClientGame.generators[generatorCount].getId());
+            generatorCount++;  
           } else if ("player".equals(type)) {
             ClientGame.initPlayer(message);
-              if (parts[4].equals(""+id)){
-                role = chars[count];
-              } 
-              ClientGame.clientPlayer[count].setRole(role);
-              // System.out.println("Initializing player at (" + x + ", " + y + ") with ID " + id);
-              count++;
+            ClientGame.clientPlayer[count].setIsSelf(parts[4].equals(""+id));
+            // System.out.println("Initializing player at (" + x + ", " + y + ") with ID " + id);
+            count++;
           }
-
       } 
     }
 
