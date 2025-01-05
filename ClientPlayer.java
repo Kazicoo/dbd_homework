@@ -19,7 +19,6 @@ public class ClientPlayer extends ClientGameObject {
 
     public void setRole(String role) {
         this.role = role;
-        
     }
 
     public String getRole() {
@@ -38,7 +37,7 @@ public class ClientPlayer extends ClientGameObject {
         return currentImage;
     }
     public ImageIcon initImage() {
-        if (role.equals("killer")) {
+        if (this.role.equals("killer")) {
             idleImage = new ImageIcon("Graphic/Killer/killer-left.png");
             attackLeftImage = new ImageIcon("Graphic/Killer/killer-attackLeft.png");
             attackRightImage = new ImageIcon("Graphic/Killer/killer-attackRight.png");
@@ -47,30 +46,30 @@ public class ClientPlayer extends ClientGameObject {
             rightIcon = new ImageIcon("Graphic/Killer/killer-right.png");
             leftIcon = new ImageIcon("Graphic/Killer/killer-left.png");
             System.out.println("killer image initialized");
-        } else if (role.equals("p1")) {
+        } else if (this.role.equals("p1")) {
             idleImage = new ImageIcon("Graphic/Human/p1/p1-front.png");
-            backImage = new ImageIcon("Graphic/Human/p1-back.png");
-            frontImage = new ImageIcon("Graphic/Human/p1-front.png");
-            rightIcon = new ImageIcon("Graphic/Human/p1-right.png");
-            leftIcon = new ImageIcon("Graphic/Human/p1-left.png");
+            backImage = new ImageIcon("Graphic/Human/p1/p1-back.png");
+            frontImage = new ImageIcon("Graphic/Human/p1/p1-front.png");
+            rightIcon = new ImageIcon("Graphic/Human/p1/p1-right.png");
+            leftIcon = new ImageIcon("Graphic/Human/p1/p1-left.png");
             attackLeftImage = null; // Survivor 沒有攻擊動作
             attackRightImage = null;
             System.out.println("p1 image initialized");
-        } else if (role.equals("p2")) {
+        } else if (this.role.equals("p2")) {
             idleImage = new ImageIcon("Graphic/Human/p2/p2-front.png");
-            backImage = new ImageIcon("Graphic/Human/p2-back.png");
-            frontImage = new ImageIcon("Graphic/Human/p2-front.png");
-            rightIcon = new ImageIcon("Graphic/Human/p2-right.png");
-            leftIcon = new ImageIcon("Graphic/Human/p2-left.png");
+            backImage = new ImageIcon("Graphic/Human/p2/p2-back.png");
+            frontImage = new ImageIcon("Graphic/Human/p2/p2-front.png");
+            rightIcon = new ImageIcon("Graphic/Human/p2/p2-right.png");
+            leftIcon = new ImageIcon("Graphic/Human/p2/p2-left.png");
             attackLeftImage = null; // Survivor 沒有攻擊動作
             attackRightImage = null;
             System.out.println("p2 image initialized");
-        } else if (role.equals("p3")) {
+        } else if (this.role.equals("p3")) {
             idleImage = new ImageIcon("Graphic/Human/p3/p3-front.png");
-            backImage = new ImageIcon("Graphic/Human/p3-back.png");
-            frontImage = new ImageIcon("Graphic/Human/p3-front.png");
-            rightIcon = new ImageIcon("Graphic/Human/p3-right.png");
-            leftIcon = new ImageIcon("Graphic/Human/p3-left.png");
+            backImage = new ImageIcon("Graphic/Human/p3/p3-back.png");
+            frontImage = new ImageIcon("Graphic/Human/p3/p3-front.png");
+            rightIcon = new ImageIcon("Graphic/Human/p3/p3-right.png");
+            leftIcon = new ImageIcon("Graphic/Human/p3/p3-left.png");
             attackLeftImage = null; // Survivor 沒有攻擊動作
             attackRightImage = null;
             System.out.println("p3 image initialized");
@@ -82,26 +81,26 @@ public class ClientPlayer extends ClientGameObject {
     
     
 
-    // public void updateMovement(String direction) {
-    //     // 根據按下的方向鍵來更新圖片
-    //     switch (direction) {
-    //         case "W":
-    //             currentImage = backImage;
-    //             break;
-    //         case "A":
-    //             currentImage = leftIcon;
-    //             break;
-    //         case "S":
-    //             currentImage = frontImage;
-    //             break;
-    //         case "D":
-    //             currentImage = rightIcon;
-    //             break;
-    //         default:
-    //             currentImage = idleImage;
-    //             break;
-    //     }
-    // }
+    public void updateMovement(String direction) {
+        // 根據按下的方向鍵來更新圖片
+        switch (direction) {
+            case "W":
+                currentImage = backImage;
+                break;
+            case "A":
+                currentImage = leftIcon;
+                break;
+            case "S":
+                currentImage = frontImage;
+                break;
+            case "D":
+                currentImage = rightIcon;
+                break;
+            default:
+                currentImage = idleImage;
+                break;
+        }
+    }
     
 
     public void setAction(String action) {

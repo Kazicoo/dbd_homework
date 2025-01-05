@@ -1,5 +1,3 @@
-
-
 public class ServerWall extends ServerMapItems{
 
     public ServerWall() {

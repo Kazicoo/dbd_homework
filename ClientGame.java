@@ -5,7 +5,6 @@ import javax.swing.*;
 
 
 public class ClientGame {
-    boolean isGamePanelInitialized = false;
     private TcpClient conn;
     private JFrame frame;
     private JLabel generatorLabel; // 用於顯示發電機數量
@@ -13,16 +12,13 @@ public class ClientGame {
     private int generatorCount = 4; // 初始發電機數量
     private int healthcount = 2; // 初始玩家血量
     private String status;
-    private int cameraX = 0;
-    private int cameraY = 0;
+    int playerCount = 0;
+    ClientPlayer[] clientPlayers = new ClientPlayer[4];
     JPanel middlePanel;
     int playerTotal = 0;
-    int killerId = 0;
-    int clientId = 0;
     private final String[] chars = {"killer", "p1", "p2", "p3"};
-    int idCount = 0;
-    private final int idRole[] = new int[4];
     private GamePanel gamePanel;
+
     public ClientGame(TcpClient conn) {
         this.conn = conn;
         initGame();
@@ -33,7 +29,6 @@ public class ClientGame {
 
     public void initGame() { 
         this.gamePanel = new GamePanel(this);
-
         frame = new JFrame("迷途逃生");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -90,15 +85,8 @@ public class ClientGame {
         frame.add(gamePanel, BorderLayout.CENTER);
         // 顯示框架
         frame.setVisible(true);
-        
-        synchronized (this) {
-            isGamePanelInitialized = true;
-            notifyAll(); // 通知等待的線程
-        }
     }
-    
 
-    
     public JLabel createGeneratorLabel(String role, int healthcount, int x, int y) {
         JLabel generatorLabel = new JLabel(role + " Health: " + healthcount);
         generatorLabel.setFont(new Font("Arial", Font.BOLD, 18));
@@ -131,17 +119,35 @@ public class ClientGame {
             }
         }).start();
     }
+
+    public void initCameraPosition(int playerX, int playerY) {
+        // 獲取當前裝置的螢幕解析度
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        int screenWidth = screenSize.width;
+        int screenHeight = screenSize.height;
+
+        int cameraX = playerX - (screenWidth / 2);
+        int cameraY = playerY - (screenHeight / 2);
+    
+        System.out.println("X" + playerX);
+        System.out.println("Y" + playerY);
+        System.out.println(cameraX);
+        System.out.println(cameraY);
+
+        gamePanel.setCameraOffset(cameraX, cameraY);
+    }
     
     public void updateCameraPosition(int playerX, int playerY) {
         // 獲取當前裝置的螢幕解析度
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = screenSize.width;
         int screenHeight = screenSize.height;
-    
+  
         // 計算偏移量
-        int cameraOffsetX = playerX - (screenWidth / 2);
-        int cameraOffsetY = playerY - (screenHeight / 2);
-        
+        int cameraOffsetX = playerX - (screenWidth / 2 );
+        int cameraOffsetY = playerY - (screenHeight / 2 );
+
         // 限制鏡頭不要超過地圖範圍
         cameraOffsetX = Math.max(0, Math.min(cameraOffsetX, 6000 - screenWidth)); // 6000 是地圖的寬度
         cameraOffsetY = Math.max(0, Math.min(cameraOffsetY, 3600 - screenHeight)); // 3600 是地圖的高度
@@ -221,9 +227,6 @@ public class ClientGame {
             System.out.println("Error parsing coordinates or ID: " + e.getMessage());
         }
     }
-
-    int playerCount = 0;
-    ClientPlayer[] clientPlayers = new ClientPlayer[4];
     
     
     public void initPlayer(String message, int ClientId) {
@@ -239,8 +242,10 @@ public class ClientGame {
         clientPlayers[playerCount].setRole(chars[playerCount]);
         clientPlayers[playerCount].setIsSelf(ClientId == id);
         clientPlayers[playerCount].initImage();
+
         if (ClientId == id) {
-            updateCameraPosition(x, y);
+            initCameraPosition(x, y);
+            gamePanel.repaint();
         }
         System.out.println(clientPlayers[playerCount].getRole());
         playerCount++;
@@ -248,7 +253,7 @@ public class ClientGame {
         
         // 更新playerTotal並進行同步通知
         playerTotal++;
-        System.out.println("Player initialized: ID: " + ClientId + " at (" + x + ", " + y + ")");
+        System.out.println("Player initialized: ID: " + id + " at (" + x + ", " + y + ")");
     
         if (playerCount >= clientPlayers.length) {
             System.out.println("Maximum number of players reached.");
@@ -261,25 +266,27 @@ public class ClientGame {
     }
 
     
-    public void updatePlayerPosition(String message) {
+    public void updatePlayerPosition(String message, int clientId) {
         String[] parts = message.split(";");
         try {
             int x = Integer.parseInt(parts[2]); // 新的 x 座標
             int y = Integer.parseInt(parts[3]); // 新的 y 座標
             int id = Integer.parseInt(parts[4]); // 玩家
-    
+
             // 檢查是否更新玩家或殺手位置
             synchronized (this) {
                 for (ClientPlayer clientPlayer : clientPlayers) {
                     if (clientPlayer != null && clientPlayer.getId() == id) {
                         clientPlayer.setRelativeLocation(x, y);
-                        // clientPlayer.moveIcon(x,y);
+                        if (clientId == id) {
+                            updateCameraPosition(x, y);
+                        }
                     }
                 }
+                // clientPlayer.moveIcon(x,y);
                 // 重繪遊戲畫面
                 gamePanel.repaint();
             }
-            updateCameraPosition(x, y);
         } catch (NumberFormatException e) {
             System.out.println("Error parsing coordinates or ID: " + e.getMessage());
         }
@@ -297,19 +304,19 @@ public class ClientGame {
                         // 使用傳入的方向來更新玩家的移動
                         switch (key) {
                             case 'W':  // 向上移動
-                                // player.updateMovement("W");
+                                player.updateMovement("W");
                                 conn.send("KeyDown;W");
                                 break;
                             case 'A':  // 向左移動
-                                // player.updateMovement("A");
+                                player.updateMovement("A");
                                 conn.send("KeyDown;A");
                                 break;
                             case 'S':  // 向下移動
-                                // player.updateMovement("S");
+                                player.updateMovement("S");
                                 conn.send("KeyDown;S");
                                 break;
                             case 'D':  // 向右移動
-                                // player.updateMovement("D");
+                                player.updateMovement("D");
                                 conn.send("KeyDown;D");
                                 break;
                             default:

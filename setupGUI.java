@@ -305,14 +305,20 @@
                                 characterButtons[i].setEnabled(false);
                             }
                             // 殺手圖案
-                            ImageIcon killerImage = new ImageIcon("Graphic/p0.PNG");
+                            ImageIcon killerImage = new ImageIcon("Graphic/Killer/killer-standFrontBack.PNG");
                             Image image = killerImage.getImage();
-                            Image scaledImage = image.getScaledInstance(700, 700, Image.SCALE_SMOOTH);
+                            Image scaledImage = image.getScaledInstance(350, 700, Image.SCALE_SMOOTH);
                             killerImage = new ImageIcon(scaledImage);
                             imageLabel.setIcon(killerImage); 
                             imageLabel.setText("");  
                         }
                         case "p1" -> {
+                            ImageIcon p1Image = new ImageIcon("Graphic/Human/p1/p1-stand.PNG");
+                            Image image = p1Image.getImage();
+                            Image p1scaledImage = image.getScaledInstance(350, 700, Image.SCALE_SMOOTH);
+                            p1Image = new ImageIcon(p1scaledImage);
+                            imageLabel.setIcon(p1Image); 
+                            imageLabel.setText("");  
                             characterButtons[1].setBackground(Color.GREEN);
                             characterSelected[1] = true;
                             for (int i = 0; i < characterButtons.length; i++) {
@@ -322,6 +328,12 @@
 
                         }
                         case "p2" -> {
+                           ImageIcon p2Image = new ImageIcon("Graphic/Human/p1/p1-stand.PNG");
+                            Image image = p2Image.getImage();
+                            Image p2scaledImage = image.getScaledInstance(350, 700, Image.SCALE_SMOOTH);
+                            p2Image = new ImageIcon(p2scaledImage);
+                            imageLabel.setIcon(p2Image); 
+                            imageLabel.setText(""); 
                             characterButtons[2].setBackground(Color.GREEN);
                             characterSelected[2] = true;
                             for (int i = 0; i < characterButtons.length; i++) {
@@ -330,18 +342,18 @@
                             }
                         }
                         case "p3" -> {
+                            ImageIcon p3Image = new ImageIcon("Graphic/Human/p3/p3-stand.PNG");
+                            Image image = p3Image.getImage();
+                            Image p3scaledImage = image.getScaledInstance(350, 700, Image.SCALE_SMOOTH);
+                            p3Image = new ImageIcon(p3scaledImage);
+                            imageLabel.setIcon(p3Image); 
+                            imageLabel.setText(""); 
                             characterButtons[3].setBackground(Color.GREEN);
                             characterSelected[3] = true;
                             for (int i = 0; i < characterButtons.length; i++) {
                                 if (i == 3) continue;
                                 characterButtons[i].setEnabled(false);
                             }
-                            ImageIcon p3Image = new ImageIcon("Graphic/p3-stand.PNG");
-                            Image image = p3Image.getImage();
-                            Image scaledImage = image.getScaledInstance(350, 700, Image.SCALE_SMOOTH);
-                            p3Image = new ImageIcon(scaledImage);
-                            imageLabel.setIcon(p3Image); 
-                            imageLabel.setText("");
                         }
                     }
                 } 

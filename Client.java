@@ -86,15 +86,6 @@ public class Client implements Comm.TcpClientCallback {
 
     // initGameObject;player;<x: int>;<y: int>;<id: "0" | "1" | "2" | "3">
     if (message.startsWith("initGameObject")) {
-      synchronized (this) {
-            while (!ClientGame.isGamePanelInitialized) {
-                try {
-                    wait(); // 等待通知
-                } catch (InterruptedException e) {
-                    System.out.println("Waiting interrupted: " + e.getMessage());
-                }
-            }
-      }
 
       if (parts.length == 5) { // 確保格式正確
           String type = parts[1]; // 對象類型
@@ -114,7 +105,7 @@ public class Client implements Comm.TcpClientCallback {
 
     if(message.startsWith("updateGameObject"))  {
       if (parts[1].equals("player")){
-        ClientGame.updatePlayerPosition(message);
+        ClientGame.updatePlayerPosition(message, id);
       }
     }
 
