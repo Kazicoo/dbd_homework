@@ -424,8 +424,6 @@ public class ClientGame {
                                     player.updateMovement("D"); 
                                 } else if (isMovingLeft) { 
                                     player.updateMovement("A"); 
-                                } else {
-                                    player.updateMovement("");
                                 }
                             }
                             case 'A' -> {
@@ -437,8 +435,6 @@ public class ClientGame {
                                     player.updateMovement("W");
                                 } else if (isMovingDown) { 
                                     player.updateMovement("S");
-                                } else {
-                                    player.updateMovement("");
                                 }
                             }
                             case 'S' -> {
@@ -450,8 +446,6 @@ public class ClientGame {
                                     player.updateMovement("D");
                                 } else if (isMovingLeft) {
                                     player.updateMovement("A");
-                                } else {
-                                    player.updateMovement("");
                                 }
                             }
                             case 'D' -> {
@@ -463,27 +457,15 @@ public class ClientGame {
                                     player.updateMovement("W"); 
                                 } else if (isMovingDown) {
                                     player.updateMovement("S");
-                                } else {
-                                    player.updateMovement("");
                                 }
                             }
                             default -> System.out.println("Unhandled key release: " + key);
                         }
 
-                        // if (!isMovingUp && !isMovingLeft && !isMovingDown && !isMovingRight) {
-                        //     player.updateMovement(""); // 設置為靜止狀態 
-                        // } else { 
-                        //     // 根據最新狀態更新玩家的移動方向 
-                        //     if (isMovingUp) { 
-                        //         player.updateMovement("W"); 
-                        //     } else if (isMovingDown) { 
-                        //         player.updateMovement("S"); 
-                        //     } else if (isMovingLeft) { 
-                        //         player.updateMovement("A"); 
-                        //     } else if (isMovingRight) { 
-                        //         player.updateMovement("D"); 
-                        //     } 
-                        // }
+                        if (!isMovingUp && !isMovingLeft && !isMovingDown && !isMovingRight) {
+                            player.updateMovement("");
+                            gamePanel.repaint();
+                        }
                     }
                 }
             }
