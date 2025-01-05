@@ -13,7 +13,6 @@ public class Client implements Comm.TcpClientCallback {
   String humanImage[] = new String[3];
   String killerImage;
   public static String[] chars = {"killer", "p1", "p2", "p3"};
-  int count = 0;
   String role;
   
   public static void main(String[] args) {  
@@ -106,7 +105,6 @@ public class Client implements Comm.TcpClientCallback {
             ClientGame.initPlayer(message);
             ClientGame.clientPlayer[count].setIsSelf(parts[4].equals(""+id));
             // System.out.println("Initializing player at (" + x + ", " + y + ") with ID " + id);
-            count++;
           }
       } 
     }
