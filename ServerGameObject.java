@@ -1,7 +1,7 @@
 public class ServerGameObject {
     private final int id;
     protected int relativeLocationX;
-    protected int relativeLocationY;  
+    protected int relativeLocationY;
 
     public ServerGameObject(int id) {
         this.id = id;
@@ -32,5 +32,9 @@ public class ServerGameObject {
 
     public int getY() {
         return relativeLocationY;
+    }
+
+    public boolean isColliding(ServerPlayer serverPlayer) {
+        return false;
     }
 }

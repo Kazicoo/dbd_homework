@@ -61,5 +61,5 @@ public class ServerHuman extends ServerPlayer {
 
     public int setHealth(int health) {
         return this.health = health;
-    }
+    }   
 }
