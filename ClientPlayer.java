@@ -91,7 +91,7 @@ public class ClientPlayer extends ClientGameObject {
             case "A" -> leftIcon;
             case "S" -> frontImage;
             case "D" -> rightIcon;
-            case "G" -> standImage;
+            case "" -> standImage;
             default -> idleImage;
         };
     }
