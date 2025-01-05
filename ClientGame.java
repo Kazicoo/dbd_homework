@@ -454,10 +454,10 @@ public class ClientGame {
     // }
     
     public void playerIcon() {
-        ImageIcon p1Icon = new ImageIcon("Graphic/p1front.png");
-        ImageIcon p2Icon = new ImageIcon("Graphic/p2front.png");
-        ImageIcon p3Icon = new ImageIcon("Graphic/p3front.png");
-        ImageIcon killerIcon = new ImageIcon("Graphic/killer.png");
+        ImageIcon p1Icon = new ImageIcon("Graphic/Human/p1/p1-front.png");
+        ImageIcon p2Icon = new ImageIcon("Graphic/Human/p2/p2-front.png");
+        ImageIcon p3Icon = new ImageIcon("Graphic/Human/p3/p3-front.png");
+        ImageIcon killerIcon = new ImageIcon("Graphic/Killer/killer-left.png");
         for (ClientPlayer clientPlayer1 : clientPlayer) {
             if (clientPlayer1 != null && clientPlayer1.getRole().equals("p1")) {
                 clientPlayer1.setIcon(p1Icon);
