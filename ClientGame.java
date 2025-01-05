@@ -249,6 +249,8 @@ public class ClientGame {
         clientPlayer[playerCount] = new ClientPlayer(id);
         clientPlayer[playerCount].setRelativeLocation(x, y);
         clientPlayer[playerCount].setRole(chars[playerCount]);
+        clientPlayer[playerCount].setIsSelf(parts[4].equals(""+id));
+
         playerCount++;
     
         // 更新playerTotal並進行同步通知

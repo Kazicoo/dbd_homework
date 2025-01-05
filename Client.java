@@ -103,7 +103,6 @@ public class Client implements Comm.TcpClientCallback {
             generatorCount++;  
           } else if ("player".equals(type)) {
             ClientGame.initPlayer(message);
-            ClientGame.clientPlayer[count].setIsSelf(parts[4].equals(""+id));
             // System.out.println("Initializing player at (" + x + ", " + y + ") with ID " + id);
           }
       } 
