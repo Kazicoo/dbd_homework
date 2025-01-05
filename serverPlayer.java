@@ -21,7 +21,7 @@ public abstract class ServerPlayer extends ServerGameObject {
     private Direction facing = Direction.DOWN;
 
     public ServerPlayer(int id, ServerGame game) {
-        super(id, true);
+        super(id);
         this.game = game;
     }
 
@@ -92,17 +92,16 @@ public abstract class ServerPlayer extends ServerGameObject {
         if (dx != 0 || dy != 0) {
             int newX = relativeLocationX + (dx * getMoveSpeed());
             int newY = relativeLocationY + (dy * getMoveSpeed());
-            setRelativeLocation(newX, newY);
-            game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
+
+            int move[] = game.validateMovement(newX, newY);
+            if (move[0] != 0 || move[1] != 0) {
+                relativeLocationX = move[0];
+                relativeLocationY = move[1];
+                setRelativeLocation(newX, newY);
+                game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
+            }
+
         }
-        // int move[] = game.validateMovement(
-        //     relativeLocationX + (dx * getMoveSpeed()),
-        //     relativeLocationY + (dy * getMoveSpeed()));
-        
-        // if (move[0] != 0 || move[1] != 0) {
-        //     relativeLocationX = move[0];
-        //     relativeLocationY = move[1];
-        // }
     }
 
     public boolean inRange(int x, int y, double range, double angle) {
@@ -135,5 +134,10 @@ public abstract class ServerPlayer extends ServerGameObject {
         return 
             (theta >= base_angle - angle / 2) &&
             (theta <= base_angle + angle / 2);
+    }
+
+    @Override
+    public boolean isColliding(ServerPlayer serverPlayer) {
+        return true;
     }
 }

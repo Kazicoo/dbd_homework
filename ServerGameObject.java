@@ -2,11 +2,9 @@ public class ServerGameObject {
     private final int id;
     protected int relativeLocationX;
     protected int relativeLocationY;
-    private boolean isCollisionStatus; 
 
-    public ServerGameObject(int id, boolean isCollisionStatus) {
+    public ServerGameObject(int id) {
         this.id = id;
-        this.isCollisionStatus = isCollisionStatus;
         this.relativeLocationX = -1;
         this.relativeLocationY = -1; 
     }
@@ -36,11 +34,7 @@ public class ServerGameObject {
         return relativeLocationY;
     }
 
-    public void setCollisionStatus(boolean isCollisionStatus) {
-        this.isCollisionStatus = isCollisionStatus;
-    }
-
-    public boolean getCollisionStatus() {
-        return this.isCollisionStatus;
+    public boolean isColliding(ServerPlayer serverPlayer) {
+        return false;
     }
 }

@@ -108,11 +108,7 @@ public class ServerGame {
                 generator.getX() + ";" + generator.getY() + ";" + generator.getId());
         }
     }
-
-    public void loadingWall() {
-        grid[20][20] = new ServerWall(0); 
-    }
-
+    
     public void initHealthStatus() {
         for (int i = 1; i < chars.length; i++) {
             server.broadcastToClient("updateGameObject;health;2;" + chars[i]);
@@ -126,7 +122,7 @@ public class ServerGame {
             }
         }
     }
-
+    
     public void handleKeyInput(int id, String key, boolean isKeyDown) {
         for (ServerPlayer player : players) {
             if (player != null && player.getId() == id) {
@@ -150,7 +146,7 @@ public class ServerGame {
             }
         }
     }
-
+    
     public void sendMessage(String message) {
         server.broadcastToClient(message);
     }
@@ -168,7 +164,7 @@ public class ServerGame {
             }
         }, 0, 1000 / (int)FRAME_PER_SEC); // 每50毫秒执行一次
     }
-
+    
     private void updateGameLogic() {
         for (ServerPlayer player : players) {
             player.update();
@@ -177,19 +173,31 @@ public class ServerGame {
 
     public int[] validateMovement(int x, int y) {
         int[] result = new int[2];
+        int px = x / 60;
+        int py = y / 60;
+
+        if (grid[px][py] != null && grid[px][py].isColliding(this)) {
+            result[0] = 0;
+            result[1] = 0;
+            return result;
+        }
         
         // TODO: 檢查是否合法
         result[0] = x;
         result[1] = y;
-
+        
         return result;
     }
     
     public ServerKiller getKiller() {
         return (ServerKiller)players[0];
     }
-
+    
     public ServerHuman[] getHumans() {
         return new ServerHuman[]{(ServerHuman)players[1], (ServerHuman)players[2], (ServerHuman)players[3]};
+    }
+    
+    public void initWall() {
+        grid[20][20] = new ServerWall();
     }
 }
