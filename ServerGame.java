@@ -176,11 +176,11 @@ public class ServerGame {
         int px = x / 60;
         int py = y / 60;
 
-        if (grid[px][py] != null && grid[px][py].isColliding(this)) {
-            result[0] = 0;
-            result[1] = 0;
-            return result;
-        }
+        // if (grid[px][py] != null && grid[px][py].isColliding(this)) {
+        //     result[0] = 0;
+        //     result[1] = 0;
+        //     return result;
+        // }
         
         // TODO: 檢查是否合法
         result[0] = x;
