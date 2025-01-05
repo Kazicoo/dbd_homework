@@ -15,7 +15,7 @@ public class ServerGame {
 
     private static final int GRID_WIDTH = 100;
     private static final int GRID_HEIGHT = 60;
-    private final int[][] grid = new int[GRID_WIDTH][GRID_HEIGHT];
+    private final ServerGameObject[][] grid = new ServerGameObject[GRID_WIDTH][GRID_HEIGHT];
 
     public ServerGame(Server server) {
         this.server = server;
@@ -107,6 +107,10 @@ public class ServerGame {
             server.broadcastToClient("initGameObject;generator;" +
                 generator.getX() + ";" + generator.getY() + ";" + generator.getId());
         }
+    }
+
+    public void loadingWall() {
+        grid[20][20] = new ServerWall(0); 
     }
 
     public void initHealthStatus() {
