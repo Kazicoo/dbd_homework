@@ -2,6 +2,6 @@
 
 public class ServerGenerator extends ServerMapItems {       
     public ServerGenerator(int id) {
-        super(id);
+        super(id, true);
     }
 }

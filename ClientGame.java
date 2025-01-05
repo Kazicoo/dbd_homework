@@ -12,7 +12,6 @@ public class ClientGame {
     private JLabel healthLabel1,healthLabel2,healthLabel3; // 用於顯示玩家血量
     private int generatorCount = 4; // 初始發電機數量
     private int healthcount = 2; // 初始玩家血量
-    private String role;
     private int cameraOffsetX = 0;
     private int cameraOffsetY = 0;
     JPanel middlePanel;
@@ -134,18 +133,30 @@ public class ClientGame {
     }
     
     public void updateCameraPosition(int playerX, int playerY) {
-        // 計算偏移量，使角色位於畫面中心
-        cameraOffsetX = playerX - (frame.getWidth() / 2);
-        cameraOffsetY = playerY - (frame.getHeight() / 2);
+        // 獲取當前裝置的螢幕解析度
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenWidth = screenSize.width;
+        int screenHeight = screenSize.height;
+    
+        // 計算偏移量
+        cameraOffsetX = playerX - (screenWidth / 2);
+        cameraOffsetY = playerY - (screenHeight / 2);
+        
+        //更新
+        int NEWX = playerX + cameraOffsetX , NEWY = playerY + cameraOffsetY;
+        int dx = NEWX - playerX;
+        int dy = NEWY - playerY;
+        cameraOffsetX -= dx;
+        cameraOffsetY -= dy;
     
         // 限制鏡頭不要超過地圖範圍
-        cameraOffsetX = Math.max(0, Math.min(cameraOffsetX, 6000 - frame.getWidth())); // 6000 是地圖的寬度
-        cameraOffsetY = Math.max(0, Math.min(cameraOffsetY, 3600 - frame.getHeight())); // 3600 是地圖的高度
-        
+        cameraOffsetX = Math.max(0, Math.min(cameraOffsetX, 6000 - screenWidth)); // 6000 是地圖的寬度
+        cameraOffsetY = Math.max(0, Math.min(cameraOffsetY, 3600 - screenHeight)); // 3600 是地圖的高度
+    
         // 更新遊戲面板的顯示範圍
         gamePanel.setCameraOffset(cameraOffsetX, cameraOffsetY);
     }
-
+    
 
     private int initGeneratorTotal = 0; //確保waitgamestart()正確啟動
     private int generatorTotal = 0;
@@ -168,33 +179,30 @@ public class ClientGame {
             int id = Integer.parseInt(parts[4]);
             int x = Integer.parseInt(parts[2]);
             int y = Integer.parseInt(parts[3]);
-            
-            
-                
-                    // 初始化發電機物件
-                    generators[generatorTotal] = new ClientGenerator(id);
-                    generators[generatorTotal].setRelativeLocation(x, y);
+            // 初始化發電機物件
+            generators[generatorTotal] = new ClientGenerator(id);
+            generators[generatorTotal].setRelativeLocation(x, y);
                     
-                    // 初始化按鈕
-                    // 載入圖片作為按鈕背景
-                    ImageIcon generatorIcon = new ImageIcon("Graphic/Generator-broken.png");
-                    JButton generatorButton = new JButton(generatorIcon);
+            // 初始化按鈕
+            // 載入圖片作為按鈕背景
+            ImageIcon generatorIcon = new ImageIcon("Graphic/Generator-broken.png");
+            JButton generatorButton = new JButton(generatorIcon);
 
-                    int imageWidth = generatorIcon.getIconWidth();
-                    int imageHeight = generatorIcon.getIconHeight();
+            int imageWidth = generatorIcon.getIconWidth();
+            int imageHeight = generatorIcon.getIconHeight();
 
-                    // 設定按鈕的位置和大小
-                    generatorButton.setBounds(generators[generatorTotal].getX(), generators[generatorTotal].getY(), imageWidth, imageHeight);
-                    generatorButton.setOpaque(false);     // 讓按鈕背景透明
-                    generatorButton.setContentAreaFilled(false); // 移除按鈕預設的背景
-                    generatorButton.setBorderPainted(false);     // 移除按鈕邊框
+            // 設定按鈕的位置和大小
+            generatorButton.setBounds(generators[generatorTotal].getX(), generators[generatorTotal].getY(), imageWidth, imageHeight);
+            generatorButton.setOpaque(false);     // 讓按鈕背景透明
+            generatorButton.setContentAreaFilled(false); // 移除按鈕預設的背景
+            generatorButton.setBorderPainted(false);     // 移除按鈕邊框
                     
-                    // 添加到面板
-                    gamePanel.add(generatorButton);
-                    gamePanel.revalidate();
-                    gamePanel.repaint();
+            // 添加到面板
+            gamePanel.add(generatorButton);
+            gamePanel.revalidate();
+            gamePanel.repaint();
                     
-                    // 添加互動邏輯
+            // 添加互動邏輯
                     generatorButton.addMouseListener(new MouseAdapter() {
                         @Override
                         public void mouseClicked(MouseEvent e) {
@@ -222,9 +230,8 @@ public class ClientGame {
         }
     }
 
-
     int playerCount = 0;
-    ClientPlayer[] clientPlayer = new ClientPlayer[4];
+    ClientPlayer[] clientPlayers = new ClientPlayer[4];
     
     
     public void initPlayer(String message) {
@@ -235,15 +242,18 @@ public class ClientGame {
     
     
         // 創建新的 ClientPlayer 並初始化
-        clientPlayer[playerCount] = new ClientPlayer(id);
-        clientPlayer[playerCount].setRelativeLocation(x, y);
+        clientPlayers[playerCount] = new ClientPlayer(id);
+        clientPlayers[playerCount].setRelativeLocation(x, y);
+        clientPlayers[playerCount].setRole(chars[playerCount]);
+        clientPlayers[playerCount].setIsSelf(parts[4].equals(""+id));
+
         playerCount++;
     
         // 更新playerTotal並進行同步通知
         playerTotal++;
         System.out.println("Player initialized: ID: " + id + " at (" + x + ", " + y + ")");
     
-        if (playerCount >= clientPlayer.length) {
+        if (playerCount >= clientPlayers.length) {
             System.out.println("Maximum number of players reached.");
             return;
         }
@@ -252,16 +262,9 @@ public class ClientGame {
             notifyAll();
         }
     }
-    
-    
-
-   
-    
 
     public void updatePlayerPosition(String message) {
-        String[] parts;
-        parts = message.split(";");
-        
+        String[] parts = message.split(";");
         try {
             int x = Integer.parseInt(parts[2]); // 新的 x 座標
             int y = Integer.parseInt(parts[3]); // 新的 y 座標
@@ -269,12 +272,11 @@ public class ClientGame {
     
             // 檢查是否更新玩家或殺手位置
             synchronized (this) {
-                for (int i = 0; i < clientPlayer.length; i++) {
-                    if (clientPlayer[i] != null && clientPlayer[i].getId() == id) {
-                        clientPlayer[i].setRelativeLocation(x, y);
+                for (ClientPlayer clientPlayer : clientPlayers) {
+                    if (clientPlayer != null && clientPlayer.getId() == id) {
+                        clientPlayer.setRelativeLocation(x, y);
                     }
                 }
-    
                 // 重繪遊戲畫面
                 gamePanel.repaint();
             }
@@ -282,8 +284,6 @@ public class ClientGame {
             System.out.println("Error parsing coordinates or ID: " + e.getMessage());
         }
     }
-    
-
     
     public void initKeyListener() {
         frame.addKeyListener(new KeyAdapter() {
@@ -336,8 +336,8 @@ public class ClientGame {
                 
                 // 檢查是否為空白鍵
                 if (key == KeyEvent.VK_SPACE) {
-                    for (int i = 0; i < clientPlayer.length ; i++) {
-                        if (clientPlayer[i] != null && clientPlayer[i].getRole().equals("killer")) {
+                    for (int i = 0; i < clientPlayers.length ; i++) {
+                        if (clientPlayers[i] != null && clientPlayers[i].getRole().equals("killer")) {
                         conn.send("Attack");
                         }
                 }
@@ -350,11 +350,6 @@ public class ClientGame {
         frame.requestFocusInWindow();
 
     }
-    
-
-    
-   
-    
     
     public void updateHealth(String message) {
         String[] parts = message.split(";");
@@ -402,10 +397,7 @@ public class ClientGame {
         // 刷新面板以顯示更新內容
         middlePanel.revalidate();
         middlePanel.repaint();
-    }
-    
-
-
+    } 
 
     // 收到 initGameObject 時呼叫此方法
     // updateGameObject;health;<hp: 0, 1, 2>;<human: p1, p2, p3>
@@ -422,15 +414,9 @@ public class ClientGame {
         
         // 根據血量設定狀態
         switch (health) {
-            case 2:
-                status = "(健康)";
-                break;
-            case 1:
-                status = "(受傷)";
-                break;
-            case 0:
-                status = "(倒地)";
-                break;
+            case 2 -> status = "(健康)";
+            case 1 -> status = "(受傷)";
+            case 0 -> status = "(倒地)";
            
         }
     }
@@ -463,35 +449,27 @@ public class ClientGame {
     //     gamePanel.revalidate();
     //     gamePanel.repaint();
     // }
-
-    
     
     public void playerIcon() {
-        ImageIcon p1Icon = new ImageIcon("Graphic/p1front.png");
-        ImageIcon p2Icon = new ImageIcon("Graphic/p2front.png");
-        ImageIcon p3Icon = new ImageIcon("Graphic/p3front.png");
-        ImageIcon killerIcon = new ImageIcon("Graphic/killer.png");
-        for (int i = 0; i < clientPlayer.length;i++){
-                if (clientPlayer[i]!=null && clientPlayer[i].getRole().equals("p1")) {
-                    
-                    clientPlayer[i].setIcon(p1Icon);
+        ImageIcon p1Icon = new ImageIcon("Graphic/Human/p1/p1-front.png");
+        ImageIcon p2Icon = new ImageIcon("Graphic/Human/p2/p2-front.png");
+        ImageIcon p3Icon = new ImageIcon("Graphic/Human/p3/p3-front.png");
+        ImageIcon killerIcon = new ImageIcon("Graphic/Killer/killer-left.png");
+        for (ClientPlayer clientPlayer1 : clientPlayers) {
+            if (clientPlayer1 != null && clientPlayer1.getRole().equals("p1")) {
+                clientPlayer1.setIcon(p1Icon);
             }
-                if (clientPlayer[i]!=null && clientPlayer[i].getRole().equals("p2")) {
-                    
-                    clientPlayer[i].setIcon(p2Icon);
+            if (clientPlayer1 != null && clientPlayer1.getRole().equals("p2")) {
+                clientPlayer1.setIcon(p2Icon);
             }
-                if (clientPlayer[i]!=null && clientPlayer[i].getRole().equals("p3")) {
-                    
-                    clientPlayer[i].setIcon(p3Icon);
+            if (clientPlayer1 != null && clientPlayer1.getRole().equals("p3")) {
+                clientPlayer1.setIcon(p3Icon);
             }
-            if (clientPlayer[i]!=null && clientPlayer[i].getRole().equals("killer")) {
-                    
-                clientPlayer[i].setIcon(killerIcon);
+            if (clientPlayer1 != null && clientPlayer1.getRole().equals("killer")) {
+                clientPlayer1.setIcon(killerIcon);
             } 
         }
-    }  
-        
-
+    }          
 }
     
     

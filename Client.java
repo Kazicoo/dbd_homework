@@ -1,22 +1,14 @@
 import java.io.*;
 import java.util.Scanner;
 
-import javax.swing.ImageIcon;
-
 
 public class Client implements Comm.TcpClientCallback {
   private Comm.TcpClient client;
-  private setupGUI initialGUI;
+  private final setupGUI initialGUI;
   private int id;
   private ClientGame ClientGame;
-  private int killerId;
-  private int generatorId= 0;
   private int generatorCount = 0;
-  String humanImage[] = new String[3];
-  String killerImage;
-  private final String[] chars = {"killer", "p1", "p2", "p3"};
-  int count = 0;
-  String role;
+  public static String[] chars = {"killer", "p1", "p2", "p3"};
   
   public static void main(String[] args) {  
     try {
@@ -75,13 +67,12 @@ public class Client implements Comm.TcpClientCallback {
       if ("ready".equals(parts[1])) {
         initialGUI.playerReady(true, message, id);
         if ("killer".equals(parts[2])) {
-          killerId = Integer.parseInt(parts[3]);  
+            Integer.parseInt(parts[3]);  
         }
       }
       if ("unready".equals(parts[1])) {
         initialGUI.playerReady(false, message, id);
         if ("killer".equals(parts[2])) {
-          killerId = -1;
         }
       }
     }
@@ -100,26 +91,18 @@ public class Client implements Comm.TcpClientCallback {
           int x = Integer.parseInt(parts[2]); // X 座標
           int y = Integer.parseInt(parts[3]); // Y 座標
           if ("generator".equals(type)) {
-              // 初始化發電機
-              ClientGame.initGenerator(message);
-              System.out.println("Initializing generator at (" + x + ", " + y + ") with ID " + ClientGame.generators[generatorCount].getId());
-              generatorCount++;
-              
+            // 初始化發電機
+            ClientGame.initGenerator(message);
+            System.out.println("Initializing generator at (" + x + ", " + y + ") with ID " + ClientGame.generators[generatorCount].getId());
+            generatorCount++;  
           } else if ("player".equals(type)) {
             ClientGame.initPlayer(message);
-              if (parts[4].equals(""+id)){
-                role = chars[count];
-              } 
-              ClientGame.clientPlayer[count].setRole(role);
-              // System.out.println("Initializing player at (" + x + ", " + y + ") with ID " + id);
-              count++;
+            // System.out.println("Initializing player at (" + x + ", " + y + ") with ID " + id);
           }
-
       } 
     }
 
     if(message.startsWith("updateGameObject"))  {
-      String[] updateGameObjectLogic = message.split(";");
       if (parts[1].equals("player")){
         ClientGame.updatePlayerPosition(message);
       }

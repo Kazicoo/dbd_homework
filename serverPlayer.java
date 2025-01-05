@@ -21,7 +21,7 @@ public abstract class ServerPlayer extends ServerGameObject {
     private Direction facing = Direction.DOWN;
 
     public ServerPlayer(int id, ServerGame game) {
-        super(id);
+        super(id, true);
         this.game = game;
     }
 
@@ -91,7 +91,7 @@ public abstract class ServerPlayer extends ServerGameObject {
     public void update() {
         if (dx != 0 || dy != 0) {
             int newX = relativeLocationX + (dx * getMoveSpeed());
-            int newY = relativeLocationX + (dy * getMoveSpeed());
+            int newY = relativeLocationY + (dy * getMoveSpeed());
             setRelativeLocation(newX, newY);
             game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
         }
