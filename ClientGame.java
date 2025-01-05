@@ -233,7 +233,6 @@ public class ClientGame {
         }
     }
 
-
     int playerCount = 0;
     ClientPlayer[] clientPlayer = new ClientPlayer[4];
     
@@ -266,11 +265,6 @@ public class ClientGame {
             notifyAll();
         }
     }
-    
-    
-
-   
-    
 
     public void updatePlayerPosition(String message) {
         String[] parts;
@@ -283,9 +277,9 @@ public class ClientGame {
     
             // 檢查是否更新玩家或殺手位置
             synchronized (this) {
-                for (int i = 0; i < clientPlayer.length; i++) {
-                    if (clientPlayer[i] != null && clientPlayer[i].getId() == id) {
-                        clientPlayer[i].setRelativeLocation(x, y);
+                for (ClientPlayer clientPlayer1 : clientPlayer) {
+                    if (clientPlayer1 != null && clientPlayer1.getId() == id) {
+                        clientPlayer1.setRelativeLocation(x, y);
                     }
                 }
     
@@ -296,8 +290,6 @@ public class ClientGame {
             System.out.println("Error parsing coordinates or ID: " + e.getMessage());
         }
     }
-    
-
     
     public void initKeyListener() {
         frame.addKeyListener(new KeyAdapter() {
