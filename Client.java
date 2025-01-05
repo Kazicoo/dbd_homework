@@ -106,13 +106,13 @@ public class Client implements Comm.TcpClientCallback {
     if(message.startsWith("updateGameObject"))  {
       if (parts[1].equals("player")){
         ClientGame.updatePlayerPosition(message, id);
+      } else if (parts[2].equals("health")) {
+        ClientGame.initHealthStatus(message);
       }
     }
 
     if(message.startsWith("attack")) {
-      if(parts[1].equals("Facing")) {
-        
-      }
+        ClientGame.attackFacing(message);
     }
     
     System.out.println("Server sent: " + message);

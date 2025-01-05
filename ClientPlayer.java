@@ -38,7 +38,7 @@ public class ClientPlayer extends ClientGameObject {
     }
     public ImageIcon initImage() {
         if (this.role.equals("killer")) {
-            idleImage = new ImageIcon("Graphic/Killer/killer-left.png");
+            idleImage = new ImageIcon("Graphic/Killer/killer-standFrontBack.png");
             attackLeftImage = new ImageIcon("Graphic/Killer/killer-attackLeft.png");
             attackRightImage = new ImageIcon("Graphic/Killer/killer-attackRight.png");
             backImage = new ImageIcon("Graphic/Killer/killer-left.png");
@@ -47,7 +47,7 @@ public class ClientPlayer extends ClientGameObject {
             leftIcon = new ImageIcon("Graphic/Killer/killer-left.png");
             System.out.println("killer image initialized");
         } else if (this.role.equals("p1")) {
-            idleImage = new ImageIcon("Graphic/Human/p1/p1-front.png");
+            idleImage = new ImageIcon("Graphic/Human/p1/p1-stand.png");
             backImage = new ImageIcon("Graphic/Human/p1/p1-back.png");
             frontImage = new ImageIcon("Graphic/Human/p1/p1-front.png");
             rightIcon = new ImageIcon("Graphic/Human/p1/p1-right.png");
@@ -56,7 +56,7 @@ public class ClientPlayer extends ClientGameObject {
             attackRightImage = null;
             System.out.println("p1 image initialized");
         } else if (this.role.equals("p2")) {
-            idleImage = new ImageIcon("Graphic/Human/p2/p2-front.png");
+            idleImage = new ImageIcon("Graphic/Human/p2/p2-stand.png");
             backImage = new ImageIcon("Graphic/Human/p2/p2-back.png");
             frontImage = new ImageIcon("Graphic/Human/p2/p2-front.png");
             rightIcon = new ImageIcon("Graphic/Human/p2/p2-right.png");
@@ -65,7 +65,7 @@ public class ClientPlayer extends ClientGameObject {
             attackRightImage = null;
             System.out.println("p2 image initialized");
         } else if (this.role.equals("p3")) {
-            idleImage = new ImageIcon("Graphic/Human/p3/p3-front.png");
+            idleImage = new ImageIcon("Graphic/Human/p3/p3-stand.png");
             backImage = new ImageIcon("Graphic/Human/p3/p3-back.png");
             frontImage = new ImageIcon("Graphic/Human/p3/p3-front.png");
             rightIcon = new ImageIcon("Graphic/Human/p3/p3-right.png");
@@ -104,23 +104,25 @@ public class ClientPlayer extends ClientGameObject {
     
 
     public void setAction(String action) {
-        if (action.equals("attack")) {
-            currentImage = attackLeftImage;;
-        } else if (action.equals("attackLeft")) {
+         if (action.equals("UP")
+         ||action.equals("UP_LEFT")
+         ||action.equals("DOWN_LEFT")
+         ||action.equals("LEFT")) {
             currentImage = attackLeftImage;
-            resetToIdleAfterDelay();  // 攻擊後兩秒恢復閒置
-        } else if (action.equals("attackRight")) {
+        } else if (action.equals("DOWN")
+        ||action.equals("DOWN_RIGHT")
+        ||action.equals("UP_RIGHT")
+        ||action.equals("RIGHT")) {
             currentImage = attackRightImage;
-            resetToIdleAfterDelay();  // 攻擊後兩秒恢復閒置
         }
     }
 
-    private void resetToIdleAfterDelay() {
-        Timer timer = new Timer(2000, e -> {
-            currentImage = idleImage;
-            ((Timer) e.getSource()).stop(); // 停止計時器
-        });
-        timer.setRepeats(false); // 僅執行一次
-        timer.start();
-    }
+    // private void resetToIdleAfterDelay() {
+    //     Timer timer = new Timer(2000, e -> {
+    //         currentImage = idleImage;
+    //         ((Timer) e.getSource()).stop(); // 停止計時器
+    //     });
+    //     timer.setRepeats(false); // 僅執行一次
+    //     timer.start();
+    // }
 }

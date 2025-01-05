@@ -227,6 +227,75 @@ public class ClientGame {
             System.out.println("Error parsing coordinates or ID: " + e.getMessage());
         }
     }
+
+    /*private int HookTotal = 0;
+    public final ClientHook[] Hook = new ClientHook[9];
+    
+    public void initHook(String message){
+        String[] parts;
+         try {
+            parts = message.split(";");
+            if (parts.length < 5 || !"hook".equals(parts[1])) {
+                throw new IllegalArgumentException("Invalid hook message format.");
+            }
+        } catch (Exception e) {
+            System.out.println("Error parsing hook message: " + e.getMessage());
+            return;
+        }
+        try {
+            int id = Integer.parseInt(parts[4]);
+            int x = Integer.parseInt(parts[2]);
+            int y = Integer.parseInt(parts[3]);
+            // 初始化物件
+            Hook[HookTotal] = new ClientHook(id);
+            Hook[HookTotal].setRelativeLocation(x, y);
+                    
+            
+            ImageIcon hookIcon = new ImageIcon("Graphic/Object/hook.png");
+            JButton hookButton = new JButton(hookIcon);
+
+            int imageWidth = hookIcon.getIconWidth();
+            int imageHeight = hookIcon.getIconHeight();
+
+            // 設定按鈕的位置和大小
+            hookButton.setBounds(generators[generatorTotal].getX(), generators[generatorTotal].getY(), imageWidth, imageHeight);
+            hookButton.setOpaque(false);     // 讓按鈕背景透明
+            hookButton.setContentAreaFilled(false); // 移除按鈕預設的背景
+            hookButton.setBorderPainted(false);     // 移除按鈕邊框
+                    
+            // 添加到面板
+            gamePanel.add(hookButton);
+            gamePanel.revalidate();
+            gamePanel.repaint();
+                    
+            // 添加互動邏輯
+                    hookButton.addMouseListener(new MouseAdapter() {
+                        @Override
+                        public void mouseClicked(MouseEvent e) {
+                            if (SwingUtilities.isLeftMouseButton(e)) {
+                                conn.send("Clicked;hook;" + Hook[HookTotal].getId());
+                            }
+                        }
+                    });
+                    
+                    synchronized (this) {
+                        HookTotal++;
+                        initHookTotal++;
+                        if (initHookTotal == 4 && playerTotal == 4) {
+                            notifyAll(); // 通知等待的線程
+                        }
+                    }
+                    if (generatorTotal == generators.length) {
+                        System.out.println("Maximum generators reached.");
+                    }
+                    System.out.println("Hook initialized: ID " + id + " at (" + x + ", " + y + ")");
+                    
+                    
+        } catch (NumberFormatException e) {
+            System.out.println("Error parsing coordinates or ID: " + e.getMessage());
+        }
+    }*/
+        
     
     
     public void initPlayer(String message, int ClientId) {
@@ -376,6 +445,63 @@ public class ClientGame {
     
     
     
+    
+
+    
+    public void attackFacing(String message) {
+        String[] parts = message.split(";");
+        for (int i = 0; i < clientPlayers.length; i++) {
+            if(clientPlayers[i]!= null &&clientPlayers[i].getRole().equals("killer")) {
+                clientPlayers[i].setAction(parts[1]);
+            }
+        }
+    }
+    // 收到 initGameObject 時呼叫此方法
+    // updateGameObject;health;<hp: 0, 1, 2>;<human: p1, p2, p3>
+    public void initHealthStatus(String message) {
+        String[] parts = message.split(";");
+        int hp = Integer.parseInt(parts[2]);
+        String role = parts[3];
+        
+        
+        
+        
+        // 根據血量設定狀態
+        switch (hp) {
+            case 2 -> status = "(健康)";
+            case 1 -> status = "(受傷)";
+            case 0 -> status = "(倒地)";
+           
+        }
+    
+
+        // 根據角色初始化狀態欄
+        switch (role) {
+            case "p1":
+                 healthLabel1.setText((role + hp + " ") + " " + status);
+                 healthLabel1.setBounds(10 , 5 , 200 ,30);
+                 gamePanel.add(healthLabel1);                     
+                 break;
+             case "p2":
+                healthLabel2.setText((role + hp + " ") + " " + status);
+                healthLabel2.setBounds(10 , 40 , 200 ,30);
+                gamePanel.add(healthLabel2);                      
+                break;
+            case "p3":
+                healthLabel3.setText((role + hp + " ") + " " + status);
+                healthLabel3.setBounds(10 , 75 , 200 ,30);                        
+                gamePanel.add(healthLabel3);
+                break;
+            default:
+                System.out.println("未知的角色: " + role);
+                break;
+        }
+
+        // 更新面板以顯示狀態
+        gamePanel.revalidate();
+        gamePanel.repaint();
+    }
+
     public void updateHealth(String message) {
         String[] parts = message.split(";");
         
@@ -420,61 +546,9 @@ public class ClientGame {
         }
     
         // 刷新面板以顯示更新內容
-        middlePanel.revalidate();
-        middlePanel.repaint();
+        gamePanel.revalidate();
+        gamePanel.repaint();
     } 
-
-    // 收到 initGameObject 時呼叫此方法
-    // updateGameObject;health;<hp: 0, 1, 2>;<human: p1, p2, p3>
-
-    public void initHealthStatus(String message) {
-        String[] parts = message.split(";");
-        String healthValue = parts[2];
-        String role = parts[3];
-        
-        // 解析血量值
-        int health = Integer.parseInt(healthValue);
-        
-        
-        
-        // 根據血量設定狀態
-        switch (health) {
-            case 2 -> status = "(健康)";
-            case 1 -> status = "(受傷)";
-            case 0 -> status = "(倒地)";
-           
-        }
-    }
-    // //定義角色列表
-    //      String[] chars = {"killer", "p1", "p2", "p3"};
-
-    //     // 根據角色初始化狀態欄
-    //     switch (role) {
-    //         case "p1":
-    //              healthLabel1.setText((role + health + " ") + " " + status);
-    //              healthLabel1.setBounds(10 , 5 , 200 ,30);
-    //              gamePanel.add(healthLabel1);                     
-    //              break;
-    // /         case "p2":
-    //             healthLabel2.setText((role + health + " ") + " " + status);
-    //             healthLabel2.setBounds(10 , 40 , 200 ,30);
-    //             gamePanel.add(healthLabel2);                      
-    //             break;
-    //         case "p3":
-    //             healthLabel3.setText((role + health + " ") + " " + status);
-    //             healthLabel3.setBounds(10 , 75 , 200 ,30);                        
-    //             gamePanel.add(healthLabel3);
-    //             break;
-    //         default:
-    //             System.out.println("未知的角色: " + role);
-    //             break;
-    //     }
-
-    //     // 更新面板以顯示狀態
-    //     gamePanel.revalidate();
-    //     gamePanel.repaint();
-    // }
-    
         
 }
     
