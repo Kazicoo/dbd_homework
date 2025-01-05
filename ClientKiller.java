@@ -1,6 +1,6 @@
 public class ClientKiller extends ClientPlayer {
     
     public ClientKiller(int id) {
-        super(id);
+        super(id, role);
     }
 }

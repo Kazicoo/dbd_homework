@@ -1,6 +1,8 @@
 import java.io.*;
 import java.util.Scanner;
 
+import javax.swing.ImageIcon;
+
 
 public class Client implements Comm.TcpClientCallback {
   private Comm.TcpClient client;
@@ -8,7 +10,14 @@ public class Client implements Comm.TcpClientCallback {
   private int id;
   private ClientGame ClientGame;
   private int killerId;
-
+  private int generatorId= 0;
+  private int generatorCount = 0;
+  String humanImage[] = new String[3];
+  String killerImage;
+  private final String[] chars = {"killer", "p1", "p2", "p3"};
+  int count = 0;
+  String role;
+  
   public static void main(String[] args) {  
     try {
       Client client = new Client();
@@ -45,6 +54,7 @@ public class Client implements Comm.TcpClientCallback {
       String idStr = parts[1];
       id = Integer.parseInt(idStr);
     }
+    
     
     synchronized (this) {
       while (initialGUI == null) {
@@ -83,31 +93,28 @@ public class Client implements Comm.TcpClientCallback {
       // 等 ClientGame 初始化完成後再執行後續操作
     }
 
+    // initGameObject;player;<x: int>;<y: int>;<id: "0" | "1" | "2" | "3">
     if (message.startsWith("initGameObject")) {
       if (parts.length == 5) { // 確保格式正確
           String type = parts[1]; // 對象類型
           int x = Integer.parseInt(parts[2]); // X 座標
           int y = Integer.parseInt(parts[3]); // Y 座標
-          int id = Integer.parseInt(parts[4]); // 對象 ID
-  
           if ("generator".equals(type)) {
               // 初始化發電機
-              // System.out.println("Initializing generator at (" + x + ", " + y + ") with ID " + id);
               ClientGame.initGenerator(message);
+              System.out.println("Initializing generator at (" + x + ", " + y + ") with ID " + ClientGame.generators[generatorCount].getId());
+              generatorCount++;
+              
           } else if ("player".equals(type)) {
-              // 初始化玩家
-              if (killerId == id) {
-                // System.out.println("Initializing killer at (" + x + ", " + y + ") with ID " + id);
-                ClientGame.initKiller(message);
-              } else {
-                // System.out.println("Initializing player at (" + x + ", " + y + ") with ID " + id);
-                ClientGame.initHuman(message);
-              }
-          } else {
-              System.out.println("Unknown type: " + type);
+            ClientGame.initPlayer(message);
+              if (parts[4].equals(""+id)){
+                role = chars[count];
+              } 
+              ClientGame.clientPlayer[count].setRole(role);
+              // System.out.println("Initializing player at (" + x + ", " + y + ") with ID " + id);
+              count++;
           }
-      } else {
-          System.out.println("Invalid initGameObject message format: " + message);
+
       } 
     }
 
