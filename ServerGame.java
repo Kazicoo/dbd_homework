@@ -64,8 +64,7 @@ public class ServerGame {
         int index = 0;
         for (ServerPlayer player : players) {
             server.broadcastToClient("initGameObject;player;" + 
-            player.getX() + ";" + player.getY() + ";" +
-            idRole[index]);
+                player.getX() + ";" + player.getY() + ";" + idRole[index]);
             index++;
         }
     }
@@ -106,8 +105,7 @@ public class ServerGame {
         }
         for (ServerGenerator generator : generators) {
             server.broadcastToClient("initGameObject;generator;" +
-            generator.getX() + ";" + generator.getY() + ";" + 
-            generator.getId());
+                generator.getX() + ";" + generator.getY() + ";" + generator.getId());
         }
     }
 
