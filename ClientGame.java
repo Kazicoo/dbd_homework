@@ -234,24 +234,31 @@ public class ClientGame {
     ClientPlayer[] clientPlayers = new ClientPlayer[4];
     
     
-    public void initPlayer(String message) {
+    public void initPlayer(String message, int ClientId) {
         String[] parts = message.split(";");
-        int id = Integer.parseInt(parts[4]);
         int x = Integer.parseInt(parts[2]);
         int y = Integer.parseInt(parts[3]);
+        int id = Integer.parseInt(parts[4]);
     
     
         // 創建新的 ClientPlayer 並初始化
         clientPlayers[playerCount] = new ClientPlayer(id);
         clientPlayers[playerCount].setRelativeLocation(x, y);
         clientPlayers[playerCount].setRole(chars[playerCount]);
-        clientPlayers[playerCount].setIsSelf(parts[4].equals(""+id));
+        clientPlayers[playerCount].setIsSelf(ClientId == id);
+
+        if (playerCount >= 0 && playerCount < clientPlayers.length && clientPlayers[playerCount] != null) {
+            if (clientPlayers[playerCount].getRole() != null) {
+                playerIcon();
+            }
+        }
+        
 
         playerCount++;
     
         // 更新playerTotal並進行同步通知
         playerTotal++;
-        System.out.println("Player initialized: ID: " + id + " at (" + x + ", " + y + ")");
+        System.out.println("Player initialized: ID: " + ClientId + " at (" + x + ", " + y + ")");
     
         if (playerCount >= clientPlayers.length) {
             System.out.println("Maximum number of players reached.");
@@ -337,8 +344,11 @@ public class ClientGame {
                 // 檢查是否為空白鍵
                 if (key == KeyEvent.VK_SPACE) {
                     for (int i = 0; i < clientPlayers.length ; i++) {
-                        if (clientPlayers[i] != null && clientPlayers[i].getRole().equals("killer")) {
+                        if (clientPlayers[i] != null 
+                        && "killer".equals(clientPlayers[i].getRole()) 
+                        && clientPlayers[i].getIsSelf()== true) {
                         conn.send("Attack");
+                        
                         }
                 }
                 } 

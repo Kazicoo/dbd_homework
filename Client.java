@@ -96,7 +96,7 @@ public class Client implements Comm.TcpClientCallback {
             System.out.println("Initializing generator at (" + x + ", " + y + ") with ID " + ClientGame.generators[generatorCount].getId());
             generatorCount++;  
           } else if ("player".equals(type)) {
-            ClientGame.initPlayer(message);
+            ClientGame.initPlayer(message,id);
             // System.out.println("Initializing player at (" + x + ", " + y + ") with ID " + id);
           }
       } 
@@ -105,6 +105,12 @@ public class Client implements Comm.TcpClientCallback {
     if(message.startsWith("updateGameObject"))  {
       if (parts[1].equals("player")){
         ClientGame.updatePlayerPosition(message);
+      }
+    }
+
+    if(message.startsWith("attack")) {
+      if(parts[1].equals("Facing")) {
+        
       }
     }
     
