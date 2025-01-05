@@ -328,7 +328,7 @@
 
                         }
                         case "p2" -> {
-                           ImageIcon p2Image = new ImageIcon("Graphic/Human/p1/p1-stand.PNG");
+                           ImageIcon p2Image = new ImageIcon("Graphic/Human/p2/p2-stand.PNG");
                             Image image = p2Image.getImage();
                             Image p2scaledImage = image.getScaledInstance(350, 700, Image.SCALE_SMOOTH);
                             p2Image = new ImageIcon(p2scaledImage);
