@@ -1,6 +1,6 @@
 
 
-public abstract class serverPlayer extends ServerGameObject {
+public abstract class ServerPlayer extends ServerGameObject {
     protected ServerGame game;
 
     private int dx = 0;
@@ -20,7 +20,7 @@ public abstract class serverPlayer extends ServerGameObject {
 
     private Direction facing = Direction.DOWN;
 
-    public serverPlayer(int id, ServerGame game) {
+    public ServerPlayer(int id, ServerGame game) {
         super(id);
         this.game = game;
     }
@@ -89,15 +89,20 @@ public abstract class serverPlayer extends ServerGameObject {
     }
 
     public void update() {
-        int move[] = game.validateMovement(
-            relativeLocationX + (dx * getMoveSpeed()),
-            relativeLocationY + (dy * getMoveSpeed()));
-
-        if (move[0] != 0 || move[1] != 0) {
-            relativeLocationX = move[0];
-            relativeLocationY = move[1];
+        if (dx != 0 || dy != 0) {
+            int newX = relativeLocationX + (dx * getMoveSpeed());
+            int newY = relativeLocationX + (dy * getMoveSpeed());
+            setRelativeLocation(newX, newY);
             game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
         }
+        // int move[] = game.validateMovement(
+        //     relativeLocationX + (dx * getMoveSpeed()),
+        //     relativeLocationY + (dy * getMoveSpeed()));
+        
+        // if (move[0] != 0 || move[1] != 0) {
+        //     relativeLocationX = move[0];
+        //     relativeLocationY = move[1];
+        // }
     }
 
     public boolean inRange(int x, int y, double range, double angle) {

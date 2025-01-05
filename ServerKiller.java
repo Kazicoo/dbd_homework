@@ -1,6 +1,6 @@
 
 
-public class ServerKiller extends serverPlayer {
+public class ServerKiller extends ServerPlayer {
     static final int DEFAULT_MOVE_SPEED = 8;    
     static final int SLOW_MOVE_SPEED = 3;
 
@@ -9,8 +9,8 @@ public class ServerKiller extends serverPlayer {
 
     int moveSpeedEffectTime = 0;
     
-    // 50毫秒一幀 = 1秒
-    static final int ATTACK_CD = (int)(1 * ServerGame.FRAME_PER_SEC);
+    // 50毫秒一幀 = 2秒
+    static final int ATTACK_CD = (int)(2 * ServerGame.FRAME_PER_SEC);
     private int attackCounter = 0;
 
 
@@ -47,6 +47,9 @@ public class ServerKiller extends serverPlayer {
 
         if (attackCounter < ATTACK_CD) {
             attackCounter += 1;
+        } else if (attackCounter == ATTACK_CD) {
+            game.sendMessage("attack;stop");
+            attackCounter += 1;
         }
 
         super.update();
@@ -59,6 +62,8 @@ public class ServerKiller extends serverPlayer {
         resetAttackCounter();
         setSlowMoveSpeed();
         moveSpeedEffectTime = (int)(2 * ServerGame.FRAME_PER_SEC);
+        // 送封包給客戶端
+        game.sendMessage("attack;" + getFacing());
 
         for (ServerHuman human : game.getHumans()) {
             if (inRange(human.getX(), human.getY(), ATTACK_RANGE, ATTACK_ANGLE)) {

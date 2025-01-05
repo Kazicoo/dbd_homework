@@ -72,19 +72,18 @@ public class Client implements Comm.TcpClientCallback {
     }
     
     if (message.startsWith("updateReadyState")) {
-      if ("ready".equals(parts[1])) initialGUI.playerReady(true, message, id);
-      if ("unready".equals(parts[1])) initialGUI.playerReady(false, message, id);
-      if ("killer".equals(parts[2])){
-        killerId = Integer.parseInt(parts[3]); 
-        killerImage = parts[2];
-
-
+      if ("ready".equals(parts[1])) {
+        initialGUI.playerReady(true, message, id);
+        if ("killer".equals(parts[2])) {
+          killerId = Integer.parseInt(parts[3]);  
+        }
       }
-      //設置是哪組圖片
-      for (int i = 0; i < humanImage.length;i++) {
-        humanImage[i] = parts[2];
+      if ("unready".equals(parts[1])) {
+        initialGUI.playerReady(false, message, id);
+        if ("killer".equals(parts[2])) {
+          killerId = -1;
+        }
       }
-      
     }
 
     if ("startLoading".equals(message)) {

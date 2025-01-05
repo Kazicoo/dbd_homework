@@ -12,6 +12,9 @@ public class ClientGame {
     private JLabel healthLabel1,healthLabel2,healthLabel3; // 用於顯示玩家血量
     private int generatorCount = 4; // 初始發電機數量
     private int healthcount = 2; // 初始玩家血量
+    private String role;
+    private int cameraOffsetX = 0;
+    private int cameraOffsetY = 0;
     JPanel middlePanel;
     int playerTotal = 0;
     int killerId = 0;
@@ -40,6 +43,7 @@ public class ClientGame {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = screenSize.width;
         int screenHeight = screenSize.height;
+        System.out.println(screenWidth+"|"+screenHeight);
         
         // 計算中部面板的高度（不縮放地圖）
         int topBarHeight = screenHeight / 20; // 頂部狀態欄高度
@@ -87,10 +91,16 @@ public class ClientGame {
         frame.setVisible(true);
         
     }
-
-
     
-    private JLabel createGeneratorLabel(String role, int healthcount, int x, int y) {
+
+    public JLabel createHealthLabel(String role, int healthcount, int x, int y) {
+        JLabel healthLabel = new JLabel(role + " Health: " + healthcount);
+        healthLabel.setFont(new Font("Arial", Font.BOLD, 18));
+        healthLabel.setBounds(x, y, 200, 30); // 設定位置和大小
+        healthLabel.setForeground(Color.RED); // 可自定義文字顏色
+        return healthLabel;
+    }
+    public JLabel createGeneratorLabel(String role, int healthcount, int x, int y) {
         JLabel generatorLabel = new JLabel(role + " Health: " + healthcount);
         generatorLabel.setFont(new Font("Arial", Font.BOLD, 18));
         generatorLabel.setBounds(x, y, 200, 30); // 設定位置和大小
@@ -123,22 +133,19 @@ public class ClientGame {
         }).start();
     }
     
+    public void updateCameraPosition(int playerX, int playerY) {
+        // 計算偏移量，使角色位於畫面中心
+        cameraOffsetX = playerX - (frame.getWidth() / 2);
+        cameraOffsetY = playerY - (frame.getHeight() / 2);
     
-    
-
-    // public void waitGameStart() {
-    //     synchronized (this) {
-    //         while (generatorTotal == 4 && playerTotal == 4) {
-    //             try {
-    //                 wait();
-    //             } catch (InterruptedException e) {
-    //                 e.printStackTrace();
-    //             }
-    //         }
-    //     }
+        // 限制鏡頭不要超過地圖範圍
+        cameraOffsetX = Math.max(0, Math.min(cameraOffsetX, 6000 - frame.getWidth())); // 6000 是地圖的寬度
+        cameraOffsetY = Math.max(0, Math.min(cameraOffsetY, 3600 - frame.getHeight())); // 3600 是地圖的高度
         
-    //     conn.send("startGame");
-    // }
+        // 更新遊戲面板的顯示範圍
+        gamePanel.setCameraOffset(cameraOffsetX, cameraOffsetY);
+    }
+
 
     private int initGeneratorTotal = 0; //確保waitgamestart()正確啟動
     private int generatorTotal = 0;
@@ -200,13 +207,12 @@ public class ClientGame {
                     synchronized (this) {
                         generatorTotal++;
                         initGeneratorTotal++;
-                        if (generatorTotal == 4 && playerTotal == 4) {
+                        if (initGeneratorTotal == 4 && playerTotal == 4) {
                             notifyAll(); // 通知等待的線程
                         }
                     }
                     if (generatorTotal == generators.length) {
                         System.out.println("Maximum generators reached.");
-                        return;
                     }
                     System.out.println("Generator initialized: ID " + id + " at (" + x + ", " + y + ")");
                     
@@ -221,29 +227,28 @@ public class ClientGame {
     ClientPlayer[] clientPlayer = new ClientPlayer[4];
     
     
-    public synchronized void initPlayer(String message) {
+    public void initPlayer(String message) {
         String[] parts = message.split(";");
         int id = Integer.parseInt(parts[4]);
         int x = Integer.parseInt(parts[2]);
         int y = Integer.parseInt(parts[3]);
     
-        // 這裡檢查是否超過最大玩家數量
-        if (playerCount >= clientPlayer.length) {
-            System.out.println("Maximum players reached.");
-            return;
-        }
     
         // 創建新的 ClientPlayer 並初始化
         clientPlayer[playerCount] = new ClientPlayer(id);
         clientPlayer[playerCount].setRelativeLocation(x, y);
-        playerCount++;  // 增加玩家數量
+        playerCount++;
     
         // 更新playerTotal並進行同步通知
         playerTotal++;
         System.out.println("Player initialized: ID: " + id + " at (" + x + ", " + y + ")");
     
+        if (playerCount >= clientPlayer.length) {
+            System.out.println("Maximum number of players reached.");
+            return;
+        }
         // 如果已經達到4個玩家並且生成器數量也是4，則通知所有等待的線程
-        if (playerTotal == generatorTotal) {
+        if (playerTotal == initGeneratorTotal) {
             notifyAll();
         }
     }
@@ -350,6 +355,54 @@ public class ClientGame {
     
    
     
+    
+    public void updateHealth(String message) {
+        String[] parts = message.split(";");
+        
+        if (parts.length < 4 || !"updateGameObject".equals(parts[0]) || !"health".equals(parts[1])) {
+            System.out.println("無效的血量更新訊息格式。");
+            return;
+        }
+    
+        String healthValue = parts[2];
+        String role = parts[3];
+    
+        // 解析血量值
+        int health = Integer.parseInt(healthValue.split(":")[1]);
+        String status = "";
+    
+        // 根據血量設定狀態
+        switch (health) {
+            case 2:
+                status = "(健康)";
+                break;
+            case 1:
+                status = "(受傷)";
+                break;
+            case 0:
+                status = "(倒地)";
+                break;
+           
+        }
+    
+        // 更新對應角色的血量和狀態
+        switch (role) {
+            case "p1":
+                healthLabel1.setText("p1 Health: " + health + " " + status);
+                break;
+            case "p2":
+                healthLabel2.setText("p2 Health: " + health + " " + status);
+                break;
+            case "p3":
+                healthLabel3.setText("p3 Health: " + health + " " + status);
+                break;
+           
+        }
+    
+        // 刷新面板以顯示更新內容
+        middlePanel.revalidate();
+        middlePanel.repaint();
+    }
     
 
 

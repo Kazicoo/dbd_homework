@@ -6,7 +6,7 @@ public class ServerGame {
     private final Server server;
     private int[] idRole = new int[4];
     private final String[] chars = {"killer", "p1", "p2", "p3"};
-    private final serverPlayer players[] = new serverPlayer[4];
+    private final ServerPlayer players[] = new ServerPlayer[4];
     private final ServerGenerator[] generators = new ServerGenerator[4];
     public static final int GRID_SIZE = 60;
     public static final float FRAME_PER_SEC = 20;
@@ -62,7 +62,7 @@ public class ServerGame {
             }
         }
         int index = 0;
-        for (serverPlayer player : players) {
+        for (ServerPlayer player : players) {
             server.broadcastToClient("initGameObject;player;" + 
             player.getX() + ";" + player.getX() + ";" +
             idRole[index]);
@@ -126,7 +126,7 @@ public class ServerGame {
     }
 
     public void handleKeyInput(int id, String key, boolean isKeyDown) {
-        for (serverPlayer player : players) {
+        for (ServerPlayer player : players) {
             if (player != null && player.getId() == id) {
                 int dx = player.getDx();
                 int dy = player.getDy();
@@ -143,6 +143,7 @@ public class ServerGame {
                         case "A", "D" -> dx = 0;
                     }
                 }
+                player.setDirection(dx, dy);
                 break;
             }
         }
@@ -167,7 +168,7 @@ public class ServerGame {
     }
 
     private void updateGameLogic() {
-        for (serverPlayer player : players) {
+        for (ServerPlayer player : players) {
             player.update();
         }
     }
