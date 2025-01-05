@@ -463,8 +463,8 @@ public class ClientGame {
                         }
 
                         if (!isMovingUp && !isMovingLeft && !isMovingDown && !isMovingRight) {
-                            // toDO
                             player.updateMovement("");
+                            gamePanel.repaint();
                         }
                     }
                 }
