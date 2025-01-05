@@ -231,7 +231,7 @@ public class ClientGame {
     }
 
     int playerCount = 0;
-    ClientPlayer[] clientPlayer = new ClientPlayer[4];
+    ClientPlayer[] clientPlayers = new ClientPlayer[4];
     
     
     public void initPlayer(String message) {
@@ -242,10 +242,10 @@ public class ClientGame {
     
     
         // 創建新的 ClientPlayer 並初始化
-        clientPlayer[playerCount] = new ClientPlayer(id);
-        clientPlayer[playerCount].setRelativeLocation(x, y);
-        clientPlayer[playerCount].setRole(chars[playerCount]);
-        clientPlayer[playerCount].setIsSelf(parts[4].equals(""+id));
+        clientPlayers[playerCount] = new ClientPlayer(id);
+        clientPlayers[playerCount].setRelativeLocation(x, y);
+        clientPlayers[playerCount].setRole(chars[playerCount]);
+        clientPlayers[playerCount].setIsSelf(parts[4].equals(""+id));
 
         playerCount++;
     
@@ -253,7 +253,7 @@ public class ClientGame {
         playerTotal++;
         System.out.println("Player initialized: ID: " + id + " at (" + x + ", " + y + ")");
     
-        if (playerCount >= clientPlayer.length) {
+        if (playerCount >= clientPlayers.length) {
             System.out.println("Maximum number of players reached.");
             return;
         }
@@ -264,9 +264,7 @@ public class ClientGame {
     }
 
     public void updatePlayerPosition(String message) {
-        String[] parts;
-        parts = message.split(";");
-        
+        String[] parts = message.split(";");
         try {
             int x = Integer.parseInt(parts[2]); // 新的 x 座標
             int y = Integer.parseInt(parts[3]); // 新的 y 座標
@@ -274,12 +272,11 @@ public class ClientGame {
     
             // 檢查是否更新玩家或殺手位置
             synchronized (this) {
-                for (ClientPlayer clientPlayer1 : clientPlayer) {
-                    if (clientPlayer1 != null && clientPlayer1.getId() == id) {
-                        clientPlayer1.setRelativeLocation(x, y);
+                for (ClientPlayer clientPlayer : clientPlayers) {
+                    if (clientPlayer != null && clientPlayer.getId() == id) {
+                        clientPlayer.setRelativeLocation(x, y);
                     }
                 }
-    
                 // 重繪遊戲畫面
                 gamePanel.repaint();
             }
@@ -339,8 +336,8 @@ public class ClientGame {
                 
                 // 檢查是否為空白鍵
                 if (key == KeyEvent.VK_SPACE) {
-                    for (int i = 0; i < clientPlayer.length ; i++) {
-                        if (clientPlayer[i] != null && clientPlayer[i].getRole().equals("killer")) {
+                    for (int i = 0; i < clientPlayers.length ; i++) {
+                        if (clientPlayers[i] != null && clientPlayers[i].getRole().equals("killer")) {
                         conn.send("Attack");
                         }
                 }
@@ -458,7 +455,7 @@ public class ClientGame {
         ImageIcon p2Icon = new ImageIcon("Graphic/Human/p2/p2-front.png");
         ImageIcon p3Icon = new ImageIcon("Graphic/Human/p3/p3-front.png");
         ImageIcon killerIcon = new ImageIcon("Graphic/Killer/killer-left.png");
-        for (ClientPlayer clientPlayer1 : clientPlayer) {
+        for (ClientPlayer clientPlayer1 : clientPlayers) {
             if (clientPlayer1 != null && clientPlayer1.getRole().equals("p1")) {
                 clientPlayer1.setIcon(p1Icon);
             }

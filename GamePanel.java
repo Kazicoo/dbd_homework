@@ -1,5 +1,5 @@
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 public class GamePanel extends JPanel {
     private ClientGame clientGame;
@@ -24,13 +24,13 @@ public class GamePanel extends JPanel {
         }
 
         // 繪製玩家
-        for (int i = 0; i < clientGame.clientPlayer.length; i++) {
-            if (clientGame.clientPlayer[i] != null && clientGame.clientPlayer[i].getIcon() != null) {
-                ImageIcon playerIcon = clientGame.clientPlayer[i].getIcon();
-                int x = clientGame.clientPlayer[i].getX();
-                int y = clientGame.clientPlayer[i].getY();
+        for (ClientPlayer clientPlayer : clientGame.clientPlayers) {
+            if (clientPlayer != null && clientPlayer.getIcon() != null) {
+                ImageIcon playerIcon = clientPlayer.getIcon();
+                int x = clientPlayer.getX();
+                int y = clientPlayer.getY();
                 playerIcon.paintIcon(this, g, x, y);
-                System.out.println("Drawing player " + clientGame.clientPlayer[i].getId() + " at: (" + x + ", " + y + ")");
+                System.out.println("Drawing player " + clientPlayer.getId() + " at: (" + x + ", " + y + ")");
             }
         }
     }
