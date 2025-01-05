@@ -291,6 +291,11 @@ public class ClientGame {
             System.out.println("Error parsing coordinates or ID: " + e.getMessage());
         }
     }
+
+    private boolean isMovingUp = false; 
+    private boolean isMovingLeft = false;
+    private boolean isMovingDown = false; 
+    private boolean isMovingRight = false;
     
     public void initKeyListener() {
         frame.addKeyListener(new KeyAdapter() {
@@ -303,24 +308,31 @@ public class ClientGame {
                     if (player != null && player.getIsSelf()) {
                         // 使用傳入的方向來更新玩家的移動
                         switch (key) {
-                            case 'W':  // 向上移動
+                            case 'W' -> {
+                                // 向上移動
                                 player.updateMovement("W");
                                 conn.send("KeyDown;W");
-                                break;
-                            case 'A':  // 向左移動
+                                isMovingUp = true;
+                            }
+                            case 'A' -> {
+                                // 向左移動
                                 player.updateMovement("A");
                                 conn.send("KeyDown;A");
-                                break;
-                            case 'S':  // 向下移動
+                                isMovingLeft = true;
+                            }
+                            case 'S' -> {
+                                // 向下移動
                                 player.updateMovement("S");
                                 conn.send("KeyDown;S");
-                                break;
-                            case 'D':  // 向右移動
+                                isMovingDown = true;
+                            }
+                            case 'D' -> {
+                                // 向右移動
                                 player.updateMovement("D");
                                 conn.send("KeyDown;D");
-                                break;
-                            default:
-                                System.out.println("Unhandled key press: " + key);
+                                isMovingRight = true;
+                            }
+                            default -> System.out.println("Unhandled key press: " + key);
                         }
                     }
                 }
@@ -334,20 +346,51 @@ public class ClientGame {
                     if (player != null && player.getIsSelf()) {
                         // 當按鍵被釋放時更新玩家狀態
                         switch (key) {
-                            case 'W':
+                            case 'W' -> {
                                 conn.send("KeyUp;W");
-                                break;
-                            case 'A':
+                                isMovingUp = false;
+                                if (isMovingDown) { 
+                                    player.updateMovement("S");
+                                } else if (isMovingRight) { 
+                                    player.updateMovement("D"); 
+                                } else if (isMovingLeft) { 
+                                    player.updateMovement("A"); 
+                                }
+                            }
+                            case 'A' -> {
                                 conn.send("KeyUp;A");
-                                break;
-                            case 'S':
+                                isMovingLeft = false;
+                                if (isMovingRight) { 
+                                    player.updateMovement("D");
+                                } else if (isMovingUp) { 
+                                    player.updateMovement("W");
+                                } else if (isMovingDown) { 
+                                    player.updateMovement("S");
+                                }
+                            }
+                            case 'S' -> {
                                 conn.send("KeyUp;S");
-                                break;
-                            case 'D':
+                                isMovingDown = false;
+                                if (isMovingUp) {
+                                    player.updateMovement("W");
+                                } else if (isMovingRight) {
+                                    player.updateMovement("D");
+                                } else if (isMovingLeft) {
+                                    player.updateMovement("A");
+                                }
+                            }
+                            case 'D' -> {
                                 conn.send("KeyUp;D");
-                                break;
-                            default:
-                                System.out.println("Unhandled key release: " + key);
+                                isMovingRight = false;
+                                if (isMovingLeft) {
+                                    player.updateMovement("A");
+                                } else if (isMovingUp) {
+                                    player.updateMovement("W"); 
+                                } else if (isMovingDown) {
+                                    player.updateMovement("S");
+                                }
+                            }
+                            default -> System.out.println("Unhandled key release: " + key);
                         }
                     }
                 }

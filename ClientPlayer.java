@@ -79,27 +79,15 @@ public class ClientPlayer extends ClientGameObject {
         return currentImage;
     }
     
-    
-
     public void updateMovement(String direction) {
         // 根據按下的方向鍵來更新圖片
-        switch (direction) {
-            case "W":
-                currentImage = backImage;
-                break;
-            case "A":
-                currentImage = leftIcon;
-                break;
-            case "S":
-                currentImage = frontImage;
-                break;
-            case "D":
-                currentImage = rightIcon;
-                break;
-            default:
-                currentImage = idleImage;
-                break;
-        }
+        currentImage = switch (direction) {
+            case "W" -> backImage;
+            case "A" -> leftIcon;
+            case "S" -> frontImage;
+            case "D" -> rightIcon;
+            default -> idleImage;
+        };
     }
     
 
