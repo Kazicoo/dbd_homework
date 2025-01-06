@@ -15,6 +15,8 @@ public class ClientPlayer extends ClientGameObject {
     private ImageIcon rightIcon;
     private ImageIcon leftIcon;
     private ImageIcon standImage;
+    private ImageIcon bloodImage;
+    private ImageIcon downImage;
 
     private int offsetX = 0;
     private int offsetY = 0;
@@ -99,6 +101,9 @@ public class ClientPlayer extends ClientGameObject {
         currentImage = idleImage;
         return currentImage;
     }
+    public ImageIcon getBloodImage() {
+        return bloodImage;
+    }
     
     public void updateMovement(String direction) {
         // 根據按下的方向鍵來更新圖片
@@ -125,6 +130,13 @@ public class ClientPlayer extends ClientGameObject {
         ||action.equals("RIGHT")) {
             currentImage = attackRightImage;
         }
+
+    }
+
+    public void setDownImage() {
+        if(status.equals("倒地")) {
+            currentImage = downImage;
+        }
     }
 
     public int getOffsetX() {
@@ -143,4 +155,6 @@ public class ClientPlayer extends ClientGameObject {
     //     timer.setRepeats(false); // 僅執行一次
     //     timer.start();
     // }
+
+    
 }
