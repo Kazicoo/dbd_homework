@@ -11,7 +11,6 @@ public class Server implements Comm.TcpServerCallback {
   private final Comm.TcpServer server;
   private static ServerGame serverGame;
   
-  
     
     public static void main(String[] args) {
       try {

@@ -180,16 +180,16 @@ public abstract class ServerPlayer extends ServerGameObject {
     public boolean isColliding(ServerPlayer serverPlayer) {
         return ServerGame.aabb_collision(
             // self top left
-            getX() - ServerGame.GRID_SIZE / 2, 
-            getY() - ServerGame.GRID_SIZE / 2, 
+            getX() - ServerGame.collisionSize, 
+            getY() - ServerGame.collisionSize, 
             // self bottom right
-            getX() + ServerGame.GRID_SIZE / 2,
-            getY() + ServerGame.GRID_SIZE / 2,
+            getX() + ServerGame.collisionSize,
+            getY() + ServerGame.collisionSize,
             // other top left
-            serverPlayer.getX() - ServerGame.GRID_SIZE / 2 + 10,
-            serverPlayer.getY() - ServerGame.GRID_SIZE / 2 + 10,
+            serverPlayer.getX() - ServerGame.collisionSize,
+            serverPlayer.getY() - ServerGame.collisionSize,
             // other bottom right
-            serverPlayer.getX() + ServerGame.GRID_SIZE / 2 + 10,
-            serverPlayer.getY() + ServerGame.GRID_SIZE / 2 + 10);
+            serverPlayer.getX() + ServerGame.collisionSize,
+            serverPlayer.getY() + ServerGame.collisionSize);
     }
 }
