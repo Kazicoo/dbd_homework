@@ -9,7 +9,7 @@ public class ClientGame {
     private JFrame frame;
     private JLabel generatorLabel; // 用於顯示發電機數量
     private JLabel humanLabel1,humanLabel2,humanLabel3; // 用於顯示玩家血量
-    private int generatorCount = 4; // 初始發電機數量
+    private int generatorCount = 6; // 初始發電機數量
     private int healthcount = 2; // 初始玩家血量
     private String status;
     int playerCount = 0;
@@ -140,7 +140,7 @@ public class ClientGame {
 
     private int initGeneratorTotal = 0; //確保waitgamestart正確啟動
     private int generatorTotal = 0;
-    public final ClientGenerator[] generators = new ClientGenerator[4];
+    public final ClientGenerator[] generators = new ClientGenerator[6];
 
     public void initGenerator(String message) {
         String[] parts;
@@ -153,39 +153,16 @@ public class ClientGame {
             // 初始化發電機物件
             generators[generatorTotal] = new ClientGenerator(id);
             generators[generatorTotal].setRelativeLocation(x, y);
+            generators[generatorTotal].setButton(null);
                     
-            // 初始化按鈕
-            // 建立一個新的面板來承載按鈕
-
-        // 初始化按鈕
-        ImageIcon generatorIcon = new ImageIcon("Graphic/Object/generator-broken.png");
-        JButton generatorButton = new JButton(generatorIcon);
+   
         
-        int imageWidth = generatorIcon.getIconWidth();
-        int imageHeight = generatorIcon.getIconHeight();
-        
-        // 設定按鈕的位置和大小
-        generatorButton.setBounds(generators[generatorTotal].getX(), generators[generatorTotal].getY(), imageWidth, imageHeight);
-        generatorButton.setOpaque(false);     // 讓按鈕背景透明
-        generatorButton.setContentAreaFilled(false); // 移除按鈕預設的背景
-        generatorButton.setBorderPainted(false);     // 移除按鈕邊框
-        
-        gamePanel.add(generatorButton);
-                    
-            // 添加互動邏輯
-                    generatorButton.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
-                            if (SwingUtilities.isLeftMouseButton(e)) {
-                                conn.send("Clicked;generator;" + generators[generatorTotal].getId());
-                            }
-                        }
-                    });
+        gamePanel.addbutton(generators[generatorTotal].getButton());
                     
                     synchronized (this) {
                         generatorTotal++;
                         initGeneratorTotal++;
-                        if (initGeneratorTotal == 4 && playerTotal == 4) {
+                        if (initGeneratorTotal == 6 && playerTotal == 4) {
                             notifyAll(); // 通知等待的線程
                         }
                     }
@@ -245,7 +222,7 @@ public void initHook(String message) {
         hookButton.setBorderPainted(false);
 
         // 添加按鈕到 JPanel
-        gamePanel.add(hookButton);  // 確保gamePanel已正確初始化
+        // gamePanel.add(hookButton);  // 確保gamePanel已正確初始化
 
         // 添加互動邏輯
         hookButton.addMouseListener(new MouseAdapter() {
@@ -268,12 +245,74 @@ public void initHook(String message) {
             System.out.println("Hook initialized: ID " + id + " at (" + x + ", " + y + ")");
         }
 
-    } catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {
         System.out.println("Error parsing coordinates or ID: " + e.getMessage());
+        }
     }
-}
 
+    private int boardTotal = 0;
+    public final ClientBoard[] Board = new ClientBoard[13];
+
+    public void initBoard(String message) {
+        // 解析伺服器傳送的訊息
+        String[] parts = message.split(";");
+        if (parts.length < 5 || !parts[0].equals("initGameObject") || !parts[1].equals("board")) {
+            System.err.println("Invalid message format: " + message);
+            return;
+        }
+
+        int id = Integer.parseInt(parts[2].split(" ")[1]); // 提取 id
+        int x = Integer.parseInt(parts[3].split(" ")[1]);  // 提取 x 座標
+        int y = Integer.parseInt(parts[4].split(" ")[1]);  // 提取 y 座標
+
+    // 初始化物件
+        ClientBoard board = new ClientBoard(id);
+        board.setRelativeLocation(x, y);
+        Board[id] = new ClientBoard(id);
+        Board[id].setRelativeLocation(x, y);
+
+        ImageIcon boardIcon = new ImageIcon("Graphic/Object/board-notUsed.png");
+        JButton boardButton = new JButton(boardIcon);
+
+        int imageWidth = boardIcon.getIconWidth();
+        int imageHeight = boardIcon.getIconHeight();
+
+    // 設定按鈕位置和大小
+        boardButton.setBounds(x, y, imageWidth, imageHeight);
+        boardButton.setOpaque(false);
+        boardButton.setContentAreaFilled(false);
+        boardButton.setBorderPainted(false);
+
+    // 添加按鈕到 JPanel
+        gamePanel.add(boardButton);
+
+    // 添加鍵盤事件邏輯
+        gamePanel.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    System.out.println("Board activated with space: ID " + board.getId());
+                // 可選：發送封包邏輯
+                    conn.send("Activated;board;" + board.getId());
+            }
+        }
+    });
+
+        // 確保面板可聚焦並接收鍵盤事件
+        gamePanel.setFocusable(true);
+        gamePanel.requestFocusInWindow();
+        synchronized (this) {
+            if (boardTotal == 13) {
+                System.out.println("Maximum broads reached.");
+                return;
+            }
+            boardTotal++; // 自增板子數量
+            System.out.println("Hook initialized: ID " + id + " at (" + x + ", " + y + ")");
+        }
+    } 
     
+    
+
     public void initPlayer(String message, int clientId) {
         String[] parts = message.split(";");
         int x = Integer.parseInt(parts[2]);

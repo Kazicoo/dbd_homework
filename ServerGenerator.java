@@ -38,11 +38,11 @@ public class ServerGenerator extends ServerMapItems {
             (x+2) * ServerGame.GRID_SIZE,
             (y+1) * ServerGame.GRID_SIZE,
             // other top left
-            serverPlayer.getX() - ServerGame.GRID_SIZE / 2,
-            serverPlayer.getY() - ServerGame.GRID_SIZE / 2,
+            serverPlayer.getX() - ServerGame.collisionSize,
+            serverPlayer.getY() - ServerGame.collisionSize,
             // other bottom right
-            serverPlayer.getX() + ServerGame.GRID_SIZE / 2,
-            serverPlayer.getY() + ServerGame.GRID_SIZE / 2);
+            serverPlayer.getX() + ServerGame.collisionSize,
+            serverPlayer.getY() + ServerGame.collisionSize);
     }
 
     public void fix(ServerHuman serverPlayer) {

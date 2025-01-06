@@ -226,6 +226,27 @@ public class ServerGame {
     public ServerHuman[] getHumans() {
         return new ServerHuman[]{(ServerHuman)players[1], (ServerHuman)players[2], (ServerHuman)players[3]};
     }
+
+    public void initHook() {
+        grid[13][8] = new ServerHook(0, 13, 8);
+        server.broadcastToClient("initGameObject;hook;" + 13 * GRID_SIZE + ";" + 8 * GRID_SIZE +";0");
+        grid[30][16] = new ServerHook(1, 30, 16);
+        server.broadcastToClient("initGameObject;hook;" + 30 * GRID_SIZE + ";" + 16 * GRID_SIZE +";1");
+        grid[44][5] = new ServerHook(2, 44, 5);
+        server.broadcastToClient("initGameObject;hook;" + 44 * GRID_SIZE + ";" + 5 * GRID_SIZE +";2");
+        grid[76][19] = new ServerHook(3, 76, 19);
+        server.broadcastToClient("initGameObject;hook;" + 76 * GRID_SIZE + ";" + 19 * GRID_SIZE +";3");
+        grid[94][19] = new ServerHook(4, 94, 19);
+        server.broadcastToClient("initGameObject;hook;" + 94 * GRID_SIZE + ";" + 19 * GRID_SIZE +";4");
+        grid[48][23] = new ServerHook(5, 48, 23);
+        server.broadcastToClient("initGameObject;hook;" + 48 * GRID_SIZE + ";" + 23 * GRID_SIZE +";5");
+        grid[12][46] = new ServerHook(6, 12, 46);
+        server.broadcastToClient("initGameObject;hook;" + 12 * GRID_SIZE + ";" + 46 * GRID_SIZE +";6");
+        grid[48][43] = new ServerHook(7, 48, 43);
+        server.broadcastToClient("initGameObject;hook;" + 48 * GRID_SIZE + ";" + 43 * GRID_SIZE +";7");
+        grid[76][46] = new ServerHook(8, 76, 46);
+        server.broadcastToClient("initGameObject;hook;" + 76 * GRID_SIZE + ";" + 46 * GRID_SIZE +";8");
+    }
     
     public void initWall() {
         for (int i = 0; i <= 59; i++) {
@@ -237,36 +258,36 @@ public class ServerGame {
             grid[i][59] = new ServerWall(i, 59);
         }
         // 左下、中下
-        for (int i = 5; i <= 15; i++) {
-            if (i == 9) continue;
+        for (int i = 4; i <= 14; i++) {
+            if (i == 8) continue;
             grid[i][49] = new ServerWall(i, 49);
         }
         for (int i = 50; i <= 52; i++) {
             grid[4][i] = new ServerWall(4, i);
         }
+        grid[17][50] = new ServerWall(17, 50);
         grid[18][50] = new ServerWall(18, 50);
-        grid[19][50] = new ServerWall(19, 50);
-        for (int i = 19; i <= 26; i++) {
-            if (i == 22) continue;
+        for (int i = 19; i <= 25; i++) {
+            if (i == 21) continue;
             grid[i][40] = new ServerWall(i, 40);
         }
         for (int i = 41; i <= 43; i++) {
-            grid[19][i] = new ServerWall(19,i);
+            grid[18][i] = new ServerWall(18,i);
         }
         for (int i = 43; i <= 53; i++) {
             if (i == 48) continue;
-            grid[25][i] = new ServerWall(25,i);
+            grid[24][i] = new ServerWall(24,i);
         }
-        for (int i = 31; i <= 39; i++) {
-            if (i == 37) continue;
+        for (int i = 30; i <= 38; i++) {
+            if (i == 36) continue;
             grid[i][51] = new ServerWall(i,51);   
         }
-        grid[39][50] = new ServerWall(39,50);
-        grid[39][49] = new ServerWall(39,49);
-        grid[39][48] = new ServerWall(39,48);
+        grid[38][50] = new ServerWall(38,50);
+        grid[38][49] = new ServerWall(38,49);
+        grid[38][48] = new ServerWall(38,48);
         for (int i = 35; i <= 45; i++) {
             if (i == 40) continue;
-            grid[35][i] = new ServerWall(35,i);
+            grid[34][i] = new ServerWall(34,i);
         }
         grid[52][40] = new ServerWall(52,40);
         grid[52][41] = new ServerWall(52,41);
@@ -306,47 +327,48 @@ public class ServerGame {
         grid[24][25] = new ServerWall(24,25);
         grid[24][26] = new ServerWall(24,26);
         grid[24][27] = new ServerWall(24,27);
-        grid[25][25] = new ServerWall(25,25);
-        for (int i = 25; i <= 35; i++) {
+        grid[24][28] = new ServerWall(24,27);
+        for (int i = 25; i <= 34; i++) {
+            if(i == 28) continue;
             grid[i][25] = new ServerWall(i,25);
         }
         for (int i = 20; i <= 24; i++) {
-            grid[39][i] = new ServerWall(39,i);
+            grid[38][i] = new ServerWall(38,i);
         }
-        for (int i = 40; i <= 43; i++) {
+        for (int i = 40; i <= 42; i++) {
             grid[i][20] = new ServerWall(i,20);
         }
+        grid[43][23] = new ServerWall(43,23);
         grid[44][23] = new ServerWall(44,23);
-        grid[45][23] = new ServerWall(45,23);
-        for (int i = 46; i <= 50; i++) {
+        for (int i = 45; i <= 49; i++) {
             grid[i][20] = new ServerWall(i,20);
         }
         for (int i = 21; i <= 24; i++) {
             grid[50][i] = new ServerWall(50,i);
         }
         for (int i = 27; i <= 31; i++) {
-            grid[39][i] = new ServerWall(39,i);
+            grid[38][i] = new ServerWall(38,i);
         }
-        for (int i = 40; i <= 43; i++) {
+        for (int i = 39; i <= 42; i++) {
             grid[i][31] = new ServerWall(i,31);
         }
-        for (int i = 46; i <= 50; i++) {
+        for (int i = 45; i <= 49; i++) {
             grid[i][31] = new ServerWall(i,31);
         }
         for (int i = 27; i <= 30; i++) {
-            grid[50][i] = new ServerWall(50,i);
+            grid[49][i] = new ServerWall(50,i);
         }
+        grid[38][34] = new ServerWall(38,34);
         grid[39][34] = new ServerWall(39,34);
-        grid[40][34] = new ServerWall(40,34);
-        grid[46][33] = new ServerWall(46,33);
-        grid[46][34] = new ServerWall(46,34);
+        grid[45][33] = new ServerWall(45,33);
+        grid[45][34] = new ServerWall(45,34);
         for (int i = 19; i <= 28; i++) {
             if (i == 24) continue;
-            grid[56][i] = new ServerWall(56,i);
+            grid[55][i] = new ServerWall(55,i);
         }
         for (int i = 21; i <= 30; i++) {
             if (i == 6) continue;
-            grid[61][i] = new ServerWall(61,i);
+            grid[60][i] = new ServerWall(60,i);
         }
         //右、右下
         for (int i = 86; i <= 89; i++) {;
@@ -443,7 +465,8 @@ public class ServerGame {
             grid[5][i] = new ServerWall(5,i);
         }
         grid[6][13] = new ServerWall(6,13);
-        for (int i = 9; i <= 15; i++) {
+        grid[7][13] = new ServerWall(7,13);
+        for (int i = 9; i <= 14; i++) {
             grid[i][7] = new ServerWall(i,7);
         }
         grid[7][13] = new ServerWall(7,3);
@@ -451,6 +474,7 @@ public class ServerGame {
             grid[i][23] = new ServerWall(i,23);
         }
         for (int i = 24; i <= 31; i++) {
+            if(i == 30) continue;
             grid[5][i] = new ServerWall(5,i);
         }
         for (int i = 6; i <= 15; i++) {
@@ -459,6 +483,9 @@ public class ServerGame {
         }
         grid[12][33] = new ServerWall(12,33);
         grid[12][34] = new ServerWall(12,34);
+        for (int i = 25; i <= 30; i++) {
+            grid[15][i] = new ServerWall(15,i);
+        }
     }
     
 

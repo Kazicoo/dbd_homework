@@ -74,7 +74,7 @@ public class ClientPlayer extends ClientGameObject {
             idleImage        = new ImageIcon("Graphic/Killer/killer-standFront.png");
             attackLeftImage  = new ImageIcon("Graphic/Killer/killer-attackLeft.png");
             attackRightImage = new ImageIcon("Graphic/Killer/killer-attackRight.png");
-            backImage        = new ImageIcon("Graphic/Killer/killer-left.png");
+            backImage        = new ImageIcon("Graphic/Killer/killer-back.png");
             frontImage       = new ImageIcon("Graphic/Killer/killer-right.png");
             rightIcon        = new ImageIcon("Graphic/Killer/killer-right.png");
             leftIcon         = new ImageIcon("Graphic/Killer/killer-left.png");
