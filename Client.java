@@ -106,7 +106,7 @@ public class Client implements Comm.TcpClientCallback {
     if(message.startsWith("updateGameObject"))  {
       if (parts[1].equals("player")){
         ClientGame.updatePlayerPosition(message, id);
-      } else if (parts[2].equals("health")) {
+      } else if (parts[1].equals("health")) {
         ClientGame.initHealthStatus(message);
       }
     }
