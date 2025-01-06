@@ -67,11 +67,6 @@ public class ClientGame {
         gamePanel.add(humanLabel2);
         gamePanel.add(humanLabel3);
     
-        // 下部面板
-        JPanel bottomPanel = new JPanel();
-        bottomPanel.setPreferredSize(new Dimension(screenWidth, bottomBarHeight));
-        bottomPanel.setBackground(Color.GRAY); // 可自定義背景顏色
-        bottomPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
     
 
         // 發電機數量顯示 (右上角)
@@ -81,7 +76,6 @@ public class ClientGame {
         frame.add(topPanel, BorderLayout.NORTH);
         //將healthbar移動到gamepanel
         frame.add(middlePanel);
-        frame.add(bottomPanel, BorderLayout.SOUTH);
         frame.add(gamePanel, BorderLayout.CENTER);
         // 顯示框架
         frame.setVisible(true);
@@ -211,73 +205,81 @@ public class ClientGame {
         }
     }
 
-    /*private int HookTotal = 0;
+    
+    
+    private int hookTotal = 0;
     public final ClientHook[] Hook = new ClientHook[9];
     
-    public void initHook(String message){
+    public void initHook(String message) {
         String[] parts;
-         try {
+        try {
+            // 解析封包
             parts = message.split(";");
-            if (parts.length < 5 || !"hook".equals(parts[1])) {
+            if (parts.length != 5 || !"hook".equals(parts[1])) {
                 throw new IllegalArgumentException("Invalid hook message format.");
             }
         } catch (Exception e) {
             System.out.println("Error parsing hook message: " + e.getMessage());
             return;
         }
+
         try {
-            int id = Integer.parseInt(parts[4]);
+            // 提取座標和 ID
             int x = Integer.parseInt(parts[2]);
             int y = Integer.parseInt(parts[3]);
+            int id = Integer.parseInt(parts[4]);
+
+            if (id < 0 || id > 8) {
+                throw new IllegalArgumentException("Invalid ID. Must be '0' to '8'.");
+            }
+
             // 初始化物件
-            Hook[HookTotal] = new ClientHook(id);
-            Hook[HookTotal].setRelativeLocation(x, y);
-                    
-            
+            Hook[hookTotal] = new ClientHook(id);
+            Hook[hookTotal].setRelativeLocation(x, y);
+
             ImageIcon hookIcon = new ImageIcon("Graphic/Object/hook.png");
             JButton hookButton = new JButton(hookIcon);
 
             int imageWidth = hookIcon.getIconWidth();
             int imageHeight = hookIcon.getIconHeight();
 
-            // 設定按鈕的位置和大小
-            hookButton.setBounds(generators[generatorTotal].getX(), generators[generatorTotal].getY(), imageWidth, imageHeight);
-            hookButton.setOpaque(false);     // 讓按鈕背景透明
-            hookButton.setContentAreaFilled(false); // 移除按鈕預設的背景
-            hookButton.setBorderPainted(false);     // 移除按鈕邊框
-                    
-            // 添加到面板
-            gamePanel.add(hookButton);
-            gamePanel.revalidate();
-            gamePanel.repaint();
-                    
+            // 設定按鈕位置和大小
+            hookButton.setBounds(x, y, imageWidth, imageHeight);
+            hookButton.setOpaque(false);
+            hookButton.setContentAreaFilled(false);
+            hookButton.setBorderPainted(false);
+
+            // 添加按鈕到 JFrame
+            frame.add(hookButton);
+            frame.revalidate();
+            frame.repaint();
+
             // 添加互動邏輯
-                    hookButton.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
-                            if (SwingUtilities.isLeftMouseButton(e)) {
-                                conn.send("Clicked;hook;" + Hook[HookTotal].getId());
-                            }
-                        }
-                    });
-                    
-                    synchronized (this) {
-                        HookTotal++;
-                        initHookTotal++;
-                        if (initHookTotal == 4 && playerTotal == 4) {
-                            notifyAll(); // 通知等待的線程
-                        }
+            hookButton.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (SwingUtilities.isLeftMouseButton(e)) {
+                        System.out.println("Hook clicked: ID " + Hook[hookTotal].getId());
+                        // 可選：發送封包邏輯
+                        // conn.send("Clicked;hook;" + Hook[hookTotal].getId());
                     }
-                    if (generatorTotal == generators.length) {
-                        System.out.println("Maximum generators reached.");
-                    }
-                    System.out.println("Hook initialized: ID " + id + " at (" + x + ", " + y + ")");
-                    
-                    
+                }
+            });
+
+            synchronized (this) {
+                hookTotal++;
+                if (hookTotal == 9) {
+                    System.out.println("Maximum hooks reached.");
+                }
+                System.out.println("Hook initialized: ID " + id + " at (" + x + ", " + y + ")");
+            }
+
         } catch (NumberFormatException e) {
             System.out.println("Error parsing coordinates or ID: " + e.getMessage());
         }
-    }*/
+    }
+
+    
         
     
     
@@ -455,7 +457,7 @@ public class ClientGame {
 
                         if (!isMovingUp && !isMovingLeft && !isMovingDown && !isMovingRight) {
                             player.updateMovement("");
-                            conn.send("animated;\"");
+                            conn.send("animated;\"\"");
                             gamePanel.repaint();
                         }
                     }

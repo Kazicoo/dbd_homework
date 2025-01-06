@@ -22,6 +22,7 @@ public class ServerGame {
     public ServerGame(Server server) {
         this.server = server;
         this.idRole = server.getidRole();
+
     }
 
     //處理分配玩家出生點
@@ -29,7 +30,7 @@ public class ServerGame {
         int count = 0;
         int[][] positionMap = new int[9][2];
         positionMap[0] = new int[]{16*GRID_SIZE, 10*GRID_SIZE};
-        positionMap[1] = new int[]{53*GRID_SIZE, 5*GRID_SIZE};
+        positionMap[1] = new int[]{53*GRID_SIZE, 15*GRID_SIZE};
         positionMap[2] = new int[]{83*GRID_SIZE, 10*GRID_SIZE};
         positionMap[3] = new int[]{29*GRID_SIZE, 28*GRID_SIZE};
         positionMap[4] = new int[]{48*GRID_SIZE, 28*GRID_SIZE};
@@ -102,6 +103,7 @@ public class ServerGame {
                 generators[count] = new ServerGenerator(count, positionMap[position][0], positionMap[position][1]);
                 generators[count].setX(positionMap[position][0]);
                 generators[count].setY(positionMap[position][1]);
+                grid[positionMap[position][0]][positionMap[position][1]] = generators[count];
                 count++;
             }
         }
@@ -465,6 +467,27 @@ public class ServerGame {
         for (int i = 25; i <= 30; i++) {
             grid[15][i] = new ServerWall(15,i);
         }
+    }
+
+    public void initHook() {
+        grid[13][8] = new ServerHook(0, 13, 8);
+        server.broadcastToClient("initGameObject;hook;3;8;0");
+        grid[30][16] = new ServerHook(1, 30, 16);
+        server.broadcastToClient("initGameObject;hook;30;16;1");
+        grid[44][5] = new ServerHook(2, 44, 5);
+        server.broadcastToClient("initGameObject;hook;44;5;2");
+        grid[76][19] = new ServerHook(3, 76, 19);
+        server.broadcastToClient("initGameObject;hook;13;8;3");
+        grid[94][19] = new ServerHook(4, 94, 19);
+        server.broadcastToClient("initGameObject;hook;94;19;4");
+        grid[48][23] = new ServerHook(5, 48, 23);
+        server.broadcastToClient("initGameObject;hook;48;23;5");
+        grid[12][46] = new ServerHook(6, 12, 46);
+        server.broadcastToClient("initGameObject;hook;12;46;6");
+        grid[48][43] = new ServerHook(7, 48, 43);
+        server.broadcastToClient("initGameObject;hook;48;43;7");
+        grid[76][46] = new ServerHook(8, 76, 46);
+        server.broadcastToClient("initGameObject;hook;76;46;8");
     }
     
 

@@ -34,6 +34,16 @@ public class GamePanel extends JPanel {
             // System.out.println("Drawing player " + clientPlayer.getId() + " at: (" + x + ", " + y + ")");
         }
     }
+    // 繪製每一個鉤子
+    for (ClientHook clientHook : clientGame.Hook) {
+        if (clientHook != null && clientHook.getCurrentImage() != null) {
+            ImageIcon hookIcon = clientHook.getCurrentImage();
+            int x = clientHook.getX(); 
+            int y = clientHook.getY();
+            hookIcon.paintIcon(this, g, x, y);  // 繪製鉤子圖標
+            // System.out.println("Drawing hook " + clientHook.getId() + " at: (" + x + ", " + y + ")");
+        }
+    }
 
     
 }
