@@ -163,8 +163,8 @@ public abstract class ServerPlayer extends ServerGameObject {
         ServerMapItems items[] = new ServerMapItems[25];
         int count = 0;
 
-        for (int _x=-2; _x>2; _x++) {
-            for (int _y=-2; _y>2; _y++) {
+        for (int _x=-2; _x<=2; _x++) {
+            for (int _y=-2; _y<=2; _y++) {
                 items[count++] = game.getMapItem(
                     gx + _x, 
                     gy + _y);
