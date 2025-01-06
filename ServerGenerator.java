@@ -18,6 +18,10 @@ public class ServerGenerator extends ServerMapItems {
         this.y = y;
     }
 
+    public ServerHuman[] getFixers() { 
+        return this.fixers; 
+    }
+
     @Override
     public int getX() {
         return x * ServerGame.GRID_SIZE;
@@ -65,6 +69,16 @@ public class ServerGenerator extends ServerMapItems {
         return justFixed;
     }
 
+    private int playerId = -1;
+
+    public void setSomeoneLeft(int playerId) {
+        this.playerId = playerId;
+    }
+
+    public int getSomeoneLeft() {
+        return this.playerId;
+    }
+
     @Override
     public void update() {
         justFixed = false;
@@ -85,6 +99,7 @@ public class ServerGenerator extends ServerMapItems {
 
             else {
                 leftFixers[leftFixersCount++] = human;
+                setSomeoneLeft(human.getId());
             }
         }
 
@@ -107,5 +122,9 @@ public class ServerGenerator extends ServerMapItems {
 
         fixStatus += fixRate / ServerGame.FRAME_PER_SEC;
         justFixed = isFixed();
+    }
+
+    public int getFixPercentage() { 
+        return (int) ((fixStatus / FIX_TARGET) * 100); 
     }
 }
