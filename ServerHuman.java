@@ -23,6 +23,7 @@ public class ServerHuman extends ServerPlayer {
 
     public void getHurt() {
         setHealth(health-1);
+        game.sendMessage("updateGameObject;health;" + health + ";" + getId());
 
         if (health > 0) {
             setFastMoveSpeed();

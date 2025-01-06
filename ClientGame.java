@@ -477,7 +477,6 @@ public class ClientGame {
                     for (ClientPlayer player : clientPlayers) {
                         if (player != null && "killer".equals(player.getRole()) && player.getIsSelf()) {
                             conn.send("attack");
-                            player.setAction("attack");
                         }
                     }
                 }
