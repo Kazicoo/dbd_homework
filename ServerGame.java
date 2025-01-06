@@ -308,7 +308,7 @@ public class ServerGame {
         }
         for (int i = 21; i <= 30; i++) {
             if (i == 6) continue;
-            grid[61][i] = new ServerWall();ㄕ
+            grid[61][i] = new ServerWall();
         }
     }
 }
