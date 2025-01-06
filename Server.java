@@ -61,6 +61,20 @@ public class Server implements Comm.TcpServerCallback {
       serverGame.getKiller().attack();
     }
 
+    if (message.startsWith("animated")) {
+      server.broadcast(message + id);
+    }
+
+
+    // if (message.startsWith("fix_gen")) {
+    //   ServerGenerator gen;
+    //   ServerPlayer player;
+
+    //   if (player.canInteractGenerator(gen)) {
+    //     gen.fix();
+    //   }
+    // }
+
     System.out.println("Client " + id + " sent: " + message);
     server.send(id, "Echo: " + message);
   }

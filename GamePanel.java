@@ -11,7 +11,7 @@ public class GamePanel extends JPanel {
 
     public GamePanel(ClientGame clientGame) {
         this.clientGame = clientGame;
-        this.backgroundImage = new ImageIcon("Graphic/GuideLine.png").getImage();
+        this.backgroundImage = new ImageIcon("Graphic/mapWithWall.png").getImage();
         System.out.println("Background image loaded: " + (backgroundImage != null));
         setLayout(null);
     }
@@ -28,15 +28,8 @@ public class GamePanel extends JPanel {
     for (ClientPlayer clientPlayer : clientGame.clientPlayers) {
         if (clientPlayer != null && clientPlayer.getCurrentImage() != null) {
             ImageIcon playerIcon = clientPlayer.getCurrentImage();
-            
-            int x = clientPlayer.getX() - cameraOffsetX;  // 根據鏡頭偏移量調整 x 坐標
-            int y = clientPlayer.getY() - cameraOffsetY;  // 根據鏡頭偏移量調整 y 坐標
-
-            if (clientPlayer.getHp() == 1) {
-                // 取得血的圖片
-                ImageIcon bloodIcon = clientPlayer.getBloodImage();
-                playerIcon = applyBloodEffect(playerIcon, bloodIcon); // 合成流血圖片
-            } 
+            int x = clientPlayer.getX() - cameraOffsetX - clientPlayer.getOffsetX();  // 根據鏡頭偏移量調整 x 坐標
+            int y = clientPlayer.getY() - cameraOffsetY - clientPlayer.getOffsetY();  // 根據鏡頭偏移量調整 y 坐標
             playerIcon.paintIcon(this, g, x, y);  // 繪製玩家圖標
             // System.out.println("Drawing player " + clientPlayer.getId() + " at: (" + x + ", " + y + ")");
         }

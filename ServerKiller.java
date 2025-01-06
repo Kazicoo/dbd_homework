@@ -4,7 +4,7 @@ public class ServerKiller extends ServerPlayer {
     static final int DEFAULT_MOVE_SPEED = 8;    
     static final int SLOW_MOVE_SPEED = 3;
 
-    static final double ATTACK_RANGE = 2;
+    static final double ATTACK_RANGE = 2.75;
     static final double ATTACK_ANGLE = 135;
 
     int moveSpeedEffectTime = 0;
@@ -60,12 +60,12 @@ public class ServerKiller extends ServerPlayer {
         resetAttackCounter();
         setSlowMoveSpeed();
         moveSpeedEffectTime = (int)(2 * ServerGame.FRAME_PER_SEC);
+
         // 送封包給客戶端
         game.sendMessage("attack;" + getFacing());
 
         for (ServerHuman human : game.getHumans()) {
-            System.out.println(inRange(human.getX(), human.getY(), ATTACK_RANGE, ATTACK_ANGLE));
-            if (inRange(human.getX(), human.getY(), ATTACK_RANGE, ATTACK_ANGLE)) {
+            if (inRange(human.getX(), human.getY(), ATTACK_RANGE * ServerGame.GRID_SIZE, ATTACK_ANGLE)) {
                 human.getHurt();
                 break;
             }

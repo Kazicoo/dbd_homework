@@ -1,8 +1,8 @@
 
 
 public class ServerHuman extends ServerPlayer {
-    static final int DEFAULT_MOVE_SPEED = 6;    
-    static final int FAST_MOVE_SPEED    = 9;
+    static final int DEFAULT_MOVE_SPEED = 7;    
+    static final int FAST_MOVE_SPEED    = 10;
     static final int SLOW_MOVE_SPEED    = 0;
 
     private int health = 2;
@@ -63,4 +63,20 @@ public class ServerHuman extends ServerPlayer {
     public int setHealth(int health) {
         return this.health = health;
     }   
+
+    public boolean canInteractGenerator(ServerGenerator generator) {
+        return ServerGame.aabb_collision(
+            // self top left
+            getX() - ServerGame.GRID_SIZE / 2, 
+            getY() - ServerGame.GRID_SIZE / 2, 
+            // self bottom right
+            getX() + ServerGame.GRID_SIZE / 2,
+            getY() + ServerGame.GRID_SIZE / 2,
+            // other top left
+            generator.getX() - ServerGame.GRID_SIZE,
+            generator.getY() - ServerGame.GRID_SIZE,
+            // other bottom right
+            generator.getX() + 3 * ServerGame.GRID_SIZE,
+            generator.getY() + 2 * ServerGame.GRID_SIZE);
+    }
 }

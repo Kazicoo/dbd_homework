@@ -17,6 +17,10 @@ public class ClientPlayer extends ClientGameObject {
     private ImageIcon standImage;
     private ImageIcon bloodImage;
     private ImageIcon downImage;
+
+    private int offsetX = 0;
+    private int offsetY = 0;
+
     public ClientPlayer(int id) {
         super(id);
     }
@@ -67,52 +71,34 @@ public class ClientPlayer extends ClientGameObject {
     }
     public ImageIcon initImage() {
         if (this.role.equals("killer")) {
-            idleImage = new ImageIcon("Graphic/Killer/killer-standFrontBack.png");
-            attackLeftImage = new ImageIcon("Graphic/Killer/killer-attackLeft.png");
+            idleImage        = new ImageIcon("Graphic/Killer/killer-standFrontBack.png");
+            attackLeftImage  = new ImageIcon("Graphic/Killer/killer-attackLeft.png");
             attackRightImage = new ImageIcon("Graphic/Killer/killer-attackRight.png");
-            backImage = new ImageIcon("Graphic/Killer/killer-left.png");
-            frontImage = new ImageIcon("Graphic/Killer/killer-right.png");
-            rightIcon = new ImageIcon("Graphic/Killer/killer-right.png");
-            leftIcon = new ImageIcon("Graphic/Killer/killer-left.png");
-            standImage = new ImageIcon("Graphic/Killer/killer-left.png");
-            downImage = null;
+            backImage        = new ImageIcon("Graphic/Killer/killer-left.png");
+            frontImage       = new ImageIcon("Graphic/Killer/killer-right.png");
+            rightIcon        = new ImageIcon("Graphic/Killer/killer-right.png");
+            leftIcon         = new ImageIcon("Graphic/Killer/killer-left.png");
+            standImage       = new ImageIcon("Graphic/Killer/killer-left.png");
+            offsetX = 49;
+            offsetY = 98;
             System.out.println("killer image initialized");
-        } else if (this.role.equals("p1")) {
-            idleImage = new ImageIcon("Graphic/Human/p1/p1-stand.png");
-            backImage = new ImageIcon("Graphic/Human/p1/p1-back.png");
-            frontImage = new ImageIcon("Graphic/Human/p1/p1-front.png");
-            rightIcon = new ImageIcon("Graphic/Human/p1/p1-right.png");
-            leftIcon = new ImageIcon("Graphic/Human/p1/p1-left.png");
-            standImage = new ImageIcon("Graphic/Human/p1/p1-stand.png");
-            downImage = new ImageIcon("Graphic/Human/p1/p1-down.png");
-            attackLeftImage = null; // Survivor 沒有攻擊動作
-            attackRightImage = null;
-            System.out.println("p1 image initialized");
-        } else if (this.role.equals("p2")) {
-            idleImage = new ImageIcon("Graphic/Human/p2/p2-stand.png");
-            backImage = new ImageIcon("Graphic/Human/p2/p2-back.png");
-            frontImage = new ImageIcon("Graphic/Human/p2/p2-front.png");
-            rightIcon = new ImageIcon("Graphic/Human/p2/p2-right.png");
-            leftIcon = new ImageIcon("Graphic/Human/p2/p2-left.png");
-            standImage = new ImageIcon("Graphic/Human/p2/p2-stand.png");
-            downImage = new ImageIcon("Graphic/Human/p2/p2-down.png");
-            attackLeftImage = null; // Survivor 沒有攻擊動作
-            attackRightImage = null;
-            System.out.println("p2 image initialized");
-        } else if (this.role.equals("p3")) {
-            idleImage = new ImageIcon("Graphic/Human/p3/p3-stand.png");
-            backImage = new ImageIcon("Graphic/Human/p3/p3-back.png");
-            frontImage = new ImageIcon("Graphic/Human/p3/p3-front.png");
-            rightIcon = new ImageIcon("Graphic/Human/p3/p3-right.png");
-            leftIcon = new ImageIcon("Graphic/Human/p3/p3-left.png");
-            standImage = new ImageIcon("Graphic/Human/p3/p3-stand.png");
-            downImage = new ImageIcon("Graphic/Human/p3/p3-down.png");
-            attackLeftImage = null; // Survivor 沒有攻擊動作
-            attackRightImage = null;
-            System.out.println("p3 image initialized");
         }
-        currentImage = idleImage;
         
+        else {
+            idleImage  = new ImageIcon("Graphic/Human/" + role + "/" + role + "-stand.png");
+            backImage  = new ImageIcon("Graphic/Human/" + role + "/" + role + "-back.png");
+            frontImage = new ImageIcon("Graphic/Human/" + role + "/" + role + "-front.png");
+            rightIcon  = new ImageIcon("Graphic/Human/" + role + "/" + role + "-right.png");
+            leftIcon   = new ImageIcon("Graphic/Human/" + role + "/" + role + "-left.png");
+            standImage = new ImageIcon("Graphic/Human/" + role + "/" + role + "-stand.png");
+            offsetX = 30;
+            offsetY = 90;
+            attackLeftImage = null; // Survivor 沒有攻擊動作
+            attackRightImage = null;
+            System.out.println(role + " image initialized");
+        }
+        
+        currentImage = idleImage;
         return currentImage;
     }
     public ImageIcon getBloodImage() {
@@ -151,6 +137,14 @@ public class ClientPlayer extends ClientGameObject {
         if(status.equals("倒地")) {
             currentImage = downImage;
         }
+    }
+
+    public int getOffsetX() {
+        return offsetX;
+    }
+
+    public int getOffsetY() {
+        return offsetY;
     }
 
     // private void resetToIdleAfterDelay() {

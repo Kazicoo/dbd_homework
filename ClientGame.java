@@ -120,22 +120,6 @@ public class ClientGame {
         }).start();
     }
 
-    public void initCameraPosition(int playerX, int playerY) {
-        // 獲取當前裝置的螢幕解析度
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-        int screenWidth = screenSize.width;
-        int screenHeight = screenSize.height;
-
-        int cameraX = playerX - (screenWidth / 2);
-        int cameraY = playerY - (screenHeight / 2);
-    
-        // 限制鏡頭不要超過地圖範圍
-        cameraX = Math.max(0, Math.min(cameraX, 6000 - screenWidth)); // 6000 是地圖的寬度
-        cameraY = Math.max(0, Math.min(cameraY, 3600 - screenHeight)); // 3600 是地圖的高度
-        gamePanel.setCameraOffset(cameraX, cameraY);
-    }
-    
     public void updateCameraPosition(int playerX, int playerY) {
         // 獲取當前裝置的螢幕解析度
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -312,7 +296,7 @@ public class ClientGame {
         clientPlayers[playerCount].initImage();
 
         if (clientId == id) {
-            initCameraPosition(x, y);
+            updateCameraPosition(x, y);
             gamePanel.repaint();
         }
         System.out.println(clientPlayers[playerCount].getRole());
