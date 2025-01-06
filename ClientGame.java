@@ -130,11 +130,9 @@ public class ClientGame {
         int cameraX = playerX - (screenWidth / 2);
         int cameraY = playerY - (screenHeight / 2);
     
-        System.out.println("X" + playerX);
-        System.out.println("Y" + playerY);
-        System.out.println(cameraX);
-        System.out.println(cameraY);
-
+        // 限制鏡頭不要超過地圖範圍
+        cameraX = Math.max(0, Math.min(cameraX, 6000 - screenWidth)); // 6000 是地圖的寬度
+        cameraY = Math.max(0, Math.min(cameraY, 3600 - screenHeight)); // 3600 是地圖的高度
         gamePanel.setCameraOffset(cameraX, cameraY);
     }
     
