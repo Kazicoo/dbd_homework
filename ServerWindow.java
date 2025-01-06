@@ -9,6 +9,16 @@ public class ServerWindow extends ServerMapItems {
     }
 
     @Override
+    public int getX() {
+        return x * ServerGame.GRID_SIZE;
+    }
+
+    @Override
+    public int getY() {
+        return y * ServerGame.GRID_SIZE;
+    }
+
+    @Override
     public boolean isColliding(ServerPlayer serverPlayer) {
         return ServerGame.aabb_collision(
             // self top left

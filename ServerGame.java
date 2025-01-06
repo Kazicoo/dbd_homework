@@ -151,32 +151,32 @@ public class ServerGame {
         }
     }
     
-        public void generatorClicked(String message, int id) {
-            String[] parts = message.split(";");
-            int generatorId = Integer.parseInt(parts[2]);
+    public void generatorClicked(String message, int id) {
+        String[] parts = message.split(";");
+        int generatorId = Integer.parseInt(parts[2]);
 
-            ServerGenerator gen = null;
-            for (ServerGenerator g : generators) {
-                if (g != null && g.getId() == generatorId) {
-                    gen = g;
-                    break;
-                }
-            }
-            // 根據 ID 獲取玩家 
-            ServerHuman player = null; 
-            for (ServerHuman p : getHumans()) { 
-                if (p != null && p.getId() == id) { 
-                    player = p; break; 
-                } 
-            }
-
-            // 檢查玩家是否能與發電機交互並修復 
-            if (player != null && gen != null) { 
-                if (player.canInteractGenerator(gen)) { 
-                    gen.fix(player); 
-                } 
+        ServerGenerator gen = null;
+        for (ServerGenerator g : generators) {
+            if (g != null && g.getId() == generatorId) {
+                gen = g;
+                break;
             }
         }
+        // 根據 ID 獲取玩家 
+        ServerHuman player = null; 
+        for (ServerHuman p : getHumans()) { 
+            if (p != null && p.getId() == id) { 
+                player = p; break; 
+            } 
+        }
+
+        // 檢查玩家是否能與發電機交互並修復 
+        if (player != null && gen != null) { 
+            if (player.canInteractGenerator(gen)) { 
+                gen.fix(player); 
+            } 
+        }
+    }
     // if (message.startsWith("fix_gen")) {
     //   ServerGenerator gen;
     //   ServerPlayer player;
@@ -185,6 +185,11 @@ public class ServerGame {
     //     gen.fix();
     //   }
     // }
+
+    public void windowActed(int windowId, int id) {
+        ServerWindow win = null;
+        
+    }
     
     public void sendMessage(String message) {
         server.broadcastToClient(message);
