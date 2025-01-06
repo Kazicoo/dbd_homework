@@ -8,7 +8,7 @@ public class ClientGame {
     private TcpClient conn;
     private JFrame frame;
     private JLabel generatorLabel; // 用於顯示發電機數量
-    private JLabel healthLabel1,healthLabel2,healthLabel3; // 用於顯示玩家血量
+    private JLabel healthLabel1,healthLabel2,healthLabel3, healthLabel4; // 用於顯示玩家血量
     private int generatorCount = 4; // 初始發電機數量
     private int healthcount = 2; // 初始玩家血量
     private String status;
@@ -60,12 +60,14 @@ public class ClientGame {
         middlePanel.setOpaque(false);
         // 新增 healthLabel
         //將healthbar移動到gamepanel
-        JLabel healthLabel1 = new JLabel();
-        JLabel healthLabel2 = new JLabel();
-        JLabel healthLabel3 = new JLabel();
+        healthLabel1 = new JLabel();
+        healthLabel2 = new JLabel();
+        healthLabel3 = new JLabel();
+        healthLabel4 = new JLabel();
         gamePanel.add(healthLabel1);
         gamePanel.add(healthLabel2);
         gamePanel.add(healthLabel3);
+        gamePanel.add(healthLabel4);
     
         // 下部面板
         JPanel bottomPanel = new JPanel();
@@ -509,40 +511,31 @@ public class ClientGame {
     public void initHealthStatus(String message) {
         String[] parts = message.split(";");
         int hp = Integer.parseInt(parts[2]);
-        String role = parts[3];
+        int id = Integer.parseInt(parts[3]);
         
-        
-        
-        
-        // 根據血量設定狀態
-        switch (hp) {
-            case 2 -> status = "(健康)";
-            case 1 -> status = "(受傷)";
-            case 0 -> status = "(倒地)";
-           
-        }
-    
-
-        // 根據角色初始化狀態欄
-        switch (role) {
-            case "p1":
-                 healthLabel1.setText((role + hp + " ") + " " + status);
-                 healthLabel1.setBounds(10 , 5 , 200 ,30);
-                 gamePanel.add(healthLabel1);                     
-                 break;
-             case "p2":
-                healthLabel2.setText((role + hp + " ") + " " + status);
-                healthLabel2.setBounds(10 , 40 , 200 ,30);
-                gamePanel.add(healthLabel2);                      
-                break;
-            case "p3":
-                healthLabel3.setText((role + hp + " ") + " " + status);
-                healthLabel3.setBounds(10 , 75 , 200 ,30);                        
-                gamePanel.add(healthLabel3);
-                break;
-            default:
-                System.out.println("未知的角色: " + role);
-                break;
+        for (int i = 0; i < clientPlayers.length;i++) {
+            if (!"killer".equals(clientPlayers[i].getRole()))
+            switch (id) {
+                case 0:
+                    healthLabel1.setText((clientPlayers[i].getRole() + hp + " ") + " " + clientPlayers[i].getStatus());
+                    healthLabel1.setBounds(10 , 5 , 200 ,30);                   
+                    break;
+                case 1:
+                    healthLabel2.setText((clientPlayers[i].getRole() + hp + " ") + " " + clientPlayers[i].getStatus());
+                    healthLabel2.setBounds(10 , 40 , 200 ,30);
+                    break;
+                case 2:
+                    healthLabel3.setText((clientPlayers[i].getRole() + hp + " ") + " " + clientPlayers[i].getStatus());
+                    healthLabel3.setBounds(10 , 75 , 200 ,30);                        
+                    break;
+                case 3:
+                    healthLabel4.setText((clientPlayers[i].getRole() + hp + " ") + " " + clientPlayers[i].getStatus());
+                    healthLabel4.setBounds(10 , 110 , 200 ,30);                    
+                    break;
+                default:
+                    System.out.println("未知的角色: " + clientPlayers[i].getRole());
+                    break;
+            }
         }
 
         // 更新面板以顯示狀態
@@ -558,39 +551,31 @@ public class ClientGame {
             return;
         }
     
-        String healthValue = parts[2];
-        String role = parts[3];
+        int hp = Integer.parseInt(parts[2]);
+        int id = Integer.parseInt(parts[3]);
     
         // 解析血量值
-        int health = Integer.parseInt(healthValue.split(":")[1]);
-        String status = "";
-    
-        // 根據血量設定狀態
-        switch (health) {
-            case 2:
-                status = "(健康)";
-                break;
-            case 1:
-                status = "(受傷)";
-                break;
-            case 0:
-                status = "(倒地)";
-                break;
-           
-        }
-    
+        
+        
+        for (int i = 0; i < clientPlayers.length;i++) {
+            if (!"killer".equals(clientPlayers[i].getRole()) && clientPlayers[i].getId() == id) {
+                clientPlayers[i].setHp(hp);
         // 更新對應角色的血量和狀態
-        switch (role) {
-            case "p1":
-                healthLabel1.setText("p1 Health: " + health + " " + status);
-                break;
-            case "p2":
-                healthLabel2.setText("p2 Health: " + health + " " + status);
-                break;
-            case "p3":
-                healthLabel3.setText("p3 Health: " + health + " " + status);
-                break;
-           
+                switch (id) {
+                    case 0:
+                        healthLabel1.setText("p1 Health: " + clientPlayers[i].getHp());
+                        break;
+                    case 1:
+                        healthLabel2.setText("p2 Health: " + clientPlayers[i].getHp());
+                        break;
+                    case 2:
+                        healthLabel3.setText("p3 Health: " + clientPlayers[i].getHp());
+                        break;
+                    case 3:
+                    healthLabel4.setText("p3 Health: " + clientPlayers[i].getHp());
+                    break;
+                }
+            }
         }
     
         // 刷新面板以顯示更新內容
@@ -599,6 +584,3 @@ public class ClientGame {
     } 
         
 }
-    
-    
-
