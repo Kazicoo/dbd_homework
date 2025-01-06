@@ -305,7 +305,7 @@
                                 characterButtons[i].setEnabled(false);
                             }
                             // 殺手圖案
-                            ImageIcon killerImage = new ImageIcon("Graphic/Killer/killer-standFrontBack.PNG");
+                            ImageIcon killerImage = new ImageIcon("Graphic/Killer/killer-standFront.PNG");
                             Image image = killerImage.getImage();
                             Image scaledImage = image.getScaledInstance(350, 700, Image.SCALE_SMOOTH);
                             killerImage = new ImageIcon(scaledImage);
