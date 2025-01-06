@@ -198,7 +198,7 @@ public class ServerGame {
     }
     
     public void initWall() {
-        // 左上、中下
+        // 左下、中下
         for (int i = 5; i <= 15; i++) {
             if (i == 9) continue;
             grid[i][49] = new ServerWall();
@@ -310,5 +310,117 @@ public class ServerGame {
             if (i == 6) continue;
             grid[61][i] = new ServerWall();
         }
+        //右、右下
+        for (int i = 86; i <= 89; i++) {;
+            grid[i][29] = new ServerWall();
+        }
+        grid[92][29] = new ServerWall();
+        grid[93][29] = new ServerWall();
+        grid[94][29] = new ServerWall();
+        for (int i = 30; i <= 38; i++) {
+            if (i == 36) continue;
+            grid[86][i] = new ServerWall();
+        }
+        grid[87][38] = new ServerWall();
+        grid[88][38] = new ServerWall();
+        grid[91][25] = new ServerWall();
+        grid[92][25] = new ServerWall();
+        for (int i = 17; i <= 21; i++) {
+            grid[95][i] = new ServerWall();
+        }
+        grid[96][21] = new ServerWall();
+        grid[98][19] = new ServerWall();
+        grid[98][20] = new ServerWall();
+        grid[95][23] = new ServerWall();
+        grid[96][23] = new ServerWall();
+        for (int i = 24; i <= 27; i++) {
+            grid[95][i] = new ServerWall();
+        }
+        grid[98][24] = new ServerWall();
+        grid[98][25] = new ServerWall();
+        for (int i = 48; i <= 52; i++) {
+            grid[85][i] = new ServerWall();
+        }
+        grid[86][52] = new ServerWall();
+        grid[88][50] = new ServerWall();
+        grid[88][51] = new ServerWall();
+        grid[86][54] = new ServerWall();
+        for (int i = 54; i <= 58; i++) {
+            grid[85][i] = new ServerWall();
+        }
+        grid[88][55] = new ServerWall();
+        grid[88][56] = new ServerWall();
+        for (int i = 91; i <= 95; i++) {
+            grid[i][48] = new ServerWall();
+        }
+        for (int i = 45; i <= 48; i++) {
+            grid[96][i] = new ServerWall();
+        }
+        //中上
+        for (int i = 42; i <= 55; i++) {
+            grid[i][4] = new ServerWall();
+        }
+        for (int i = 6; i <= 10; i++) {
+            grid[55][i] = new ServerWall();
+        }
+        for (int i = 7; i <= 17; i++) {
+            if (i == 12) continue;
+            grid[63][i] = new ServerWall();
+        }
+        grid[68][8] = new ServerWall();
+        grid[69][8] = new ServerWall();
+        grid[71][5] = new ServerWall();
+        grid[71][6] = new ServerWall();
+        grid[75][3] = new ServerWall();
+        grid[76][3] = new ServerWall();
+        for (int i = 66; i <= 73; i++) {
+            if(i == 72) continue;
+            grid[i][18] = new ServerWall();
+        }
+        for (int i = 18; i <= 21; i++) {
+            grid[74][i] = new ServerWall();
+        }
+        for (int i = 77; i <= 87; i++) {
+            grid[i][6] = new ServerWall();
+        }
+        for (int i = 7; i <= 12; i++) {
+            grid[77][i] = new ServerWall();
+        }
+        for (int i = 77; i <= 81; i++) {
+            grid[i][14] = new ServerWall();
+        }
+        for (int i = 83; i <= 87; i++) {
+            grid[i][14] = new ServerWall();
+        }
+        for (int i = 8; i <= 13; i++) {
+            grid[87][i] = new ServerWall();
+        }
+        //左上
+        for (int i = 5; i <= 13; i++) {
+            if(i == 10) continue;
+            grid[i][4] = new ServerWall();
+        }
+        for (int i = 5; i <= 13; i++) {
+            if(i == 11) continue;
+            grid[5][i] = new ServerWall();
+        }
+        grid[6][13] = new ServerWall();
+        for (int i = 9; i <= 15; i++) {
+            grid[i][7] = new ServerWall();
+        }
+        grid[7][13] = new ServerWall();
+        for (int i = 5; i <= 15; i++) {
+            grid[i][23] = new ServerWall();
+        }
+        for (int i = 24; i <= 31; i++) {
+            grid[5][i] = new ServerWall();
+        }
+        for (int i = 6; i <= 15; i++) {
+            if(i == 10) continue;
+            grid[i][31] = new ServerWall();
+        }
+        grid[12][33] = new ServerWall();
+        grid[12][34] = new ServerWall();
     }
+    // 
 }
