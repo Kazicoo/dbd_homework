@@ -88,7 +88,7 @@ public class ServerGame {
 
         int[] usedPosition = new int[4];
 
-        while (count < 4) {
+        while (count < 6) {
             int position = rand.nextInt(9); 
             boolean isValid = true;
 
