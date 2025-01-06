@@ -103,6 +103,7 @@ public class ServerGame {
                 generators[count] = new ServerGenerator(count, positionMap[position][0], positionMap[position][1]);
                 generators[count].setX(positionMap[position][0]);
                 generators[count].setY(positionMap[position][1]);
+                grid[positionMap[position][0]][positionMap[position][1]] = generators[count];
                 count++;
             }
         }
