@@ -3,7 +3,7 @@ import javax.swing.*;
 public class ClientPlayer extends ClientGameObject {
     private String role;
     private boolean isSelf = false;
-    private int hp = 0;
+    private int hp = 2;
     private String status;
 
     private ImageIcon idleImage;
@@ -24,19 +24,11 @@ public class ClientPlayer extends ClientGameObject {
         this.role = role;
     }
 
-    public void  setHp(int hp) {
-        this.hp = hp;
-    }
     public String getRole() {
         return this.role;
     }
-
-    public int getHp() {
-        return this.hp;
-    }
-    public void setStatus(String status) {
-        this.status = status;
-        
+    public void  setHp(int hp) {
+        this.hp = hp;
         switch (hp) {
             case 0:
                 status = "倒地";
@@ -50,6 +42,12 @@ public class ClientPlayer extends ClientGameObject {
                 System.out.println("未設定status");
                 break;
         }
+    }
+    public int getHp() {
+        return this.hp;
+    }
+    public void setStatus(String status) {
+        this.status = status;
     }
     public String getStatus() {
         return this.status;

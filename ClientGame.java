@@ -132,11 +132,9 @@ public class ClientGame {
         int cameraX = playerX - (screenWidth / 2);
         int cameraY = playerY - (screenHeight / 2);
     
-        System.out.println("X" + playerX);
-        System.out.println("Y" + playerY);
-        System.out.println(cameraX);
-        System.out.println(cameraY);
-
+        // 限制鏡頭不要超過地圖範圍
+        cameraX = Math.max(0, Math.min(cameraX, 6000 - screenWidth)); // 6000 是地圖的寬度
+        cameraY = Math.max(0, Math.min(cameraY, 3600 - screenHeight)); // 3600 是地圖的高度
         gamePanel.setCameraOffset(cameraX, cameraY);
     }
     
@@ -481,7 +479,6 @@ public class ClientGame {
                     for (ClientPlayer player : clientPlayers) {
                         if (player != null && "killer".equals(player.getRole()) && player.getIsSelf()) {
                             conn.send("attack");
-                            player.setAction("attack");
                         }
                     }
                 }
@@ -500,41 +497,76 @@ public class ClientGame {
     
     public void attackFacing(String message) {
         String[] parts = message.split(";");
-        for (int i = 0; i < clientPlayers.length; i++) {
-            if(clientPlayers[i]!= null &&clientPlayers[i].getRole().equals("killer")) {
-                clientPlayers[i].setAction(parts[1]);
+        for (ClientPlayer clientPlayer : clientPlayers) {
+            if (clientPlayer != null && clientPlayer.getRole().equals("killer")) {
+                clientPlayer.setAction(parts[1]);
             }
         }
+        gamePanel.repaint();
     }
     // 收到 initGameObject 時呼叫此方法
     // updateGameObject;health;<hp: 0, 1, 2>;<human: p1, p2, p3>
-    public void initHealthStatus(String message) {
+    public void HealthStatus(String message) {
         String[] parts = message.split(";");
         int hp = Integer.parseInt(parts[2]);
         int id = Integer.parseInt(parts[3]);
-        
+
+
         for (int i = 0; i < clientPlayers.length;i++) {
-            if (!"killer".equals(clientPlayers[i].getRole()))
+            if ("killer".equals((clientPlayers[i].getRole()))  &&  (clientPlayers[i].getIsSelf() == true)) {
+                break;
+            }
+            if ((clientPlayers[i]!= null && !"killer".equals(clientPlayers[i].getRole()))) {
+                Font largeFont = new Font("微軟正黑體", Font.BOLD,20);
             switch (id) {
                 case 0:
-                    healthLabel1.setText((clientPlayers[i].getRole() + hp + " ") + " " + clientPlayers[i].getStatus());
-                    healthLabel1.setBounds(10 , 5 , 200 ,30);                   
+                    clientPlayers[i].setHp(hp);
+                    healthLabel1.setText((clientPlayers[i].getRole() + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus());
+                    healthLabel1.setBounds(10 , 5 , 200 ,30);
+                    healthLabel1.setFont(largeFont);
+                    if (hp < 2)   { 
+                        healthLabel1.setForeground(Color.RED);
+                    } else {
+                        healthLabel1.setForeground(Color.GREEN);    
+                    }                   
                     break;
                 case 1:
-                    healthLabel2.setText((clientPlayers[i].getRole() + hp + " ") + " " + clientPlayers[i].getStatus());
+                    clientPlayers[i].setHp(hp);
+                    healthLabel2.setText((clientPlayers[i].getRole() + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus());
                     healthLabel2.setBounds(10 , 40 , 200 ,30);
+                    healthLabel2.setFont(largeFont);
+                    if (hp < 2)   { 
+                        healthLabel2.setForeground(Color.RED);
+                    } else {
+                        healthLabel2.setForeground(Color.GREEN);    
+                    }   
                     break;
                 case 2:
-                    healthLabel3.setText((clientPlayers[i].getRole() + hp + " ") + " " + clientPlayers[i].getStatus());
-                    healthLabel3.setBounds(10 , 75 , 200 ,30);                        
+                    clientPlayers[i].setHp(hp);
+                    healthLabel3.setText((clientPlayers[i].getRole() + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus());
+                    healthLabel3.setBounds(10 , 75 , 200 ,30);
+                    healthLabel3.setFont(largeFont);
+                    if (hp < 2)   { 
+                        healthLabel3.setForeground(Color.RED); 
+                    } else {
+                        healthLabel3.setForeground(Color.GREEN);    
+                    }                       
                     break;
                 case 3:
-                    healthLabel4.setText((clientPlayers[i].getRole() + hp + " ") + " " + clientPlayers[i].getStatus());
-                    healthLabel4.setBounds(10 , 110 , 200 ,30);                    
+                    clientPlayers[i].setHp(hp);
+                    healthLabel4.setText((clientPlayers[i].getRole() + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus());
+                    healthLabel4.setBounds(10 , 110 , 200 ,30);
+                    healthLabel4.setFont(largeFont);
+                    if (hp < 2)   { 
+                        healthLabel4.setForeground(Color.RED);
+                    } else {
+                        healthLabel4.setForeground(Color.GREEN);    
+                    }                      
                     break;
                 default:
                     System.out.println("未知的角色: " + clientPlayers[i].getRole());
                     break;
+                }
             }
         }
 
@@ -543,44 +575,6 @@ public class ClientGame {
         gamePanel.repaint();
     }
 
-    public void updateHealth(String message) {
-        String[] parts = message.split(";");
-        
-        if (parts.length < 4 || !"updateGameObject".equals(parts[0]) || !"health".equals(parts[1])) {
-            System.out.println("無效的血量更新訊息格式。");
-            return;
-        }
-    
-        int hp = Integer.parseInt(parts[2]);
-        int id = Integer.parseInt(parts[3]);
-    
-        // 解析血量值
-        
-        
-        for (int i = 0; i < clientPlayers.length;i++) {
-            if (!"killer".equals(clientPlayers[i].getRole()) && clientPlayers[i].getId() == id) {
-                clientPlayers[i].setHp(hp);
-        // 更新對應角色的血量和狀態
-                switch (id) {
-                    case 0:
-                        healthLabel1.setText("p1 Health: " + clientPlayers[i].getHp());
-                        break;
-                    case 1:
-                        healthLabel2.setText("p2 Health: " + clientPlayers[i].getHp());
-                        break;
-                    case 2:
-                        healthLabel3.setText("p3 Health: " + clientPlayers[i].getHp());
-                        break;
-                    case 3:
-                    healthLabel4.setText("p3 Health: " + clientPlayers[i].getHp());
-                    break;
-                }
-            }
-        }
-    
-        // 刷新面板以顯示更新內容
-        gamePanel.revalidate();
-        gamePanel.repaint();
-    } 
+     
         
 }
