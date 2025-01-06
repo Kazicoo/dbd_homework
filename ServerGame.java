@@ -471,30 +471,31 @@ public class ServerGame {
 
     public void initBoard() {
         grid[5][11] = new ServerBoard(0, 5, 11);
-        server.broadcastToClient("initGameObject;board;0;5;0");
+        server.broadcastToClient("initGameObject;board;" + 5 * GRID_SIZE + ";" + 11 * GRID_SIZE + ";0");
         grid[15][24] = new ServerBoard(1, 15, 24);
-        server.broadcastToClient("initGameObject;board;0;5;0");
+        server.broadcastToClient("initGameObject;board;" + 15 * GRID_SIZE + ";" + 24 * GRID_SIZE + ";1");
         grid[13][32] = new ServerBoard(2, 13, 32);
-        server.broadcastToClient("initGameObject;board;0;5;0");
+        server.broadcastToClient("initGameObject;board;" + 13 * GRID_SIZE + ";" + 32 * GRID_SIZE + ";2");
         grid[24][48] = new ServerBoard(3, 24, 48);
-        server.broadcastToClient("initGameObject;board;0;5;0");
+        server.broadcastToClient("initGameObject;board;" + 24 * GRID_SIZE + ";" + 48 * GRID_SIZE + ";3");
         grid[34][40] = new ServerBoard(4, 34, 40);
-        server.broadcastToClient("initGameObject;board;0;5;0");
+        server.broadcastToClient("initGameObject;board;" + 34 * GRID_SIZE + ";" + 40 * GRID_SIZE + ";4");
         grid[57][39] = new ServerBoard(5, 57, 39);
-        server.broadcastToClient("initGameObject;board;0;5;0");
+        server.broadcastToClient("initGameObject;board;" + 57 * GRID_SIZE + ";" + 39 * GRID_SIZE + ";5");
         grid[77][38] = new ServerBoard(6, 77, 38);
-        server.broadcastToClient("initGameObject;board;0;5;0");
+        server.broadcastToClient("initGameObject;board;" + 77 * GRID_SIZE + ";" + 38 * GRID_SIZE + ";6");
         grid[85][36] = new ServerBoard(7, 85, 36);
-        server.broadcastToClient("initGameObject;board;0;5;0");
+        server.broadcastToClient("initGameObject;board;" + 85 * GRID_SIZE + ";" + 36 * GRID_SIZE + ";7");
         grid[46][32] = new ServerBoard(8, 46, 32);
-        server.broadcastToClient("initGameObject;board;0;5;0");
+        server.broadcastToClient("initGameObject;board;" + 46 * GRID_SIZE + ";" + 32 * GRID_SIZE + ";8");
         grid[56][24] = new ServerBoard(9, 56, 24);
-        server.broadcastToClient("initGameObject;board;0;5;0");
+        server.broadcastToClient("initGameObject;board;" + 56 * GRID_SIZE + ";" + 24 * GRID_SIZE + ";9");
         grid[61][26] = new ServerBoard(10, 61, 26);
-        server.broadcastToClient("initGameObject;board;0;5;0");
+        server.broadcastToClient("initGameObject;board;" + 61 * GRID_SIZE + ";" + 26 * GRID_SIZE + ";10");
         grid[63][12] = new ServerBoard(11, 63, 12);
-        server.broadcastToClient("initGameObject;board;0;5;0");
+        server.broadcastToClient("initGameObject;board;" + 63 * GRID_SIZE + ";" + 12 * GRID_SIZE + ";11");
         grid[87][7] = new ServerBoard(12, 87, 7);
+        server.broadcastToClient("initGameObject;board;" + 87 * GRID_SIZE + ";" + 7 * GRID_SIZE + ";12");
     }
 
     public void initHook() {
