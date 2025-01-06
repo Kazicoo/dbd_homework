@@ -504,7 +504,49 @@ public class ClientGame {
 
     }
     
+    public void initWindow(String message) {
+        // 解析伺服器傳送的訊息
+        String[] parts = message.split(";");
+        if (parts.length < 5 || !parts[0].equals("initGameObject") || !parts[1].equals("window")) {
+            System.err.println("Invalid message format: " + message);
+            return;
+        }
 
+        int id = Integer.parseInt(parts[2].split(" ")[1]); // 提取 id
+        int x = Integer.parseInt(parts[3].split(" ")[1]);  // 提取 x 座標
+        int y = Integer.parseInt(parts[4].split(" ")[1]);  // 提取 y 座標
+
+    // 初始化物件
+        ClientWindow window = new ClientWindow(id);
+        window.setRelativeLocation(x, y);
+
+        ImageIcon windowIcon = new ImageIcon("Graphic/Object/window.png");
+        JButton windowButton = new JButton(windowIcon);
+
+        int imageWidth = windowIcon.getIconWidth();
+        int imageHeight = windowIcon.getIconHeight();
+
+    // 設定按鈕位置和大小
+        windowButton.setBounds(x, y, imageWidth, imageHeight);
+        windowButton.setOpaque(false);
+        windowButton.setContentAreaFilled(false);
+        windowButton.setBorderPainted(false);
+
+    // 添加按鈕到 JPanel
+        gamePanel.add(windowButton);
+
+    // 添加鍵盤事件邏輯
+        gamePanel.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                    System.out.println("Board activated with space: ID " + window.getId());
+                // 可選：發送封包邏輯
+                    conn.send("Activated;window;" + window.getId());
+            }
+        }
+    });
+    }
     
     public void attackFacing(String message) {
         String[] parts = message.split(";");
