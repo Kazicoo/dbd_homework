@@ -298,7 +298,7 @@ public class ClientGame {
         
     
     
-    public void initPlayer(String message, int ClientId) {
+    public void initPlayer(String message, int clientId) {
         String[] parts = message.split(";");
         int x = Integer.parseInt(parts[2]);
         int y = Integer.parseInt(parts[3]);
@@ -309,10 +309,10 @@ public class ClientGame {
         clientPlayers[playerCount] = new ClientPlayer(id);
         clientPlayers[playerCount].setRelativeLocation(x, y);
         clientPlayers[playerCount].setRole(chars[playerCount]);
-        clientPlayers[playerCount].setIsSelf(ClientId == id);
+        clientPlayers[playerCount].setIsSelf(clientId == id);
         clientPlayers[playerCount].initImage();
 
-        if (ClientId == id) {
+        if (clientId == id) {
             initCameraPosition(x, y);
             gamePanel.repaint();
         }
@@ -510,19 +510,18 @@ public class ClientGame {
         String[] parts = message.split(";");
         int hp = Integer.parseInt(parts[2]);
         int id = Integer.parseInt(parts[3]);
+        Font largeFont = new Font("微軟正黑體", Font.BOLD,20);
 
 
-        for (int i = 0; i < clientPlayers.length;i++) {
-            if ("killer".equals((clientPlayers[i].getRole()))  &&  (clientPlayers[i].getIsSelf() == true)) {
+        for(int i = 0; i <clientPlayers.length;i++) {
+            if ((clientPlayers[i]!= null && "killer".equals(clientPlayers[i].getRole()) && (clientPlayers[i].getIsSelf() == true))) {
                 break;
-            }
-            if ((clientPlayers[i]!= null && !"killer".equals(clientPlayers[i].getRole()))) {
-                Font largeFont = new Font("微軟正黑體", Font.BOLD,20);
-            switch (id) {
+            } else if (clientPlayers[i].getId() == id){
+                switch (id) {
                 case 0:
                     clientPlayers[i].setHp(hp);
-                    healthLabel1.setText((clientPlayers[i].getRole() + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus());
-                    healthLabel1.setBounds(10 , 5 , 200 ,30);
+                    healthLabel1.setText((clientPlayers[i].getRole() + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus() +"ID    "+ id);
+                    healthLabel1.setBounds(10 , 5 , 250 ,30);
                     healthLabel1.setFont(largeFont);
                     if (hp < 2)   { 
                         healthLabel1.setForeground(Color.RED);
@@ -532,8 +531,8 @@ public class ClientGame {
                     break;
                 case 1:
                     clientPlayers[i].setHp(hp);
-                    healthLabel2.setText((clientPlayers[i].getRole() + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus());
-                    healthLabel2.setBounds(10 , 40 , 200 ,30);
+                    healthLabel2.setText((clientPlayers[i].getRole() + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus() +"ID    "+ id);
+                    healthLabel2.setBounds(10 , 40 , 250 ,30);
                     healthLabel2.setFont(largeFont);
                     if (hp < 2)   { 
                         healthLabel2.setForeground(Color.RED);
@@ -543,8 +542,8 @@ public class ClientGame {
                     break;
                 case 2:
                     clientPlayers[i].setHp(hp);
-                    healthLabel3.setText((clientPlayers[i].getRole() + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus());
-                    healthLabel3.setBounds(10 , 75 , 200 ,30);
+                    healthLabel3.setText((clientPlayers[i].getRole() + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus() +"ID    "+ id);
+                    healthLabel3.setBounds(10 , 75 , 250 ,30);
                     healthLabel3.setFont(largeFont);
                     if (hp < 2)   { 
                         healthLabel3.setForeground(Color.RED); 
@@ -554,8 +553,8 @@ public class ClientGame {
                     break;
                 case 3:
                     clientPlayers[i].setHp(hp);
-                    healthLabel4.setText((clientPlayers[i].getRole() + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus());
-                    healthLabel4.setBounds(10 , 110 , 200 ,30);
+                    healthLabel4.setText((clientPlayers[i].getRole() + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus() +"ID    "+ id);
+                    healthLabel4.setBounds(10 , 110 , 250 ,30);
                     healthLabel4.setFont(largeFont);
                     if (hp < 2)   { 
                         healthLabel4.setForeground(Color.RED);
