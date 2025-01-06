@@ -1,5 +1,9 @@
 
 
+
+
+
+
 public class ServerHuman extends ServerPlayer {
     static final int DEFAULT_MOVE_SPEED = 7;    
     static final int FAST_MOVE_SPEED    = 10;
@@ -23,7 +27,8 @@ public class ServerHuman extends ServerPlayer {
 
     public void getHurt() {
         setHealth(health-1);
-        game.sendMessage("updateGameObject;health;" + health + ";" + getId());
+        game.setHealthStatus(health, getId());
+        // game.sendMessage("updateGameObject;health;" + health + ";" + game.chars[i]);
 
         if (health > 0) {
             setFastMoveSpeed();
