@@ -212,7 +212,7 @@ public class ClientGame {
         }
     }
 
-    /*private int HookTotal = 0;
+    private int hookTotal = 0;
     public final ClientHook[] Hook = new ClientHook[9];
     
     public void initHook(String message){
@@ -231,8 +231,8 @@ public class ClientGame {
             int x = Integer.parseInt(parts[2]);
             int y = Integer.parseInt(parts[3]);
             // 初始化物件
-            Hook[HookTotal] = new ClientHook(id);
-            Hook[HookTotal].setRelativeLocation(x, y);
+            Hook[hookTotal] = new ClientHook(id);
+            Hook[hookTotal].setRelativeLocation(x, y);
                     
             
             ImageIcon hookIcon = new ImageIcon("Graphic/Object/hook.png");
@@ -257,28 +257,23 @@ public class ClientGame {
                         @Override
                         public void mouseClicked(MouseEvent e) {
                             if (SwingUtilities.isLeftMouseButton(e)) {
-                                conn.send("Clicked;hook;" + Hook[HookTotal].getId());
+                                conn.send("Clicked;hook;" + Hook[hookTotal].getId());
                             }
                         }
                     });
                     
                     synchronized (this) {
-                        HookTotal++;
-                        initHookTotal++;
-                        if (initHookTotal == 4 && playerTotal == 4) {
-                            notifyAll(); // 通知等待的線程
+                        hookTotal++;
+                        if (hookTotal == 9) {
+                            System.out.println("Maximum hooks reached.");
                         }
-                    }
-                    if (generatorTotal == generators.length) {
-                        System.out.println("Maximum generators reached.");
-                    }
                     System.out.println("Hook initialized: ID " + id + " at (" + x + ", " + y + ")");
-                    
+                    }
                     
         } catch (NumberFormatException e) {
             System.out.println("Error parsing coordinates or ID: " + e.getMessage());
         }
-    }*/
+    }
         
     
     
