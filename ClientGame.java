@@ -222,63 +222,69 @@ public class ClientGame {
             System.out.println("Error parsing hook message: " + e.getMessage());
             return;
         }
-
+    
         try {
             // 提取座標和 ID
             int x = Integer.parseInt(parts[2]);
             int y = Integer.parseInt(parts[3]);
             int id = Integer.parseInt(parts[4]);
-
+    
             if (id < 0 || id > 8) {
                 throw new IllegalArgumentException("Invalid ID. Must be '0' to '8'.");
             }
-
+    
             // 初始化物件
-            Hook[hookTotal] = new ClientHook(id);
-            Hook[hookTotal].setRelativeLocation(x, y);
-
+            Hook[id] = new ClientHook(id);
+            Hook[id].setRelativeLocation(x, y);
+    
             ImageIcon hookIcon = new ImageIcon("Graphic/Object/hook.png");
+            if (hookIcon.getIconWidth() == -1) {
+                System.out.println("Error loading image: " + hookIcon);
+                return; // 圖片加載失敗，退出方法
+            }
+    
             JButton hookButton = new JButton(hookIcon);
-
+    
             int imageWidth = hookIcon.getIconWidth();
             int imageHeight = hookIcon.getIconHeight();
-
+    
             // 設定按鈕位置和大小
             hookButton.setBounds(x, y, imageWidth, imageHeight);
             hookButton.setOpaque(false);
             hookButton.setContentAreaFilled(false);
             hookButton.setBorderPainted(false);
-
-            // 添加按鈕到 JFrame
-            frame.add(hookButton);
-            frame.revalidate();
-            frame.repaint();
-
+    
+            // 添加按鈕到 JPanel
+            gamePanel.add(hookButton);  // 確保gamePanel已正確初始化
+            gamePanel.revalidate();
+            gamePanel.repaint();
+    
             // 添加互動邏輯
             hookButton.addMouseListener(new MouseAdapter() {
                 @Override
                 public void mouseClicked(MouseEvent e) {
                     if (SwingUtilities.isLeftMouseButton(e)) {
-                        System.out.println("Hook clicked: ID " + Hook[hookTotal].getId());
+                        System.out.println("Hook clicked: ID " + Hook[id].getId());
                         // 可選：發送封包邏輯
-                        // conn.send("Clicked;hook;" + Hook[hookTotal].getId());
+                        // conn.send("Clicked;hook;" + Hook[id].getId());
                     }
                 }
             });
-
+    
             synchronized (this) {
-                hookTotal++;
                 if (hookTotal == 9) {
                     System.out.println("Maximum hooks reached.");
+                    return;
                 }
+                hookTotal++; // 自增鉤子數量
                 System.out.println("Hook initialized: ID " + id + " at (" + x + ", " + y + ")");
             }
-
+    
         } catch (NumberFormatException e) {
             System.out.println("Error parsing coordinates or ID: " + e.getMessage());
         }
     }
-
+    
     
         
     
