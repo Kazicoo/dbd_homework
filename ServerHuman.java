@@ -1,8 +1,8 @@
 
 
 public class ServerHuman extends ServerPlayer {
-    static final int DEFAULT_MOVE_SPEED = 6;    
-    static final int FAST_MOVE_SPEED    = 9;
+    static final int DEFAULT_MOVE_SPEED = 7;    
+    static final int FAST_MOVE_SPEED    = 10;
     static final int SLOW_MOVE_SPEED    = 0;
 
     private int health = 2;

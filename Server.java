@@ -62,8 +62,9 @@ public class Server implements Comm.TcpServerCallback {
     }
 
     if (message.startsWith("animated")) {
-      server.broadcast(message);
+      server.broadcast(message + id);
     }
+
 
     // if (message.startsWith("fix_gen")) {
     //   ServerGenerator gen;
