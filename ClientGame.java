@@ -496,9 +496,9 @@ public class ClientGame {
     
     public void attackFacing(String message) {
         String[] parts = message.split(";");
-        for (int i = 0; i < clientPlayers.length; i++) {
-            if(clientPlayers[i]!= null &&clientPlayers[i].getRole().equals("killer")) {
-                clientPlayers[i].setAction(parts[1]);
+        for (ClientPlayer clientPlayer : clientPlayers) {
+            if (clientPlayer != null && clientPlayer.getRole().equals("killer")) {
+                clientPlayer.setAction(parts[1]);
             }
         }
     }
@@ -523,24 +523,22 @@ public class ClientGame {
 
         // 根據角色初始化狀態欄
         switch (role) {
-            case "p1":
-                 healthLabel1.setText((role + hp + " ") + " " + status);
-                 healthLabel1.setBounds(10 , 5 , 200 ,30);
-                 gamePanel.add(healthLabel1);                     
-                 break;
-             case "p2":
-                healthLabel2.setText((role + hp + " ") + " " + status);
-                healthLabel2.setBounds(10 , 40 , 200 ,30);
-                gamePanel.add(healthLabel2);                      
-                break;
-            case "p3":
+            case "p1" -> {
+                healthLabel1.setText((role + hp + " ") + " " + status);
+                healthLabel1.setBounds(10 , 5 , 200 ,30);
+                gamePanel.add(healthLabel1);
+            }
+             case "p2" -> {
+                 healthLabel2.setText((role + hp + " ") + " " + status);
+                 healthLabel2.setBounds(10 , 40 , 200 ,30);
+                 gamePanel.add(healthLabel2);
+            }
+            case "p3" -> {
                 healthLabel3.setText((role + hp + " ") + " " + status);
                 healthLabel3.setBounds(10 , 75 , 200 ,30);                        
                 gamePanel.add(healthLabel3);
-                break;
-            default:
-                System.out.println("未知的角色: " + role);
-                break;
+            }
+            default -> System.out.println("未知的角色: " + role);
         }
 
         // 更新面板以顯示狀態
@@ -565,29 +563,17 @@ public class ClientGame {
     
         // 根據血量設定狀態
         switch (health) {
-            case 2:
-                status = "(健康)";
-                break;
-            case 1:
-                status = "(受傷)";
-                break;
-            case 0:
-                status = "(倒地)";
-                break;
+            case 2 -> status = "(健康)";
+            case 1 -> status = "(受傷)";
+            case 0 -> status = "(倒地)";
            
         }
     
         // 更新對應角色的血量和狀態
         switch (role) {
-            case "p1":
-                healthLabel1.setText("p1 Health: " + health + " " + status);
-                break;
-            case "p2":
-                healthLabel2.setText("p2 Health: " + health + " " + status);
-                break;
-            case "p3":
-                healthLabel3.setText("p3 Health: " + health + " " + status);
-                break;
+            case "p1" -> healthLabel1.setText("p1 Health: " + health + " " + status);
+            case "p2" -> healthLabel2.setText("p2 Health: " + health + " " + status);
+            case "p3" -> healthLabel3.setText("p3 Health: " + health + " " + status);
            
         }
     
