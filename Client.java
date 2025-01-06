@@ -114,7 +114,7 @@ public class Client implements Comm.TcpClientCallback {
     if(message.startsWith("animated")) {
       if(parts[1].equals("attack"))  
       ClientGame.attackFacing(message);
-      if(parts[1].equals("animated"))
+      if(parts[1].equals("animated")) {}
       ClientGame.moveAnimation(message);
     }
 
