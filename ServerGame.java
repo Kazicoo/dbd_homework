@@ -198,7 +198,7 @@ public class ServerGame {
     }
     
     public void initWall() {
-        // 左上、中下
+        // 左下、中下
         for (int i = 5; i <= 15; i++) {
             if (i == 9) continue;
             grid[i][49] = new ServerWall();
@@ -311,4 +311,5 @@ public class ServerGame {
             grid[61][i] = new ServerWall();
         }
     }
+    // 
 }

@@ -105,10 +105,14 @@ public abstract class ServerPlayer extends ServerGameObject {
     }
 
     public boolean inRange(int x, int y, double range, double angle) {
+        System.out.println("x: " + x + " y: " + y + " range: " + range + " angle: " + angle);
+
         int vx = x - getX();
         int vy = y - getY();
+        System.out.println("vx: " + vx + " vy: " + vy);
 
         double distance = Math.sqrt(Math.pow(vx, 2) + Math.pow(vy, 2));
+        System.out.println("distance: " + distance);
 
         if (distance > range) {
             return false;
@@ -119,17 +123,19 @@ public abstract class ServerPlayer extends ServerGameObject {
 
         while (theta > 360) { theta -= 360; }
         while (theta < 0  ) { theta += 360; }
+        System.out.println("theta: " + theta);
 
         switch (getFacing()) {
-            case UP         -> { base_angle = 0;   }
-            case DOWN       -> { base_angle = 45;  }
-            case LEFT       -> { base_angle = 90;  }
-            case RIGHT      -> { base_angle = 135; }
-            case UP_LEFT    -> { base_angle = 180; }
-            case UP_RIGHT   -> { base_angle = 225; }
-            case DOWN_LEFT  -> { base_angle = 270; }
+            case UP         -> { base_angle = 90;  }
+            case DOWN       -> { base_angle = 270; }
+            case LEFT       -> { base_angle = 180; }
+            case RIGHT      -> { base_angle = 0;   }
+            case UP_LEFT    -> { base_angle = 135; }
+            case UP_RIGHT   -> { base_angle = 45;  }
+            case DOWN_LEFT  -> { base_angle = 225; }
             case DOWN_RIGHT -> { base_angle = 315; }
         }
+        System.out.println("base_angle: " + base_angle);
 
         return 
             (theta >= base_angle - angle / 2) &&
