@@ -166,7 +166,12 @@ public class ServerGame {
                     e.printStackTrace();
                 }
             }
-        }, 0, 1000 / (int)FRAME_PER_SEC); // 每50毫秒执行一次
+        }, 0, 1000 / (int)FRAME_PER_SEC);
+    }
+
+    public void clicked(String message) {
+        String[] parts = message.split(";");
+        
     }
     
     private void updateGameLogic() {
@@ -533,8 +538,8 @@ public class ServerGame {
         server.broadcastToClient("initGameObject;hook;" + 44 * GRID_SIZE + ";" + 5 * GRID_SIZE +";2");
         grid[76][19] = new ServerHook(3, 76, 19);
         server.broadcastToClient("initGameObject;hook;" + 76 * GRID_SIZE + ";" + 19 * GRID_SIZE +";3");
-        grid[94][19] = new ServerHook(4, 94, 19);
-        server.broadcastToClient("initGameObject;hook;" + 94 * GRID_SIZE + ";" + 19 * GRID_SIZE +";4");
+        grid[92][19] = new ServerHook(4, 92, 19);
+        server.broadcastToClient("initGameObject;hook;" + 92 * GRID_SIZE + ";" + 19 * GRID_SIZE +";4");
         grid[48][23] = new ServerHook(5, 48, 23);
         server.broadcastToClient("initGameObject;hook;" + 48 * GRID_SIZE + ";" + 23 * GRID_SIZE +";5");
         grid[12][46] = new ServerHook(6, 12, 46);

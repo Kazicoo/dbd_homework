@@ -68,6 +68,9 @@ public class Server implements Comm.TcpServerCallback {
       server.broadcast(message + ";" + id);
     }
 
+    if (message.startsWith("clicked")) {
+      serverGame.clicked(message);
+    }
 
     // if (message.startsWith("fix_gen")) {
     //   ServerGenerator gen;
