@@ -520,7 +520,7 @@ public class ClientGame {
                 switch (id) {
                 case 0:
                     clientPlayers[i].setHp(hp);
-                    healthLabel1.setText((clientPlayers[i].getRole() + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus() +"ID    "+ id);
+                    healthLabel1.setText((clientPlayers[i].getRole() + "  ID    "+ id + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus());
                     healthLabel1.setBounds(10 , 5 , 250 ,30);
                     healthLabel1.setFont(largeFont);
                     if (hp < 2)   { 
@@ -531,7 +531,7 @@ public class ClientGame {
                     break;
                 case 1:
                     clientPlayers[i].setHp(hp);
-                    healthLabel2.setText((clientPlayers[i].getRole() + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus() +"ID    "+ id);
+                    healthLabel2.setText((clientPlayers[i].getRole() + "  ID    "+ id + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus());
                     healthLabel2.setBounds(10 , 40 , 250 ,30);
                     healthLabel2.setFont(largeFont);
                     if (hp < 2)   { 
@@ -542,7 +542,7 @@ public class ClientGame {
                     break;
                 case 2:
                     clientPlayers[i].setHp(hp);
-                    healthLabel3.setText((clientPlayers[i].getRole() + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus() +"ID    "+ id);
+                    healthLabel3.setText((clientPlayers[i].getRole() + "  ID    "+ id + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus());
                     healthLabel3.setBounds(10 , 75 , 250 ,30);
                     healthLabel3.setFont(largeFont);
                     if (hp < 2)   { 
@@ -553,7 +553,7 @@ public class ClientGame {
                     break;
                 case 3:
                     clientPlayers[i].setHp(hp);
-                    healthLabel4.setText((clientPlayers[i].getRole() + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus() +"ID    "+ id);
+                    healthLabel4.setText((clientPlayers[i].getRole() + "  ID    " + id + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus());
                     healthLabel4.setBounds(10 , 110 , 250 ,30);
                     healthLabel4.setFont(largeFont);
                     if (hp < 2)   { 
