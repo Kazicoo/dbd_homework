@@ -151,32 +151,32 @@ public class ServerGame {
         }
     }
     
-    public void generatorClicked(String message, int id) {
-        String[] parts = message.split(";");
-        int generatorId = Integer.parseInt(parts[2]);
+        public void generatorClicked(String message, int id) {
+            String[] parts = message.split(";");
+            int generatorId = Integer.parseInt(parts[2]);
 
-        ServerGenerator gen = null;
-        for (ServerGenerator g : generators) {
-            if (g != null && g.getId() == generatorId) {
-                gen = g;
-                break;
+            ServerGenerator gen = null;
+            for (ServerGenerator g : generators) {
+                if (g != null && g.getId() == generatorId) {
+                    gen = g;
+                    break;
+                }
+            }
+            // 根據 ID 獲取玩家 
+            ServerHuman player = null; 
+            for (ServerHuman p : getHumans()) { 
+                if (p != null && p.getId() == id) { 
+                    player = p; break; 
+                } 
+            }
+
+            // 檢查玩家是否能與發電機交互並修復 
+            if (player != null && gen != null) { 
+                if (player.canInteractGenerator(gen)) { 
+                    gen.fix(player); 
+                } 
             }
         }
-        // 根據 ID 獲取玩家 
-        ServerHuman player = null; 
-        for (ServerHuman p : getHumans()) { 
-            if (p != null && p.getId() == id) { 
-                player = p; break; 
-            } 
-        }
-
-        // 檢查玩家是否能與發電機交互並修復 
-        if (player != null && gen != null) { 
-            if (player.canInteractGenerator(gen)) { 
-                gen.fix(player); 
-            } 
-        }
-    }
     // if (message.startsWith("fix_gen")) {
     //   ServerGenerator gen;
     //   ServerPlayer player;
@@ -215,8 +215,23 @@ public class ServerGame {
                 if (item != null) {
                     item.update();
 
+                    if (item instanceof ServerGenerator serverGenerator) { 
+                        ServerHuman[] serverHumans = serverGenerator.getFixers(); 
+                        for (ServerHuman serverHuman : serverHumans) {
+                            if (serverHuman != null) {
+                                // 在這裡執行需要的操作，例如打印玩家ID
+                                server.broadcastToClient("fixing;generator;" + ((ServerGenerator)item).getFixPercentage() + ";" + serverHuman.getId());
+                            }
+                        }
+                    }
+                    if (item instanceof ServerGenerator && ((ServerGenerator)item).getSomeoneLeft() != -1) {
+                        server.broadcastToClient("stopFixed;generator;" + ((ServerGenerator)item).getSomeoneLeft());
+                    }
                     if (item instanceof ServerGenerator && ((ServerGenerator)item).isJustFixed()) {
-                        server.broadcastToClient("updateGameObject;generator;" + item.getX() + ";" + item.getY() + ";" + ((ServerGenerator)item).getId());
+                        ServerHuman[] serverHuman = ((ServerGenerator)item).getFixers();
+                        for (ServerHuman serverHuman1 : serverHuman) {
+                            server.broadcastToClient("justFixed;generator;" + ((ServerGenerator)item).getId() + serverHuman1.getId());
+                        }
                     }
                 }
             }

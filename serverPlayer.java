@@ -170,7 +170,6 @@ public abstract class ServerPlayer extends ServerGameObject {
                     gy + _y);
                 
             }
-            
         }
 
         return items;
