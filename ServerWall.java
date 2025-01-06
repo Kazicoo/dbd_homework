@@ -19,10 +19,10 @@ public class ServerWall extends ServerMapItems {
             (x+1) * ServerGame.GRID_SIZE,
             (y+1) * ServerGame.GRID_SIZE,
             // other top left
-            serverPlayer.getX() - ServerGame.GRID_SIZE / 2,
-            serverPlayer.getY() - ServerGame.GRID_SIZE / 2,
+            serverPlayer.getX() - ServerGame.collisionSize,
+            serverPlayer.getY() - ServerGame.collisionSize,
             // other bottom right
-            serverPlayer.getX() + ServerGame.GRID_SIZE / 2,
-            serverPlayer.getY() + ServerGame.GRID_SIZE / 2);
+            serverPlayer.getX() + ServerGame.collisionSize,
+            serverPlayer.getY() + ServerGame.collisionSize);
     }
 }

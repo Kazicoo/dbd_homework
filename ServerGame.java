@@ -8,11 +8,11 @@ public class ServerGame {
     private final String[] chars = {"killer", "p1", "p2", "p3"};
     private final ServerPlayer players[] = new ServerPlayer[4];
     private final ServerGenerator[] generators = new ServerGenerator[4];
-    
     public static final int GRID_SIZE   = 60;
     public static final int GRID_WIDTH  = 100;
     public static final int GRID_HEIGHT = 60;
-
+    public static final int collisionSize = GRID_SIZE / 3;
+ 
     public static final float FRAME_PER_SEC = 20;
     private Timer gameLoopTimer;
     Random rand = new Random();
@@ -228,6 +228,14 @@ public class ServerGame {
     }
     
     public void initWall() {
+        for (int i = 0; i <= 59; i++) {
+            grid[0][i] = new ServerWall(0, i);
+            grid[99][i] = new ServerWall(99, i);
+        }
+        for (int i = 0; i <= 99; i++) {
+            grid[i][0] = new ServerWall(i, 0);
+            grid[i][59] = new ServerWall(i, 59);
+        }
         // 左下、中下
         for (int i = 5; i <= 15; i++) {
             if (i == 9) continue;
