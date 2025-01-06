@@ -9,7 +9,7 @@ public class GamePanel extends JPanel {
 
     public GamePanel(ClientGame clientGame) {
         this.clientGame = clientGame;
-        this.backgroundImage = new ImageIcon("Graphic/GuideLine.png").getImage();
+        this.backgroundImage = new ImageIcon("Graphic/mapWithWall.png").getImage();
         System.out.println("Background image loaded: " + (backgroundImage != null));
         setLayout(null);
     }

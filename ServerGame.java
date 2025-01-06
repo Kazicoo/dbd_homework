@@ -112,15 +112,15 @@ public class ServerGame {
     }
     
     public void initHealthStatus() {
-        for (int i = 1; i < idRole.length; i++) {
-            server.broadcastToClient("updateGameObject;health;2;" + idRole[i]);
+        for (int i = 1; i < chars.length; i++) {
+            server.broadcastToClient("updateGameObject;health;2;" + chars[i]);
         }
     }
     // 血量改變時
     public void setHealthStatus(int health, int id) {
         for (int i = 1; i < idRole.length; i++) {
             if (id == idRole[i]) {
-                server.broadcastToClient("updateGameObject;health;" + health + ";" + id);
+                server.broadcastToClient("updateGameObject;health;" + health + ";" + chars[i]);
             }
         }
     }
