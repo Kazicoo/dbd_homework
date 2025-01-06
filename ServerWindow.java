@@ -1,10 +1,9 @@
-public class ServerWall extends ServerMapItems {
+public class ServerWindow extends ServerMapItems {
     private final int x;
     private final int y;
 
-    public ServerWall(int x, int y) {
-        super(0);
-
+    public ServerWindow(int id, int x, int y) {
+        super(id);
         this.x = x;
         this.y = y;
     }

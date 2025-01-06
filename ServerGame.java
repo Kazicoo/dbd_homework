@@ -171,6 +171,18 @@ public class ServerGame {
         for (ServerPlayer player : players) {
             player.update();
         }
+
+        for (ServerMapItems[] row : grid) {
+            for (ServerMapItems item : row) {
+                if (item != null) {
+                    item.update();
+
+                    if (item instanceof ServerGenerator && ((ServerGenerator)item).isJustFixed()) {
+                        server.broadcastToClient("updateGameObject;generator;" + item.getX() + ";" + item.getY() + ";" + ((ServerGenerator)item).getId());
+                    }
+                }
+            }
+        }
     }
 
     public ServerMapItems getMapItem(int x, int y) {

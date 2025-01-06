@@ -95,23 +95,10 @@ public abstract class ServerPlayer extends ServerGameObject {
                     relativeLocationX + dx, 
                     relativeLocationY + dy);
 
-                int gx = getX() / ServerGame.GRID_SIZE;
-                int gy = getY() / ServerGame.GRID_SIZE;
-
-                ServerMapItems items[] = new ServerMapItems[25];
-                int count = 0;
-
-                for (int _x=-2; _x>2; _x++) {
-                    for (int _y=-2; _y>2; _y++) {
-                        items[count++] = game.getMapItem(
-                            gx + _x, 
-                            gy + _y);
-                    }
-                }
-
+                ServerMapItems items[] = getNearbyMapItems();
                 boolean colliding = false;
 
-                for (int j=0; !colliding && j<count; j++) {
+                for (int j=0; !colliding && j<25; j++) {
                     if (items[j] == null) { continue; }
                     if (!items[j].isColliding(this)) { continue; }
                     colliding = true;
@@ -167,6 +154,24 @@ public abstract class ServerPlayer extends ServerGameObject {
         return 
             (theta >= base_angle - angle / 2) &&
             (theta <= base_angle + angle / 2);
+    }
+
+    public ServerMapItems[] getNearbyMapItems() {
+        int gx = getX() / ServerGame.GRID_SIZE;
+        int gy = getY() / ServerGame.GRID_SIZE;
+
+        ServerMapItems items[] = new ServerMapItems[25];
+        int count = 0;
+
+        for (int _x=-2; _x>2; _x++) {
+            for (int _y=-2; _y>2; _y++) {
+                items[count++] = game.getMapItem(
+                    gx + _x, 
+                    gy + _y);
+            }
+        }
+
+        return items;
     }
 
     @Override
