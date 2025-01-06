@@ -30,7 +30,7 @@ public class ServerGame {
         int[][] positionMap = new int[9][2];
         positionMap[0] = new int[]{16*GRID_SIZE, 10*GRID_SIZE};
         positionMap[1] = new int[]{53*GRID_SIZE, 5*GRID_SIZE};
-        positionMap[2] = new int[]{83*GRID_SIZE, 10*GRID_SIZE};
+        positionMap[2] = new int[]{83*GRID_SIZE, 14*GRID_SIZE};
         positionMap[3] = new int[]{29*GRID_SIZE, 28*GRID_SIZE};
         positionMap[4] = new int[]{48*GRID_SIZE, 28*GRID_SIZE};
         positionMap[5] = new int[]{74*GRID_SIZE, 31*GRID_SIZE};
