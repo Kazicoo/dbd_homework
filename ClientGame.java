@@ -455,7 +455,7 @@ public class ClientGame {
 
                         if (!isMovingUp && !isMovingLeft && !isMovingDown && !isMovingRight) {
                             player.updateMovement("");
-                            conn.send("animated;\"");
+                            conn.send("animated;\"\"");
                             gamePanel.repaint();
                         }
                     }
