@@ -24,6 +24,7 @@ public class Server implements Comm.TcpServerCallback {
         serverGame.loadingPlayerLocation();
         serverGame.initHealthStatus();
         serverGame.initWall();
+        serverGame.initHook();
         serverGame.startGameLoop();
     } catch (IOException e) {
       System.out.println("Failed to create server: " + e.getMessage());
