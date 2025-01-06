@@ -24,6 +24,7 @@ public class Server implements Comm.TcpServerCallback {
         serverGame.loadingGeneratorLocation();
         serverGame.loadingPlayerLocation();
         serverGame.initHealthStatus();
+        serverGame.initWall();
         serverGame.startGameLoop();
     } catch (IOException e) {
       System.out.println("Failed to create server: " + e.getMessage());
@@ -62,7 +63,7 @@ public class Server implements Comm.TcpServerCallback {
     }
 
     if (message.startsWith("animated")) {
-      server.broadcast(message + id);
+      server.broadcast(message + ";" + id);
     }
 
 

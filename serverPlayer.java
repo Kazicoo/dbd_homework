@@ -168,7 +168,9 @@ public abstract class ServerPlayer extends ServerGameObject {
                 items[count++] = game.getMapItem(
                     gx + _x, 
                     gy + _y);
+                
             }
+            
         }
 
         return items;
@@ -184,10 +186,10 @@ public abstract class ServerPlayer extends ServerGameObject {
             getX() + ServerGame.GRID_SIZE / 2,
             getY() + ServerGame.GRID_SIZE / 2,
             // other top left
-            serverPlayer.getX() - ServerGame.GRID_SIZE / 2,
-            serverPlayer.getY() - ServerGame.GRID_SIZE / 2,
+            serverPlayer.getX() - ServerGame.GRID_SIZE / 2 + 10,
+            serverPlayer.getY() - ServerGame.GRID_SIZE / 2 + 10,
             // other bottom right
-            serverPlayer.getX() + ServerGame.GRID_SIZE / 2,
-            serverPlayer.getY() + ServerGame.GRID_SIZE / 2);
+            serverPlayer.getX() + ServerGame.GRID_SIZE / 2 + 10,
+            serverPlayer.getY() + ServerGame.GRID_SIZE / 2 + 10);
     }
 }
