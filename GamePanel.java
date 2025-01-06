@@ -25,15 +25,9 @@ public class GamePanel extends JPanel {
     for (ClientPlayer clientPlayer : clientGame.clientPlayers) {
         if (clientPlayer != null && clientPlayer.getCurrentImage() != null) {
             ImageIcon playerIcon = clientPlayer.getCurrentImage();
-<<<<<<< HEAD
-            int x = clientPlayer.getX() - cameraOffsetX;  // 根據鏡頭偏移量調整 x 坐標
-            int y = clientPlayer.getY() - cameraOffsetY;  // 根據鏡頭偏移量調整 y 坐標
-            playerIcon.paintIcon(this, g, x-25, y-85);  // 繪製玩家圖標
-=======
             int x = clientPlayer.getX() - cameraOffsetX - clientPlayer.getOffsetX();  // 根據鏡頭偏移量調整 x 坐標
             int y = clientPlayer.getY() - cameraOffsetY - clientPlayer.getOffsetY();  // 根據鏡頭偏移量調整 y 坐標
             playerIcon.paintIcon(this, g, x, y);  // 繪製玩家圖標
->>>>>>> 1df41a596f68d4eaab8f39fd1b890ac0b7c2d9f7
             // System.out.println("Drawing player " + clientPlayer.getId() + " at: (" + x + ", " + y + ")");
         }
     }
