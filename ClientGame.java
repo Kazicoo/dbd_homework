@@ -122,22 +122,6 @@ public class ClientGame {
         }).start();
     }
 
-    public void initCameraPosition(int playerX, int playerY) {
-        // 獲取當前裝置的螢幕解析度
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
-        int screenWidth = screenSize.width;
-        int screenHeight = screenSize.height;
-
-        int cameraX = playerX - (screenWidth / 2);
-        int cameraY = playerY - (screenHeight / 2);
-    
-        // 限制鏡頭不要超過地圖範圍
-        cameraX = Math.max(0, Math.min(cameraX, 6000 - screenWidth)); // 6000 是地圖的寬度
-        cameraY = Math.max(0, Math.min(cameraY, 3600 - screenHeight)); // 3600 是地圖的高度
-        gamePanel.setCameraOffset(cameraX, cameraY);
-    }
-    
     public void updateCameraPosition(int playerX, int playerY) {
         // 獲取當前裝置的螢幕解析度
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -313,7 +297,7 @@ public class ClientGame {
         clientPlayers[playerCount].initImage();
 
         if (clientId == id) {
-            initCameraPosition(x, y);
+            updateCameraPosition(x, y);
             gamePanel.repaint();
         }
         System.out.println(clientPlayers[playerCount].getRole());
@@ -379,26 +363,34 @@ public class ClientGame {
                         switch (key) {
                             case 'W' -> {
                                 // 向上移動
-                                player.updateMovement("W");
-                                conn.send("KeyDown;W");
+                                if (!isMovingUp) {
+                                    player.updateMovement("W");
+                                    conn.send("KeyDown;W");
+                                }
                                 isMovingUp = true;
                             }
                             case 'A' -> {
                                 // 向左移動
-                                player.updateMovement("A");
-                                conn.send("KeyDown;A");
+                                if (!isMovingLeft) {
+                                    player.updateMovement("A");
+                                    conn.send("KeyDown;A");
+                                }
                                 isMovingLeft = true;
                             }
                             case 'S' -> {
                                 // 向下移動
-                                player.updateMovement("S");
-                                conn.send("KeyDown;S");
+                                if (!isMovingDown) {
+                                    player.updateMovement("S");
+                                    conn.send("KeyDown;S");
+                                }
                                 isMovingDown = true;
                             }
                             case 'D' -> {
                                 // 向右移動
-                                player.updateMovement("D");
-                                conn.send("KeyDown;D");
+                                if (!isMovingRight) {
+                                    player.updateMovement("D");
+                                    conn.send("KeyDown;D");
+                                }
                                 isMovingRight = true;
                             }
                             default -> System.out.println("Unhandled key press: " + key);

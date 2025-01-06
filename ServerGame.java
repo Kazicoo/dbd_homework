@@ -8,14 +8,16 @@ public class ServerGame {
     private final String[] chars = {"killer", "p1", "p2", "p3"};
     private final ServerPlayer players[] = new ServerPlayer[4];
     private final ServerGenerator[] generators = new ServerGenerator[4];
-    public static final int GRID_SIZE = 60;
+    
+    public static final int GRID_SIZE   = 60;
+    public static final int GRID_WIDTH  = 100;
+    public static final int GRID_HEIGHT = 60;
+
     public static final float FRAME_PER_SEC = 20;
     private Timer gameLoopTimer;
     Random rand = new Random();
 
-    private static final int GRID_WIDTH = 100;
-    private static final int GRID_HEIGHT = 60;
-    private final ServerGameObject[][] grid = new ServerGameObject[GRID_WIDTH][GRID_HEIGHT];
+    private final ServerMapItems[][] grid = new ServerMapItems[GRID_WIDTH][GRID_HEIGHT];
 
     public ServerGame(Server server) {
         this.server = server;
@@ -171,6 +173,14 @@ public class ServerGame {
         }
     }
 
+    public ServerMapItems getMapItem(int x, int y) {
+        if (x < 0 || x >= GRID_WIDTH || y < 0 || y >= GRID_HEIGHT) {
+            return null;
+        }
+
+        return grid[x][y];
+    }
+
     public int[] validateMovement(int x, int y) {
         int[] result = new int[2];
         int px = x / 60;
@@ -192,13 +202,21 @@ public class ServerGame {
     public ServerKiller getKiller() {
         return (ServerKiller)players[0];
     }
+
+    public ServerPlayer[] getPlayers() {
+        return players;
+    }
+
+    public ServerKiller getKillers() {
+        return (ServerKiller)players[0];
+    }
     
     public ServerHuman[] getHumans() {
         return new ServerHuman[]{(ServerHuman)players[1], (ServerHuman)players[2], (ServerHuman)players[3]};
     }
     
     public void initWall() {
-        // 左上、中下
+        // 左下、中下
         for (int i = 5; i <= 15; i++) {
             if (i == 9) continue;
             grid[i][49] = new ServerWall();
@@ -421,5 +439,16 @@ public class ServerGame {
         }
         grid[12][33] = new ServerWall();
         grid[12][34] = new ServerWall();
+    }
+    
+
+    public static boolean aabb_collision(  // axis-aligned bounding box
+        int x11, int y11,       // Top-left 1
+        int x12, int y12,       // Bottom-right 1
+        int x21, int y21,       // Top-left 2
+        int x22, int y22        // Bottom-right 2
+    ) {
+        if (x12 < x21 || x11 > x22) return false;
+        return !(y12 < y21 || y11 > y22);
     }
 }
