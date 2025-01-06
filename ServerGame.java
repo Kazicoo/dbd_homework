@@ -99,7 +99,7 @@ public class ServerGame {
             }
             if (isValid) {
                 usedPosition[count] = position;
-                generators[count] = new ServerGenerator(count);
+                generators[count] = new ServerGenerator(count, positionMap[position][0], positionMap[position][1]);
                 generators[count].setX(positionMap[position][0]);
                 generators[count].setY(positionMap[position][1]);
                 count++;
