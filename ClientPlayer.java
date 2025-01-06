@@ -3,6 +3,8 @@ import javax.swing.*;
 public class ClientPlayer extends ClientGameObject {
     private String role;
     private boolean isSelf = false;
+    private int hp = 2;
+    private String status;
 
     private ImageIcon idleImage;
     private ImageIcon attackLeftImage;
@@ -24,6 +26,31 @@ public class ClientPlayer extends ClientGameObject {
 
     public String getRole() {
         return this.role;
+    }
+    public void  setHp(int hp) {
+        this.hp = hp;
+        switch (hp) {
+            case 0:
+                status = "倒地";
+                break;
+            case 1:
+                status = "受傷";
+                break;
+            case 2:
+                status = "健康";
+            default:
+                System.out.println("未設定status");
+                break;
+        }
+    }
+    public int getHp() {
+        return this.hp;
+    }
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    public String getStatus() {
+        return this.status;
     }
 
     public void setIsSelf(boolean isSelf) {

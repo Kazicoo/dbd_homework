@@ -8,7 +8,7 @@ public class ClientGame {
     private TcpClient conn;
     private JFrame frame;
     private JLabel generatorLabel; // 用於顯示發電機數量
-    private JLabel healthLabel1,healthLabel2,healthLabel3; // 用於顯示玩家血量
+    private JLabel healthLabel1,healthLabel2,healthLabel3, healthLabel4; // 用於顯示玩家血量
     private int generatorCount = 4; // 初始發電機數量
     private int healthcount = 2; // 初始玩家血量
     private String status;
@@ -60,12 +60,14 @@ public class ClientGame {
         middlePanel.setOpaque(false);
         // 新增 healthLabel
         //將healthbar移動到gamepanel
-        JLabel healthLabel1 = new JLabel();
-        JLabel healthLabel2 = new JLabel();
-        JLabel healthLabel3 = new JLabel();
+        healthLabel1 = new JLabel();
+        healthLabel2 = new JLabel();
+        healthLabel3 = new JLabel();
+        healthLabel4 = new JLabel();
         gamePanel.add(healthLabel1);
         gamePanel.add(healthLabel2);
         gamePanel.add(healthLabel3);
+        gamePanel.add(healthLabel4);
     
         // 下部面板
         JPanel bottomPanel = new JPanel();
@@ -296,7 +298,7 @@ public class ClientGame {
         
     
     
-    public void initPlayer(String message, int ClientId) {
+    public void initPlayer(String message, int clientId) {
         String[] parts = message.split(";");
         int x = Integer.parseInt(parts[2]);
         int y = Integer.parseInt(parts[3]);
@@ -307,10 +309,10 @@ public class ClientGame {
         clientPlayers[playerCount] = new ClientPlayer(id);
         clientPlayers[playerCount].setRelativeLocation(x, y);
         clientPlayers[playerCount].setRole(chars[playerCount]);
-        clientPlayers[playerCount].setIsSelf(ClientId == id);
+        clientPlayers[playerCount].setIsSelf(clientId == id);
         clientPlayers[playerCount].initImage();
 
-        if (ClientId == id) {
+        if (clientId == id) {
             initCameraPosition(x, y);
             gamePanel.repaint();
         }
@@ -500,44 +502,71 @@ public class ClientGame {
                 clientPlayer.setAction(parts[1]);
             }
         }
+        gamePanel.repaint();
     }
     // 收到 initGameObject 時呼叫此方法
     // updateGameObject;health;<hp: 0, 1, 2>;<human: p1, p2, p3>
-    public void initHealthStatus(String message) {
+    public void HealthStatus(String message) {
         String[] parts = message.split(";");
         int hp = Integer.parseInt(parts[2]);
-        String role = parts[3];
-        
-        
-        
-        
-        // 根據血量設定狀態
-        switch (hp) {
-            case 2 -> status = "(健康)";
-            case 1 -> status = "(受傷)";
-            case 0 -> status = "(倒地)";
-           
-        }
-    
+        int id = Integer.parseInt(parts[3]);
+        Font largeFont = new Font("微軟正黑體", Font.BOLD,20);
 
-        // 根據角色初始化狀態欄
-        switch (role) {
-            case "p1" -> {
-                healthLabel1.setText((role + hp + " ") + " " + status);
-                healthLabel1.setBounds(10 , 5 , 200 ,30);
-                gamePanel.add(healthLabel1);
+
+        for(int i = 0; i <clientPlayers.length;i++) {
+            if ((clientPlayers[i]!= null && "killer".equals(clientPlayers[i].getRole()) && (clientPlayers[i].getIsSelf() == true))) {
+                break;
+            } else if (clientPlayers[i].getId() == id){
+                switch (id) {
+                case 0:
+                    clientPlayers[i].setHp(hp);
+                    healthLabel1.setText((clientPlayers[i].getRole() + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus() +"ID    "+ id);
+                    healthLabel1.setBounds(10 , 5 , 250 ,30);
+                    healthLabel1.setFont(largeFont);
+                    if (hp < 2)   { 
+                        healthLabel1.setForeground(Color.RED);
+                    } else {
+                        healthLabel1.setForeground(Color.GREEN);    
+                    }                   
+                    break;
+                case 1:
+                    clientPlayers[i].setHp(hp);
+                    healthLabel2.setText((clientPlayers[i].getRole() + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus() +"ID    "+ id);
+                    healthLabel2.setBounds(10 , 40 , 250 ,30);
+                    healthLabel2.setFont(largeFont);
+                    if (hp < 2)   { 
+                        healthLabel2.setForeground(Color.RED);
+                    } else {
+                        healthLabel2.setForeground(Color.GREEN);    
+                    }   
+                    break;
+                case 2:
+                    clientPlayers[i].setHp(hp);
+                    healthLabel3.setText((clientPlayers[i].getRole() + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus() +"ID    "+ id);
+                    healthLabel3.setBounds(10 , 75 , 250 ,30);
+                    healthLabel3.setFont(largeFont);
+                    if (hp < 2)   { 
+                        healthLabel3.setForeground(Color.RED); 
+                    } else {
+                        healthLabel3.setForeground(Color.GREEN);    
+                    }                       
+                    break;
+                case 3:
+                    clientPlayers[i].setHp(hp);
+                    healthLabel4.setText((clientPlayers[i].getRole() + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus() +"ID    "+ id);
+                    healthLabel4.setBounds(10 , 110 , 250 ,30);
+                    healthLabel4.setFont(largeFont);
+                    if (hp < 2)   { 
+                        healthLabel4.setForeground(Color.RED);
+                    } else {
+                        healthLabel4.setForeground(Color.GREEN);    
+                    }                      
+                    break;
+                default:
+                    System.out.println("未知的角色: " + clientPlayers[i].getRole());
+                    break;
+                }
             }
-             case "p2" -> {
-                 healthLabel2.setText((role + hp + " ") + " " + status);
-                 healthLabel2.setBounds(10 , 40 , 200 ,30);
-                 gamePanel.add(healthLabel2);
-            }
-            case "p3" -> {
-                healthLabel3.setText((role + hp + " ") + " " + status);
-                healthLabel3.setBounds(10 , 75 , 200 ,30);                        
-                gamePanel.add(healthLabel3);
-            }
-            default -> System.out.println("未知的角色: " + role);
         }
 
         // 更新面板以顯示狀態
@@ -545,43 +574,6 @@ public class ClientGame {
         gamePanel.repaint();
     }
 
-    public void updateHealth(String message) {
-        String[] parts = message.split(";");
-        
-        if (parts.length < 4 || !"updateGameObject".equals(parts[0]) || !"health".equals(parts[1])) {
-            System.out.println("無效的血量更新訊息格式。");
-            return;
-        }
-    
-        String healthValue = parts[2];
-        String role = parts[3];
-    
-        // 解析血量值
-        int health = Integer.parseInt(healthValue.split(":")[1]);
-        String status = "";
-    
-        // 根據血量設定狀態
-        switch (health) {
-            case 2 -> status = "(健康)";
-            case 1 -> status = "(受傷)";
-            case 0 -> status = "(倒地)";
-           
-        }
-    
-        // 更新對應角色的血量和狀態
-        switch (role) {
-            case "p1" -> healthLabel1.setText("p1 Health: " + health + " " + status);
-            case "p2" -> healthLabel2.setText("p2 Health: " + health + " " + status);
-            case "p3" -> healthLabel3.setText("p3 Health: " + health + " " + status);
-           
-        }
-    
-        // 刷新面板以顯示更新內容
-        gamePanel.revalidate();
-        gamePanel.repaint();
-    } 
+     
         
 }
-    
-    
-
