@@ -263,9 +263,9 @@ public class ServerGame {
             if (i == 36) continue;
             grid[i][51] = new ServerWall(i,51);   
         }
-        grid[38][50] = new ServerWall(39,50);
-        grid[38][49] = new ServerWall(39,49);
-        grid[38][48] = new ServerWall(39,48);
+        grid[38][50] = new ServerWall(38,50);
+        grid[38][49] = new ServerWall(38,49);
+        grid[38][48] = new ServerWall(38,48);
         for (int i = 35; i <= 45; i++) {
             if (i == 40) continue;
             grid[34][i] = new ServerWall(34,i);
@@ -308,7 +308,7 @@ public class ServerGame {
         grid[24][25] = new ServerWall(24,25);
         grid[24][26] = new ServerWall(24,26);
         grid[24][27] = new ServerWall(24,27);
-        grid[24][28] = new ServerWall(24,27);
+        grid[24][28] = new ServerWall(24,28);
         for (int i = 25; i <= 34; i++) {
             if(i == 28) continue;
             grid[i][25] = new ServerWall(i,25);
@@ -462,8 +462,8 @@ public class ServerGame {
             if(i == 10) continue;
             grid[i][31] = new ServerWall(i,31);
         }
-        grid[13][33] = new ServerWall(12,33);
-        grid[13][34] = new ServerWall(12,34);
+        grid[12][33] = new ServerWall(12,33);
+        grid[12][34] = new ServerWall(12,34);
         for (int i = 25; i <= 30; i++) {
             grid[15][i] = new ServerWall(15,i);
         }
@@ -485,9 +485,9 @@ public class ServerGame {
         grid[12][46] = new ServerHook(6, 12, 46);
         server.broadcastToClient("initGameObject;hook;12;46;6");
         grid[48][43] = new ServerHook(7, 48, 43);
-        server.broadcastToClient("initGameObject;hook;48;43;7");
-        grid[76][46] = new ServerHook(8, 76, 46);
-        server.broadcastToClient("initGameObject;hook;76;46;8");
+        server.broadcastToClient("initGameObject;hook;48;43;7");    
+        grid[76][45] = new ServerHook(8, 76, 45);
+        server.broadcastToClient("initGameObject;hook;76;45;8");
     }
     
 
