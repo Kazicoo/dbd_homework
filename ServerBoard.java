@@ -1,10 +1,10 @@
 
 
-public class ServerHook extends ServerMapItems{
+public class ServerBoard extends ServerMapItems{
     private final int x;
     private final int y;
 
-    public ServerHook(int id, int x, int y) {
+    public ServerBoard(int id, int x, int y) {
         super(id);
         this.x = x;
         this.y = y;
@@ -28,7 +28,7 @@ public class ServerHook extends ServerMapItems{
             y * ServerGame.GRID_SIZE, 
             // self bottom right
             (x+1) * ServerGame.GRID_SIZE,
-            (y+2) * ServerGame.GRID_SIZE,
+            (y+1) * ServerGame.GRID_SIZE,
             // other top left
             serverPlayer.getX() - ServerGame.collisionSize,
             serverPlayer.getY() - ServerGame.collisionSize,
