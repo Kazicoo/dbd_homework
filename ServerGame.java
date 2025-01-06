@@ -354,7 +354,7 @@ public class ServerGame {
         grid[87][38] = new ServerWall(87,38);
         grid[88][38] = new ServerWall(88,38);
         grid[91][25] = new ServerWall(91,25);
-        grid[92][25] = new ServerWall(95,25);
+        grid[92][25] = new ServerWall(92,25);
         for (int i = 17; i <= 21; i++) {
             grid[95][i] = new ServerWall(95,i);
         }

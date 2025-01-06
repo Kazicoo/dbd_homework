@@ -65,6 +65,7 @@ public class Server implements Comm.TcpServerCallback {
       server.broadcast(message + id);
     }
 
+
     // if (message.startsWith("fix_gen")) {
     //   ServerGenerator gen;
     //   ServerPlayer player;
