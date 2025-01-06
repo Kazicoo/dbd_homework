@@ -8,7 +8,7 @@ public class ClientGame {
     private TcpClient conn;
     private JFrame frame;
     private JLabel generatorLabel; // 用於顯示發電機數量
-    private JLabel healthLabel1,healthLabel2,healthLabel3, healthLabel4; // 用於顯示玩家血量
+    private JLabel humanLabel1,humanLabel2,humanLabel3, healthLabel4; // 用於顯示玩家血量
     private int generatorCount = 4; // 初始發電機數量
     private int healthcount = 2; // 初始玩家血量
     private String status;
@@ -60,14 +60,12 @@ public class ClientGame {
         middlePanel.setOpaque(false);
         // 新增 healthLabel
         //將healthbar移動到gamepanel
-        healthLabel1 = new JLabel();
-        healthLabel2 = new JLabel();
-        healthLabel3 = new JLabel();
-        healthLabel4 = new JLabel();
-        gamePanel.add(healthLabel1);
-        gamePanel.add(healthLabel2);
-        gamePanel.add(healthLabel3);
-        gamePanel.add(healthLabel4);
+        humanLabel1 = new JLabel();
+        humanLabel2 = new JLabel();
+        humanLabel3 = new JLabel();
+        gamePanel.add(humanLabel1);
+        gamePanel.add(humanLabel2);
+        gamePanel.add(humanLabel3);
     
         // 下部面板
         JPanel bottomPanel = new JPanel();
@@ -183,7 +181,7 @@ public class ClientGame {
                     
             // 初始化按鈕
             // 載入圖片作為按鈕背景
-            ImageIcon generatorIcon = new ImageIcon("Graphic/Generator-broken.png");
+            ImageIcon generatorIcon = new ImageIcon("Graphic/Object/generator-broken.png");
             JButton generatorButton = new JButton(generatorIcon);
 
             int imageWidth = generatorIcon.getIconWidth();
@@ -197,8 +195,9 @@ public class ClientGame {
                     
             // 添加到面板
             gamePanel.add(generatorButton);
-            gamePanel.revalidate();
             gamePanel.repaint();
+
+            
                     
             // 添加互動邏輯
                     generatorButton.addMouseListener(new MouseAdapter() {
@@ -381,24 +380,28 @@ public class ClientGame {
                                 // 向上移動
                                 player.updateMovement("W");
                                 conn.send("KeyDown;W");
+                                conn.send("aminated;KeyDown;W");
                                 isMovingUp = true;
                             }
                             case 'A' -> {
                                 // 向左移動
                                 player.updateMovement("A");
                                 conn.send("KeyDown;A");
+                                conn.send("aminated;KeyDown;A");
                                 isMovingLeft = true;
                             }
                             case 'S' -> {
                                 // 向下移動
                                 player.updateMovement("S");
                                 conn.send("KeyDown;S");
+                                conn.send("aminated;KeyDown;S");
                                 isMovingDown = true;
                             }
                             case 'D' -> {
                                 // 向右移動
                                 player.updateMovement("D");
                                 conn.send("KeyDown;D");
+                                conn.send("aminated;KeyDown;D");
                                 isMovingRight = true;
                             }
                             default -> System.out.println("Unhandled key press: " + key);
@@ -417,6 +420,7 @@ public class ClientGame {
                         switch (key) {
                             case 'W' -> {
                                 conn.send("KeyUp;W");
+                                conn.send("animated;KeyUp;W");
                                 isMovingUp = false;
                                 if (isMovingDown) { 
                                     player.updateMovement("S");
@@ -428,6 +432,7 @@ public class ClientGame {
                             }
                             case 'A' -> {
                                 conn.send("KeyUp;A");
+                                conn.send("animated;KeyUp;A");
                                 isMovingLeft = false;
                                 if (isMovingRight) { 
                                     player.updateMovement("D");
@@ -439,6 +444,7 @@ public class ClientGame {
                             }
                             case 'S' -> {
                                 conn.send("KeyUp;S");
+                                conn.send("animated;KeyUp;S");
                                 isMovingDown = false;
                                 if (isMovingUp) {
                                     player.updateMovement("W");
@@ -450,6 +456,7 @@ public class ClientGame {
                             }
                             case 'D' -> {
                                 conn.send("KeyUp;D");
+                                conn.send("animated;KeyUp;D");
                                 isMovingRight = false;
                                 if (isMovingLeft) {
                                     player.updateMovement("A");
@@ -464,6 +471,7 @@ public class ClientGame {
 
                         if (!isMovingUp && !isMovingLeft && !isMovingDown && !isMovingRight) {
                             player.updateMovement("");
+                            conn.send("animated;\"");
                             gamePanel.repaint();
                         }
                     }
@@ -479,6 +487,7 @@ public class ClientGame {
                     for (ClientPlayer player : clientPlayers) {
                         if (player != null && "killer".equals(player.getRole()) && player.getIsSelf()) {
                             conn.send("attack");
+                            // conn.send("animated;attack")
                         }
                     }
                 }
@@ -491,7 +500,17 @@ public class ClientGame {
     }
     
     
-    
+    public void moveAnimation(String message) {
+        String[] parts = message.split(";");
+        int id = Integer.parseInt(parts[2]);
+        String direction = parts[1];
+        for (ClientPlayer clientPlayer : clientPlayers) {
+            if (clientPlayer != null && clientPlayer.getHp() == 2 && id == clientPlayer.getId()) {
+                clientPlayer.updateMovement(direction);
+            }
+        }
+
+    }
     
 
     
@@ -499,7 +518,7 @@ public class ClientGame {
         String[] parts = message.split(";");
         for (ClientPlayer clientPlayer : clientPlayers) {
             if (clientPlayer != null && clientPlayer.getRole().equals("killer")) {
-                clientPlayer.setAction(parts[1]);
+                clientPlayer.setAction(parts[2]);
             }
         }
         gamePanel.repaint();
@@ -508,71 +527,60 @@ public class ClientGame {
     // updateGameObject;health;<hp: 0, 1, 2>;<human: p1, p2, p3>
     public void HealthStatus(String message) {
         String[] parts = message.split(";");
-        int hp = Integer.parseInt(parts[2]);
-        int id = Integer.parseInt(parts[3]);
-        Font largeFont = new Font("微軟正黑體", Font.BOLD,20);
-
-
-        for(int i = 0; i <clientPlayers.length;i++) {
-            if ((clientPlayers[i]!= null && "killer".equals(clientPlayers[i].getRole()) && (clientPlayers[i].getIsSelf() == true))) {
-                break;
-            } else if (clientPlayers[i].getId() == id){
-                switch (id) {
-                case 0:
-                    clientPlayers[i].setHp(hp);
-                    healthLabel1.setText((clientPlayers[i].getRole() + "  ID    "+ id + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus());
-                    healthLabel1.setBounds(10 , 5 , 250 ,30);
-                    healthLabel1.setFont(largeFont);
-                    if (hp < 2)   { 
-                        healthLabel1.setForeground(Color.RED);
-                    } else {
-                        healthLabel1.setForeground(Color.GREEN);    
-                    }                   
-                    break;
-                case 1:
-                    clientPlayers[i].setHp(hp);
-                    healthLabel2.setText((clientPlayers[i].getRole() + "  ID    "+ id + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus());
-                    healthLabel2.setBounds(10 , 40 , 250 ,30);
-                    healthLabel2.setFont(largeFont);
-                    if (hp < 2)   { 
-                        healthLabel2.setForeground(Color.RED);
-                    } else {
-                        healthLabel2.setForeground(Color.GREEN);    
-                    }   
-                    break;
-                case 2:
-                    clientPlayers[i].setHp(hp);
-                    healthLabel3.setText((clientPlayers[i].getRole() + "  ID    "+ id + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus());
-                    healthLabel3.setBounds(10 , 75 , 250 ,30);
-                    healthLabel3.setFont(largeFont);
-                    if (hp < 2)   { 
-                        healthLabel3.setForeground(Color.RED); 
-                    } else {
-                        healthLabel3.setForeground(Color.GREEN);    
-                    }                       
-                    break;
-                case 3:
-                    clientPlayers[i].setHp(hp);
-                    healthLabel4.setText((clientPlayers[i].getRole() + "  ID    " + id + "  血量：    " + hp + " ") + "     " + clientPlayers[i].getStatus());
-                    healthLabel4.setBounds(10 , 110 , 250 ,30);
-                    healthLabel4.setFont(largeFont);
-                    if (hp < 2)   { 
-                        healthLabel4.setForeground(Color.RED);
-                    } else {
-                        healthLabel4.setForeground(Color.GREEN);    
-                    }                      
-                    break;
-                default:
-                    System.out.println("未知的角色: " + clientPlayers[i].getRole());
-                    break;
+        int hp = Integer.parseInt(parts[2]); // 解析血量
+        String role = parts[3]; // 解析角色
+        Font largeFont = new Font("微軟正黑體", Font.BOLD, 20);
+    
+        // 用於動態分配 Label 的指標
+        int labelIndex = 0;
+    
+        // 遍歷所有玩家
+        for (ClientPlayer clientPlayer : clientPlayers) {
+            if (clientPlayer == null) {
+                continue; // 跳過空的玩家
+            }
+    
+            // 跳過殺手
+            if ("killer".equals(clientPlayer.getRole())) {
+                continue;
+            }
+    
+            // 找到匹配的角色，更新其血量
+            if (clientPlayer.getRole().equals(role)) {
+                clientPlayer.setHp(hp);
+            }
+    
+            // 動態分配到對應的 Label
+            JLabel currentLabel = switch (labelIndex) {
+                case 0 -> humanLabel1;
+                case 1 -> humanLabel2;
+                case 2 -> humanLabel3;
+                default -> null;
+            };
+    
+            if (currentLabel != null) {
+                currentLabel.setText(clientPlayer.getRole() + "  血量： " + clientPlayer.getHp() + "     " + clientPlayer.getStatus());
+                currentLabel.setBounds(10, 5 + labelIndex * 35, 300, 30);
+                currentLabel.setFont(largeFont);
+    
+                if (clientPlayer.getHp() < 2) {
+                    currentLabel.setForeground(Color.RED);
+                } else {
+                    currentLabel.setForeground(Color.GREEN);
                 }
+    
+                // 每處理一個玩家，移動到下一個 Label
+                labelIndex++;
+            }
+    
+            // 如果已分配完 3 個 Label，就結束處理
+            if (labelIndex >= 3) {
+                break;
             }
         }
-
-        // 更新面板以顯示狀態
-        gamePanel.revalidate();
-        gamePanel.repaint();
     }
+    
+    
 
      
         

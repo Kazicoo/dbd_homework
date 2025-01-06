@@ -15,7 +15,8 @@ public class ClientPlayer extends ClientGameObject {
     private ImageIcon rightIcon;
     private ImageIcon leftIcon;
     private ImageIcon standImage;
-
+    private ImageIcon bloodImage;
+    private ImageIcon downImage;
     public ClientPlayer(int id) {
         super(id);
     }
@@ -74,6 +75,7 @@ public class ClientPlayer extends ClientGameObject {
             rightIcon = new ImageIcon("Graphic/Killer/killer-right.png");
             leftIcon = new ImageIcon("Graphic/Killer/killer-left.png");
             standImage = new ImageIcon("Graphic/Killer/killer-left.png");
+            downImage = null;
             System.out.println("killer image initialized");
         } else if (this.role.equals("p1")) {
             idleImage = new ImageIcon("Graphic/Human/p1/p1-stand.png");
@@ -82,6 +84,7 @@ public class ClientPlayer extends ClientGameObject {
             rightIcon = new ImageIcon("Graphic/Human/p1/p1-right.png");
             leftIcon = new ImageIcon("Graphic/Human/p1/p1-left.png");
             standImage = new ImageIcon("Graphic/Human/p1/p1-stand.png");
+            downImage = new ImageIcon("Graphic/Human/p1/p1-down.png");
             attackLeftImage = null; // Survivor 沒有攻擊動作
             attackRightImage = null;
             System.out.println("p1 image initialized");
@@ -92,6 +95,7 @@ public class ClientPlayer extends ClientGameObject {
             rightIcon = new ImageIcon("Graphic/Human/p2/p2-right.png");
             leftIcon = new ImageIcon("Graphic/Human/p2/p2-left.png");
             standImage = new ImageIcon("Graphic/Human/p2/p2-stand.png");
+            downImage = new ImageIcon("Graphic/Human/p2/p2-down.png");
             attackLeftImage = null; // Survivor 沒有攻擊動作
             attackRightImage = null;
             System.out.println("p2 image initialized");
@@ -102,6 +106,7 @@ public class ClientPlayer extends ClientGameObject {
             rightIcon = new ImageIcon("Graphic/Human/p3/p3-right.png");
             leftIcon = new ImageIcon("Graphic/Human/p3/p3-left.png");
             standImage = new ImageIcon("Graphic/Human/p3/p3-stand.png");
+            downImage = new ImageIcon("Graphic/Human/p3/p3-down.png");
             attackLeftImage = null; // Survivor 沒有攻擊動作
             attackRightImage = null;
             System.out.println("p3 image initialized");
@@ -109,6 +114,9 @@ public class ClientPlayer extends ClientGameObject {
         currentImage = idleImage;
         
         return currentImage;
+    }
+    public ImageIcon getBloodImage() {
+        return bloodImage;
     }
     
     public void updateMovement(String direction) {
@@ -136,6 +144,13 @@ public class ClientPlayer extends ClientGameObject {
         ||action.equals("RIGHT")) {
             currentImage = attackRightImage;
         }
+
+    }
+
+    public void setDownImage() {
+        if(status.equals("倒地")) {
+            currentImage = downImage;
+        }
     }
 
     // private void resetToIdleAfterDelay() {
@@ -146,4 +161,6 @@ public class ClientPlayer extends ClientGameObject {
     //     timer.setRepeats(false); // 僅執行一次
     //     timer.start();
     // }
+
+    
 }
