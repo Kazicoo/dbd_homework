@@ -50,6 +50,16 @@ public class GamePanel extends JPanel {
             }
         }
     }
+    /*private void drawWindow(Graphics g) {
+        for (ClientWindow clientWindow : clientGame.Window) {
+            if(clientWindow != null) {
+                int x = clientWindow.getX() - cameraOffsetX;
+                int y = clientWindow.getY() - cameraOffsetY;
+                g.drawImage(windowIcon, x, y, 60, 120, this);  // 繪製板子圖標
+                System.out.println("Drawing board " + clientWindow.getId() + " at: (" + x + ", " + y + ")");
+            }
+        }
+    }*/
     private ImageIcon applyBloodEffect(ImageIcon baseImage, ImageIcon bloodImage) {
         if (baseImage == null || bloodImage == null) {
             return baseImage; // 如果沒有圖片資源，返回原始圖片

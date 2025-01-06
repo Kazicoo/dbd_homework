@@ -504,49 +504,84 @@ public class ClientGame {
 
     }
     
+    private int WindowTotal = 0;
+    public final ClientWindow[] Window = new ClientWindow[11];
+    
     public void initWindow(String message) {
-        // 解析伺服器傳送的訊息
-        String[] parts = message.split(";");
-        if (parts.length < 5 || !parts[0].equals("initGameObject") || !parts[1].equals("window")) {
-            System.err.println("Invalid message format: " + message);
+        String[] parts;
+        try {
+            // 解析封包
+            parts = message.split(";");
+            if (parts.length != 5 || !"window".equals(parts[1])) {
+                throw new IllegalArgumentException("Invalid window message format.");
+            }
+        } catch (Exception e) {
+            System.out.println("Error parsing window message: " + e.getMessage());
             return;
         }
-
-        int id = Integer.parseInt(parts[2].split(" ")[1]); // 提取 id
-        int x = Integer.parseInt(parts[3].split(" ")[1]);  // 提取 x 座標
-        int y = Integer.parseInt(parts[4].split(" ")[1]);  // 提取 y 座標
-
-    // 初始化物件
-        ClientWindow window = new ClientWindow(id);
-        window.setRelativeLocation(x, y);
-
-        ImageIcon windowIcon = new ImageIcon("Graphic/Object/window.png");
-        JButton windowButton = new JButton(windowIcon);
-
-        int imageWidth = windowIcon.getIconWidth();
-        int imageHeight = windowIcon.getIconHeight();
-
-    // 設定按鈕位置和大小
-        windowButton.setBounds(x, y, imageWidth, imageHeight);
-        windowButton.setOpaque(false);
-        windowButton.setContentAreaFilled(false);
-        windowButton.setBorderPainted(false);
-
-    // 添加按鈕到 JPanel
-        gamePanel.add(windowButton);
-
-    // 添加鍵盤事件邏輯
-        gamePanel.addKeyListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    System.out.println("Board activated with space: ID " + window.getId());
-                // 可選：發送封包邏輯
-                    conn.send("Activated;window;" + window.getId());
+    
+        try {
+            // 提取座標和 ID
+            int x = Integer.parseInt(parts[2]);
+            int y = Integer.parseInt(parts[3]);
+            int id = Integer.parseInt(parts[4]);
+    
+        
+            // 初始化物件
+            Window[id] = new ClientWindow(id);
+            Window[id].setRelativeLocation(x, y);
+    
+            ImageIcon windowIcon = new ImageIcon("Graphic/Object/window.png");
+            if (windowIcon.getIconWidth() == -1) {
+                System.out.println("Error loading image: " + windowIcon);
+                return; // 圖片加載失敗，退出方法
             }
+    
+            JButton windowButton = new JButton(windowIcon);
+    
+            int imageWidth = windowIcon.getIconWidth();
+            int imageHeight = windowIcon.getIconHeight();
+    
+            // 設定按鈕位置和大小
+            windowButton.setBounds(x, y, imageWidth, imageHeight);
+            windowButton.setOpaque(false);
+            windowButton.setContentAreaFilled(false);
+            windowButton.setBorderPainted(false);
+    
+            // 添加按鈕到 JPanel
+            gamePanel.add(windowButton);  // 確保gamePanel已正確初始化
+            gamePanel.revalidate();
+            gamePanel.repaint();
+    
+            windowButton.addKeyListener(new KeyAdapter() { 
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+                        System.out.println("Window activated with space: ID " + Hook[id].getId());
+                        // 可選：發送封包邏輯
+                        conn.send("Activated;window;" + Window[id].getId());
+                    }
+                }
+            });
+            
+            // 確保 windowButton 可聚焦並接收鍵盤事件
+            windowButton.setFocusable(true);
+            windowButton.requestFocusInWindow();
+    
+            synchronized (this) {
+                if (WindowTotal == 9) {
+                    System.out.println("Maximum hooks reached.");
+                    return;
+                }
+                WindowTotal++; // 自增鉤子數量
+                System.out.println("Window initialized: ID " + id + " at (" + x + ", " + y + ")");
+            }
+    
+        } catch (NumberFormatException e) {
+            System.out.println("Error parsing coordinates or ID: " + e.getMessage());
         }
-    });
     }
+    
     
     public void attackFacing(String message) {
         String[] parts = message.split(";");
