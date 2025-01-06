@@ -313,7 +313,7 @@
                             imageLabel.setText("");  
                         }
                         case "p1" -> {
-                            ImageIcon p1Image = new ImageIcon("Graphic/Human/p1/p1-stand.PNG");
+                            ImageIcon p1Image = new ImageIcon("Graphic/Human/p1/p1-lobby.PNG");
                             Image image = p1Image.getImage();
                             Image p1scaledImage = image.getScaledInstance(350, 700, Image.SCALE_SMOOTH);
                             p1Image = new ImageIcon(p1scaledImage);
@@ -328,7 +328,7 @@
 
                         }
                         case "p2" -> {
-                           ImageIcon p2Image = new ImageIcon("Graphic/Human/p2/p2-stand.PNG");
+                           ImageIcon p2Image = new ImageIcon("Graphic/Human/p2/p2-lobby.PNG");
                             Image image = p2Image.getImage();
                             Image p2scaledImage = image.getScaledInstance(350, 700, Image.SCALE_SMOOTH);
                             p2Image = new ImageIcon(p2scaledImage);
@@ -342,7 +342,7 @@
                             }
                         }
                         case "p3" -> {
-                            ImageIcon p3Image = new ImageIcon("Graphic/Human/p3/p3-stand.PNG");
+                            ImageIcon p3Image = new ImageIcon("Graphic/Human/p3/p3-lobby.PNG");
                             Image image = p3Image.getImage();
                             Image p3scaledImage = image.getScaledInstance(350, 700, Image.SCALE_SMOOTH);
                             p3Image = new ImageIcon(p3scaledImage);
