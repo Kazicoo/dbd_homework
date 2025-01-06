@@ -231,16 +231,16 @@ public class ServerGame {
         // 左下、中下
         for (int i = 5; i <= 15; i++) {
             if (i == 9) continue;
-            grid[i][49] = new ServerWall();
+            grid[i][49] = new ServerWall(i, 49);
         }
         for (int i = 50; i <= 52; i++) {
-            grid[4][i] = new ServerWall();
+            grid[4][i] = new ServerWall(4, i);
         }
-        grid[18][50] = new ServerWall();
-        grid[19][50] = new ServerWall();
+        grid[18][50] = new ServerWall(18, 50);
+        grid[19][50] = new ServerWall(19, 50);
         for (int i = 19; i <= 26; i++) {
             if (i == 22) continue;
-            grid[i][40] = new ServerWall();
+            grid[i][40] = new ServerWall(i, 40);
         }
         for (int i = 41; i <= 43; i++) {
             grid[19][i] = new ServerWall();
