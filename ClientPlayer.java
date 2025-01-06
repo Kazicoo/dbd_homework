@@ -17,6 +17,7 @@ public class ClientPlayer extends ClientGameObject {
     private ImageIcon standImage;
     private ImageIcon bloodImage;
     private ImageIcon downImage;
+    private ImageIcon climbleftIcon, climbrightIcon;
 
     private int offsetX = 0;
     private int offsetY = 0;
@@ -79,6 +80,7 @@ public class ClientPlayer extends ClientGameObject {
             rightIcon        = new ImageIcon("Graphic/Killer/killer-right.png");
             leftIcon         = new ImageIcon("Graphic/Killer/killer-left.png");
             standImage       = new ImageIcon("Graphic/Killer/killer-left.png");
+            climbleftIcon    = new ImageIcon("Graphic/Killer/killer-climb.png");
             offsetX = 49;
             offsetY = 98;
             System.out.println("killer image initialized");
@@ -91,6 +93,8 @@ public class ClientPlayer extends ClientGameObject {
             rightIcon  = new ImageIcon("Graphic/Human/" + role + "/" + role + "-right.png");
             leftIcon   = new ImageIcon("Graphic/Human/" + role + "/" + role + "-left.png");
             standImage = new ImageIcon("Graphic/Human/" + role + "/" + role + "-stand.png");
+            climbleftIcon = new ImageIcon("Graphic/Human/" + role + "/" + role + "-climbLeft.png");
+            climbrightIcon = new ImageIcon("Graphic/Human/" + role + "/" + role + "-climbRight.png");
             offsetX = 30;
             offsetY = 90;
             attackLeftImage = null; // Survivor 沒有攻擊動作
