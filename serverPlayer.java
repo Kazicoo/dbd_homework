@@ -90,29 +90,58 @@ public abstract class ServerPlayer extends ServerGameObject {
 
     public void update() {
         if (dx != 0 || dy != 0) {
-            int newX = relativeLocationX + (dx * getMoveSpeed());
-            int newY = relativeLocationY + (dy * getMoveSpeed());
-            setRelativeLocation(newX, newY);
+            for (int i = 0; i < getMoveSpeed(); i++) {
+                setRelativeLocation(
+                    relativeLocationX + dx, 
+                    relativeLocationY + dy);
+
+                int gx = getX() / ServerGame.GRID_SIZE;
+                int gy = getY() / ServerGame.GRID_SIZE;
+
+                ServerMapItems items[] = new ServerMapItems[25];
+                int count = 0;
+
+                for (int _x=-2; _x>2; _x++) {
+                    for (int _y=-2; _y>2; _y++) {
+                        items[count++] = game.getMapItem(
+                            gx + _x, 
+                            gy + _y);
+                    }
+                }
+
+                boolean colliding = false;
+
+                for (int j=0; !colliding && j<count; j++) {
+                    if (items[j] == null) { continue; }
+                    if (!items[j].isColliding(this)) { continue; }
+                    colliding = true;
+                }
+
+                ServerPlayer players[] = game.getPlayers();
+                for (int j=0; !colliding && j<players.length; j++) {
+                    if (players[j] == null) { continue; }
+                    if (players[j] == this) { continue; }
+                    if (!players[j].isColliding(this)) { continue; }
+                    colliding = true;
+                }
+
+                if (colliding) {
+                    setRelativeLocation(
+                        relativeLocationX - dx, 
+                        relativeLocationY - dy);
+                    break;
+                }
+            }
+
             game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
-
-            // int move[] = game.validateMovement(newX, newY);
-            // if (move[0] != 0 || move[1] != 0) {
-            //     relativeLocationX = move[0];
-            //     relativeLocationY = move[1];
-            // }
-
         }
     }
 
     public boolean inRange(int x, int y, double range, double angle) {
-        System.out.println("x: " + x + " y: " + y + " range: " + range + " angle: " + angle);
-
         int vx = x - getX();
         int vy = y - getY();
-        System.out.println("vx: " + vx + " vy: " + vy);
 
         double distance = Math.sqrt(Math.pow(vx, 2) + Math.pow(vy, 2));
-        System.out.println("distance: " + distance);
 
         if (distance > range) {
             return false;
@@ -123,7 +152,6 @@ public abstract class ServerPlayer extends ServerGameObject {
 
         while (theta > 360) { theta -= 360; }
         while (theta < 0  ) { theta += 360; }
-        System.out.println("theta: " + theta);
 
         switch (getFacing()) {
             case UP         -> { base_angle = 90;  }
@@ -135,8 +163,7 @@ public abstract class ServerPlayer extends ServerGameObject {
             case DOWN_LEFT  -> { base_angle = 225; }
             case DOWN_RIGHT -> { base_angle = 315; }
         }
-        System.out.println("base_angle: " + base_angle);
-
+        
         return 
             (theta >= base_angle - angle / 2) &&
             (theta <= base_angle + angle / 2);
@@ -144,6 +171,18 @@ public abstract class ServerPlayer extends ServerGameObject {
 
     @Override
     public boolean isColliding(ServerPlayer serverPlayer) {
-        return true;
+        return ServerGame.aabb_collision(
+            // self top left
+            getX() - ServerGame.GRID_SIZE / 2, 
+            getY() - ServerGame.GRID_SIZE / 2, 
+            // self bottom right
+            getX() + ServerGame.GRID_SIZE / 2,
+            getY() + ServerGame.GRID_SIZE / 2,
+            // other top left
+            serverPlayer.getX() - ServerGame.GRID_SIZE / 2,
+            serverPlayer.getY() - ServerGame.GRID_SIZE / 2,
+            // other bottom right
+            serverPlayer.getX() + ServerGame.GRID_SIZE / 2,
+            serverPlayer.getY() + ServerGame.GRID_SIZE / 2);
     }
 }

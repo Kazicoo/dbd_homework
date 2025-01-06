@@ -58,19 +58,13 @@ public class ServerKiller extends ServerPlayer {
             return;
 
         resetAttackCounter();
-        System.out.println("attackCounter: " + attackCounter);
-
         setSlowMoveSpeed();
-        System.out.println("moveSpeed: " + getMoveSpeed());
-
         moveSpeedEffectTime = (int)(2 * ServerGame.FRAME_PER_SEC);
-        System.out.println("moveSpeedEffectTime: " + moveSpeedEffectTime);
 
         // 送封包給客戶端
         game.sendMessage("attack;" + getFacing());
 
         for (ServerHuman human : game.getHumans()) {
-            System.out.println("inRange: " + inRange(human.getX(), human.getY(), ATTACK_RANGE, ATTACK_ANGLE));
             if (inRange(human.getX(), human.getY(), ATTACK_RANGE * ServerGame.GRID_SIZE, ATTACK_ANGLE)) {
                 human.getHurt();
                 break;
