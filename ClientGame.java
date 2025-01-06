@@ -236,6 +236,7 @@ public class ClientGame {
             
             ImageIcon hookIcon = new ImageIcon("Graphic/Object/hook.png");
             JButton hookButton = new JButton(hookIcon);
+            
 
             int imageWidth = hookIcon.getIconWidth();
             int imageHeight = hookIcon.getIconHeight();
