@@ -53,6 +53,7 @@ public class ServerKiller extends ServerPlayer {
     }
 
     public void attack() {
+        System.out.println(canAttack());
         if (!canAttack()) 
             return;
 
@@ -63,6 +64,7 @@ public class ServerKiller extends ServerPlayer {
         game.sendMessage("attack;" + getFacing());
 
         for (ServerHuman human : game.getHumans()) {
+            System.out.println(inRange(human.getX(), human.getY(), ATTACK_RANGE, ATTACK_ANGLE));
             if (inRange(human.getX(), human.getY(), ATTACK_RANGE, ATTACK_ANGLE)) {
                 human.getHurt();
                 break;
