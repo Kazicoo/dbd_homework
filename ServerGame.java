@@ -7,7 +7,7 @@ public class ServerGame {
     private int[] idRole = new int[4];
     private final String[] chars = {"killer", "p1", "p2", "p3"};
     private final ServerPlayer players[] = new ServerPlayer[4];
-    private final ServerGenerator[] generators = new ServerGenerator[4];
+    private final ServerGenerator[] generators = new ServerGenerator[6];
     public static final int GRID_SIZE   = 60;
     public static final int GRID_WIDTH  = 100;
     public static final int GRID_HEIGHT = 60;
@@ -85,7 +85,7 @@ public class ServerGame {
         positionMap[7] = new int[]{54, 40};
         positionMap[8] = new int[]{93, 47};
 
-        int[] usedPosition = new int[4];
+        int[] usedPosition = new int[6];
 
         while (count < 6) {
             int position = rand.nextInt(9); 
@@ -186,7 +186,7 @@ public class ServerGame {
 
     public void windowActed(int windowId, int id) {
         ServerWindow win = null;
-        
+
     }
     
     public void sendMessage(String message) {
@@ -524,29 +524,43 @@ public class ServerGame {
         }
     }
     
+
+    private ServerWindow[] windows = new ServerWindow[11];
     public void initWindow() {
-        grid[10][4] = new ServerWindow(0, 10, 4);
-        server.broadcastToClient("initGameObject;window;" + 10 * GRID_SIZE + ";" + 4 * GRID_SIZE + ";0");
-        grid[10][31] = new ServerWindow(1, 10, 31);
-        server.broadcastToClient("initGameObject;window;" + 10 * GRID_SIZE + ";" + 31 * GRID_SIZE + ";1");
-        grid[24][28] = new ServerWindow(2, 24, 28);
-        server.broadcastToClient("initGameObject;window;" + 24 * GRID_SIZE + ";" + 28 * GRID_SIZE + ";2");
-        grid[72][18] = new ServerWindow(3, 72, 18);
-        server.broadcastToClient("initGameObject;window;" + 72 * GRID_SIZE + ";" + 18 * GRID_SIZE + ";3");
-        grid[8][49] = new ServerWindow(4, 8, 49);
-        server.broadcastToClient("initGameObject;window;" + 8 * GRID_SIZE + ";" + 49 * GRID_SIZE + ";4");
-        grid[21][40] = new ServerWindow(5, 21, 40);
-        server.broadcastToClient("initGameObject;window;" + 21 * GRID_SIZE + ";" + 40 * GRID_SIZE + ";5");
-        grid[36][51] = new ServerWindow(6, 36, 51);
-        server.broadcastToClient("initGameObject;window;" + 36 * GRID_SIZE + ";" + 51 * GRID_SIZE + ";6");
-        grid[69][41] = new ServerWindow(7, 69, 41);
-        server.broadcastToClient("initGameObject;window;" + 69 * GRID_SIZE + ";" + 41 * GRID_SIZE + ";7");
-        grid[73][51] = new ServerWindow(8, 73, 51);
-        server.broadcastToClient("initGameObject;window;" + 73 * GRID_SIZE + ";" + 51 * GRID_SIZE + ";8");
-        grid[90][29] = new ServerWindow(9, 90, 29);
-        server.broadcastToClient("initGameObject;window;" + 90 * GRID_SIZE + ";" + 29 * GRID_SIZE + ";9");
-        grid[82][14] = new ServerWindow(10, 82, 14);
-        server.broadcastToClient("initGameObject;window;" + 82 * GRID_SIZE + ";" + 14 * GRID_SIZE + ";10");
+        int[][] windowPositions = { 
+            {10, 4}, {10, 31}, {24, 28}, {72, 18}, {8, 49}, 
+            {21, 40}, {36, 51}, {69, 41}, {73, 51}, {90, 29}, {82, 14} 
+        };
+        for (int i = 0; i < windowPositions.length; i++) {
+            int x = windowPositions[i][0];
+            int y = windowPositions[i][1];
+            windows[i] = new ServerWindow(i, x, y); // 創建窗戶物件並存儲在陣列中
+            grid[x][y] = windows[i];
+            server.broadcastToClient("initGameObject;window;" + x * GRID_SIZE + ";" + y * GRID_SIZE + ";" + i);
+        }
+
+        // grid[10][4] = new ServerWindow(0, 10, 4);
+        // server.broadcastToClient("initGameObject;window;" + 10 * GRID_SIZE + ";" + 4 * GRID_SIZE + ";0");
+        // grid[10][31] = new ServerWindow(1, 10, 31);
+        // server.broadcastToClient("initGameObject;window;" + 10 * GRID_SIZE + ";" + 31 * GRID_SIZE + ";1");
+        // grid[24][28] = new ServerWindow(2, 24, 28);
+        // server.broadcastToClient("initGameObject;window;" + 24 * GRID_SIZE + ";" + 28 * GRID_SIZE + ";2");
+        // grid[72][18] = new ServerWindow(3, 72, 18);
+        // server.broadcastToClient("initGameObject;window;" + 72 * GRID_SIZE + ";" + 18 * GRID_SIZE + ";3");
+        // grid[8][49] = new ServerWindow(4, 8, 49);
+        // server.broadcastToClient("initGameObject;window;" + 8 * GRID_SIZE + ";" + 49 * GRID_SIZE + ";4");
+        // grid[21][40] = new ServerWindow(5, 21, 40);
+        // server.broadcastToClient("initGameObject;window;" + 21 * GRID_SIZE + ";" + 40 * GRID_SIZE + ";5");
+        // grid[36][51] = new ServerWindow(6, 36, 51);
+        // server.broadcastToClient("initGameObject;window;" + 36 * GRID_SIZE + ";" + 51 * GRID_SIZE + ";6");
+        // grid[69][41] = new ServerWindow(7, 69, 41);
+        // server.broadcastToClient("initGameObject;window;" + 69 * GRID_SIZE + ";" + 41 * GRID_SIZE + ";7");
+        // grid[73][51] = new ServerWindow(8, 73, 51);
+        // server.broadcastToClient("initGameObject;window;" + 73 * GRID_SIZE + ";" + 51 * GRID_SIZE + ";8");
+        // grid[90][29] = new ServerWindow(9, 90, 29);
+        // server.broadcastToClient("initGameObject;window;" + 90 * GRID_SIZE + ";" + 29 * GRID_SIZE + ";9");
+        // grid[82][14] = new ServerWindow(10, 82, 14);
+        // server.broadcastToClient("initGameObject;window;" + 82 * GRID_SIZE + ";" + 14 * GRID_SIZE + ";10");
     }
 
     public void initBoard() {
