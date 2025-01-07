@@ -8,8 +8,8 @@ public class ClientGame {
     private TcpClient conn;
     private JFrame frame;
     private JLabel generatorLabel; // 用於顯示發電機數量
-    private JLabel humanLabel1,humanLabel2,humanLabel3, healthLabel4; // 用於顯示玩家血量
-    private int generatorCount = 4; // 初始發電機數量
+    private JLabel humanLabel1,humanLabel2,humanLabel3; // 用於顯示玩家血量
+    private int generatorCount = 6; // 初始發電機數量
     private int healthcount = 2; // 初始玩家血量
     private String status;
     int playerCount = 0;
@@ -19,6 +19,7 @@ public class ClientGame {
     private final String[] chars = {"killer", "p1", "p2", "p3"};
     private GamePanel gamePanel;
 
+
     public ClientGame(TcpClient conn) {
         this.conn = conn;
         initGame();
@@ -27,59 +28,65 @@ public class ClientGame {
     }
 
 
-    public void initGame() { 
-        this.gamePanel = new GamePanel(this);
-        frame = new JFrame("迷途逃生");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setUndecorated(true);
-        frame.setLayout(new BorderLayout());
-    
-        // 獲取螢幕解析度
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int screenWidth = screenSize.width;
-        int screenHeight = screenSize.height;
-        System.out.println(screenWidth+"|"+screenHeight);
+        public void initGame() { 
+            this.gamePanel = new GamePanel(this);
+            frame = new JFrame("迷途逃生");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+            frame.setUndecorated(true);
+            frame.setLayout(new BorderLayout());
         
-        // 計算中部面板的高度（不縮放地圖）
-        int topBarHeight = screenHeight / 20; // 頂部狀態欄高度
-        int bottomBarHeight = screenHeight / 20; // 底部狀態欄高度
+            // 獲取螢幕解析度
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            int screenWidth = screenSize.width;
+            int screenHeight = screenSize.height;
+            System.out.println(screenWidth+"|"+screenHeight);
+            
+            // 計算中部面板的高度（不縮放地圖）
+            int topBarHeight = screenHeight / 20; // 頂部狀態欄高度
+            int bottomBarHeight = screenHeight / 20; // 底部狀態欄高度
+            
+            // 上部面板
+            JPanel topPanel = new JPanel(new BorderLayout());
+            topPanel.setPreferredSize(new Dimension(screenWidth, topBarHeight));
+            topPanel.setBackground(Color.GRAY); // 可自定義背景顏色
+            topPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
         
-        // 上部面板
-        JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setPreferredSize(new Dimension(screenWidth, topBarHeight));
-        topPanel.setBackground(Color.GRAY); // 可自定義背景顏色
-        topPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-    
-        // 中部面板
-        middlePanel = new JPanel();
-        middlePanel.setLayout(null); // 使用絕對佈局
-        middlePanel.setPreferredSize(new Dimension(20,80 ));
-        middlePanel.setBackground(Color.WHITE); // 可自定義背景顏色
-        middlePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-        middlePanel.setOpaque(false);
-        // 新增 healthLabel
-        //將healthbar移動到gamepanel
-        humanLabel1 = new JLabel();
-        humanLabel2 = new JLabel();
-        humanLabel3 = new JLabel();
-        gamePanel.add(humanLabel1);
-        gamePanel.add(humanLabel2);
-        gamePanel.add(humanLabel3);
-    
-    
+            // 中部面板
+            middlePanel = new JPanel();
+            middlePanel.setLayout(null); // 使用絕對佈局
+            middlePanel.setPreferredSize(new Dimension(20,80 ));
+            middlePanel.setBackground(Color.WHITE); // 可自定義背景顏色
+            middlePanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+            middlePanel.setOpaque(false);
+            // 新增 healthLabel
+            //將healthbar移動到gamepanel
+            humanLabel1 = new JLabel();
+            humanLabel2 = new JLabel();
+            humanLabel3 = new JLabel();
+            gamePanel.add(humanLabel1);
+            gamePanel.add(humanLabel2);
+            gamePanel.add(humanLabel3);
+        
+            // 下部面板
+            JPanel bottomPanel = new JPanel();
+            bottomPanel.setPreferredSize(new Dimension(screenWidth, bottomBarHeight));
+            bottomPanel.setBackground(Color.GRAY); // 可自定義背景顏色
+            bottomPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
+        
 
-        // 發電機數量顯示 (右上角)
-        generatorLabel = createGeneratorLabel("Generator", generatorCount, screenWidth - 200, 5);
-        topPanel.add(generatorLabel, BorderLayout.EAST);
-        // 添加面板到框架
-        frame.add(topPanel, BorderLayout.NORTH);
-        //將healthbar移動到gamepanel
-        frame.add(middlePanel);
-        frame.add(gamePanel, BorderLayout.CENTER);
-        // 顯示框架
-        frame.setVisible(true);
-    }
+            // 發電機數量顯示 (右上角)
+            generatorLabel = createGeneratorLabel("Generator", generatorCount, screenWidth - 200, 5);
+            topPanel.add(generatorLabel, BorderLayout.EAST);
+            // 添加面板到框架
+            frame.add(topPanel, BorderLayout.NORTH);
+            //將healthbar移動到gamepanel
+            frame.add(middlePanel);
+            frame.add(bottomPanel, BorderLayout.SOUTH);
+            frame.add(gamePanel);
+            // 顯示框架
+            frame.setVisible(true);
+        }
 
     public JLabel createGeneratorLabel(String role, int healthcount, int x, int y) {
         JLabel generatorLabel = new JLabel(role + " Health: " + healthcount);
@@ -93,7 +100,7 @@ public class ClientGame {
         new Thread(() -> {
             while (true) {
                 synchronized (this) {
-                    if (initGeneratorTotal == 4 && playerTotal == 4) {
+                    if (initGeneratorTotal == 6 && playerTotal == 4) {
                         try {
                             conn.send("startGame");
                             System.out.println("Game started!");
@@ -134,21 +141,12 @@ public class ClientGame {
 
     private int initGeneratorTotal = 0; //確保waitgamestart正確啟動
     private int generatorTotal = 0;
-    public final ClientGenerator[] generators = new ClientGenerator[4];
+    public final ClientGenerator[] generators = new ClientGenerator[6];
 
     public void initGenerator(String message) {
         String[] parts;
-        
-        try {
-            parts = message.split(";");
-            if (parts.length < 5 || !"generator".equals(parts[1])) {
-                throw new IllegalArgumentException("Invalid generator message format.");
-            }
-        } catch (Exception e) {
-            System.out.println("Error parsing generator message: " + e.getMessage());
-            return;
-        }
-        
+        parts = message.split(";");
+           
         try {
             int id = Integer.parseInt(parts[4]);
             int x = Integer.parseInt(parts[2]);
@@ -156,41 +154,18 @@ public class ClientGame {
             // 初始化發電機物件
             generators[generatorTotal] = new ClientGenerator(id);
             generators[generatorTotal].setRelativeLocation(x, y);
+            generators[generatorTotal].setButton(new JButton());
                     
-            // 初始化按鈕
-            // 載入圖片作為按鈕背景
-            ImageIcon generatorIcon = new ImageIcon("Graphic/Object/generator-broken.png");
-            JButton generatorButton = new JButton(generatorIcon);
-
-            int imageWidth = generatorIcon.getIconWidth();
-            int imageHeight = generatorIcon.getIconHeight();
-
-            // 設定按鈕的位置和大小
-            generatorButton.setBounds(generators[generatorTotal].getX(), generators[generatorTotal].getY(), imageWidth, imageHeight);
-            generatorButton.setOpaque(false);     // 讓按鈕背景透明
-            generatorButton.setContentAreaFilled(false); // 移除按鈕預設的背景
-            generatorButton.setBorderPainted(false);     // 移除按鈕邊框
-                    
-            // 添加到面板
-            gamePanel.add(generatorButton);
-            gamePanel.repaint();
-
-            
-                    
-            // 添加互動邏輯
-                    generatorButton.addMouseListener(new MouseAdapter() {
-                        @Override
-                        public void mouseClicked(MouseEvent e) {
-                            if (SwingUtilities.isLeftMouseButton(e)) {
-                                conn.send("Clicked;generator;" + generators[generatorTotal].getId());
-                            }
-                        }
-                    });
+   
+            // if (generators[generatorTotal] != null) {
+            //     // 當所有發電機都初始化完成後，呼叫 addbutton(
+            //         gamePanel.addbutton();  // 呼叫 GamePanel 的 addbutton
+            // }
                     
                     synchronized (this) {
                         generatorTotal++;
                         initGeneratorTotal++;
-                        if (initGeneratorTotal == 4 && playerTotal == 4) {
+                        if (initGeneratorTotal == 6 && playerTotal == 4) {
                             notifyAll(); // 通知等待的線程
                         }
                     }
@@ -205,84 +180,214 @@ public class ClientGame {
         }
     }
 
+private int hookTotal = 0;
+public final ClientHook[] Hook = new ClientHook[9];
+
+public void initHook(String message) {
+    String[] parts;
+    try {
+        // 解析封包
+        parts = message.split(";");
+        if (parts.length != 5 || !"hook".equals(parts[1])) {
+            throw new IllegalArgumentException("Invalid hook message format.");
+        }
+    } catch (Exception e) {
+        System.out.println("Error parsing hook message: " + e.getMessage());
+        return;
+    }
+
+    try {
+        // 提取座標和 ID
+        int x = Integer.parseInt(parts[2]);
+        int y = Integer.parseInt(parts[3]);
+        int id = Integer.parseInt(parts[4]);
+
+        if (id < 0 || id > 8) {
+            throw new IllegalArgumentException("Invalid ID. Must be '0' to '8'.");
+        }
+
+        // 初始化物件
+        Hook[id] = new ClientHook(id);
+        Hook[id].setRelativeLocation(x, y);
+
+     
+        ImageIcon hookIcon = new ImageIcon("Graphic/Object/hook.png");
+        JButton hookButton = new JButton(hookIcon);
+        
+
+        int imageWidth = hookIcon.getIconWidth();
+        int imageHeight = hookIcon.getIconHeight();
+
+        // 設定按鈕位置和大小
+        hookButton.setBounds(x, y, imageWidth, imageHeight);
+        hookButton.setOpaque(false);
+        hookButton.setContentAreaFilled(false);
+        hookButton.setBorderPainted(false);
+
+        // 添加按鈕到 JPanel
+        // gamePanel.add(hookButton);  // 確保gamePanel已正確初始化
+
+        // 添加互動邏輯
+        // hookButton.addMouseListener(new MouseAdapter() {
+        //     @Override
+        //     public void mouseClicked(MouseEvent e) {
+        //         if (SwingUtilities.isLeftMouseButton(e)) {
+        //             System.out.println("Hook clicked: ID " + Hook[id].getId());
+        //             // 可選：發送封包邏輯
+        //             // conn.send("Clicked;hook;" + Hook[id].getId());
+        //         }
+        //     }
+        // });
+
+        synchronized (this) {
+            if (hookTotal == 9) {
+                System.out.println("Maximum hooks reached.");
+                return;
+            }
+            hookTotal++; // 自增鉤子數量
+            System.out.println("Hook initialized: ID " + id + " at (" + x + ", " + y + ")");
+        }
+
+        } catch (NumberFormatException e) {
+        System.out.println("Error parsing coordinates or ID: " + e.getMessage());
+        }
+    }
+
     
+    private int WindowTotal = 0;
+    public final ClientWindow[] Window = new ClientWindow[11];
     
-    private int hookTotal = 0;
-    public final ClientHook[] Hook = new ClientHook[9];
-    
-    public void initHook(String message) {
+    public void initWindow(String message) {
         String[] parts;
         try {
             // 解析封包
             parts = message.split(";");
-            if (parts.length != 5 || !"hook".equals(parts[1])) {
-                throw new IllegalArgumentException("Invalid hook message format.");
+            if (parts.length != 5 || !"window".equals(parts[1])) {
+                throw new IllegalArgumentException("Invalid window message format.");
             }
         } catch (Exception e) {
-            System.out.println("Error parsing hook message: " + e.getMessage());
+            System.out.println("Error parsing window message: " + e.getMessage());
             return;
         }
-
+    
         try {
             // 提取座標和 ID
             int x = Integer.parseInt(parts[2]);
             int y = Integer.parseInt(parts[3]);
             int id = Integer.parseInt(parts[4]);
-
-            if (id < 0 || id > 8) {
-                throw new IllegalArgumentException("Invalid ID. Must be '0' to '8'.");
-            }
-
+    
+        
             // 初始化物件
-            Hook[hookTotal] = new ClientHook(id);
-            Hook[hookTotal].setRelativeLocation(x, y);
-
-            ImageIcon hookIcon = new ImageIcon("Graphic/Object/hook.png");
-            JButton hookButton = new JButton(hookIcon);
-
-            int imageWidth = hookIcon.getIconWidth();
-            int imageHeight = hookIcon.getIconHeight();
-
-            // 設定按鈕位置和大小
-            hookButton.setBounds(x, y, imageWidth, imageHeight);
-            hookButton.setOpaque(false);
-            hookButton.setContentAreaFilled(false);
-            hookButton.setBorderPainted(false);
-
-            // 添加按鈕到 JFrame
-            frame.add(hookButton);
-            frame.revalidate();
-            frame.repaint();
-
-            // 添加互動邏輯
-            hookButton.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (SwingUtilities.isLeftMouseButton(e)) {
-                        System.out.println("Hook clicked: ID " + Hook[hookTotal].getId());
-                        // 可選：發送封包邏輯
-                        // conn.send("Clicked;hook;" + Hook[hookTotal].getId());
-                    }
-                }
-            });
-
-            synchronized (this) {
-                hookTotal++;
-                if (hookTotal == 9) {
-                    System.out.println("Maximum hooks reached.");
-                }
-                System.out.println("Hook initialized: ID " + id + " at (" + x + ", " + y + ")");
+            Window[id] = new ClientWindow(id);
+            Window[id].setRelativeLocation(x, y);
+    
+            ImageIcon windowIcon = new ImageIcon("Graphic/Object/window.png");
+            if (windowIcon.getIconWidth() == -1) {
+                System.out.println("Error loading image: " + windowIcon);
+                return; // 圖片加載失敗，退出方法
             }
-
+    
+            JButton windowButton = new JButton(windowIcon);
+    
+            int imageWidth = windowIcon.getIconWidth();
+            int imageHeight = windowIcon.getIconHeight();
+    
+            // 設定按鈕位置和大小
+            windowButton.setBounds(x, y, imageWidth, imageHeight);
+            windowButton.setOpaque(false);
+            windowButton.setContentAreaFilled(false);
+            windowButton.setBorderPainted(false);
+    
+            // 添加按鈕到 JPanel
+            // gamePanel.add(windowButton);  // 確保gamePanel已正確初始化
+            // gamePanel.revalidate();
+            // gamePanel.repaint();
+    
+            
+            
+            // // 確保 windowButton 可聚焦並接收鍵盤事件
+            // windowButton.setFocusable(false);
+            // windowButton.requestFocusInWindow();
+    
+            synchronized (this) {
+                if (WindowTotal == 9) {
+                    System.out.println("Maximum hooks reached.");
+                    return;
+                }
+                WindowTotal++; // 自增鉤子數量
+                System.out.println("Window initialized: ID " + id + " at (" + x + ", " + y + ")");
+            }
+    
         } catch (NumberFormatException e) {
             System.out.println("Error parsing coordinates or ID: " + e.getMessage());
         }
     }
+    
 
+
+    private int boardTotal = 0;
+    public final ClientBoard[] Board = new ClientBoard[13];
+
+    public void initBoard(String message) {
+        // 解析伺服器傳送的訊息
+        String[] parts = message.split(";");
+        if (parts.length < 5 || !parts[0].equals("initGameObject") || !parts[1].equals("board")) {
+            System.err.println("Invalid message format: " + message);
+            return;
+        }
+
+        int id = Integer.parseInt(parts[2].split(" ")[1]); // 提取 id
+        int x = Integer.parseInt(parts[3].split(" ")[1]);  // 提取 x 座標
+        int y = Integer.parseInt(parts[4].split(" ")[1]);  // 提取 y 座標
+
+    // 初始化物件
+        ClientBoard board = new ClientBoard(id);
+        board.setRelativeLocation(x, y);
+        Board[id] = new ClientBoard(id);
+        Board[id].setRelativeLocation(x, y);
+
+        ImageIcon boardIcon = new ImageIcon("Graphic/Object/board-notUsed.png");
+        JButton boardButton = new JButton(boardIcon);
+
+        int imageWidth = boardIcon.getIconWidth();
+        int imageHeight = boardIcon.getIconHeight();
+
+    // 設定按鈕位置和大小
+        boardButton.setBounds(x, y, imageWidth, imageHeight);
+        boardButton.setOpaque(false);
+        boardButton.setContentAreaFilled(false);
+        boardButton.setBorderPainted(false);
+
+    // 添加按鈕到 JPanel
+        gamePanel.add(boardButton);
+
+    // 添加鍵盤事件邏輯
+    //     gamePanel.addKeyListener(new KeyAdapter() {
+    //         @Override
+    //         public void keyPressed(KeyEvent e) {
+    //             if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+    //                 System.out.println("Board activated with space: ID " + board.getId());
+    //             // 可選：發送封包邏輯
+    //                 conn.send("Activated;board;");
+    //         }
+    //     }
+    // });
+
+        // 確保面板可聚焦並接收鍵盤事件
+        // gamePanel.setFocusable(false);
+        // gamePanel.requestFocusInWindow();
+        synchronized (this) {
+            if (boardTotal == 13) {
+                System.out.println("Maximum broads reached.");
+                return;
+            }
+            boardTotal++; // 自增板子數量
+            System.out.println("Hook initialized: ID " + id + " at (" + x + ", " + y + ")");
+        }
+    } 
     
-        
     
-    
+
     public void initPlayer(String message, int clientId) {
         String[] parts = message.split(";");
         int x = Integer.parseInt(parts[2]);
@@ -314,7 +419,7 @@ public class ClientGame {
             return;
         }
         // 如果已經達到4個玩家並且生成器數量也是4，則通知所有等待的線程
-        if (playerTotal == initGeneratorTotal) {
+        if (playerTotal == 4 && initGeneratorTotal ==6) {
             notifyAll();
         }
     }
@@ -366,28 +471,28 @@ public class ClientGame {
                                 // 向上移動
                                 player.updateMovement("W");
                                 conn.send("KeyDown;W");
-                                conn.send("aminated;KeyDown;W");
+                                conn.send("animated;KeyDown;W");
                                 isMovingUp = true;
                             }
                             case 'A' -> {
                                 // 向左移動
                                 player.updateMovement("A");
                                 conn.send("KeyDown;A");
-                                conn.send("aminated;KeyDown;A");
+                                conn.send("animated;KeyDown;A");
                                 isMovingLeft = true;
                             }
                             case 'S' -> {
                                 // 向下移動
                                 player.updateMovement("S");
                                 conn.send("KeyDown;S");
-                                conn.send("aminated;KeyDown;S");
+                                conn.send("animated;KeyDown;S");
                                 isMovingDown = true;
                             }
                             case 'D' -> {
                                 // 向右移動
                                 player.updateMovement("D");
                                 conn.send("KeyDown;D");
-                                conn.send("aminated;KeyDown;D");
+                                conn.send("animated;KeyDown;D");
                                 isMovingRight = true;
                             }
                             default -> System.out.println("Unhandled key press: " + key);
@@ -465,7 +570,7 @@ public class ClientGame {
             }
     
             @Override
-            public void keyTyped(KeyEvent e) {
+            public void keyTyped(KeyEvent e) { 
                 char key = e.getKeyChar();
     
                 // 檢查是否為空白鍵
@@ -473,8 +578,9 @@ public class ClientGame {
                     for (ClientPlayer player : clientPlayers) {
                         if (player != null && "killer".equals(player.getRole()) && player.getIsSelf()) {
                             conn.send("attack");
+                            // conn.send("Activated;window;");
                             // conn.send("animated;attack")
-                        }
+                        } 
                     }
                 }
             }
@@ -488,11 +594,13 @@ public class ClientGame {
     
     public void moveAnimation(String message) {
         String[] parts = message.split(";");
-        int id = Integer.parseInt(parts[2]);
-        String direction = parts[1];
-        for (ClientPlayer clientPlayer : clientPlayers) {
-            if (clientPlayer != null && clientPlayer.getHp() == 2 && id == clientPlayer.getId()) {
-                clientPlayer.updateMovement(direction);
+        if(parts.length == 4) {
+            int id = Integer.parseInt(parts[3]);
+            String direction = parts[2];
+            for (ClientPlayer clientPlayer : clientPlayers) {
+                if (clientPlayer != null && clientPlayer.getHp() == 2 && id == clientPlayer.getId()) {
+                    clientPlayer.updateMovement(direction);
+                }
             }
         }
 
@@ -504,7 +612,7 @@ public class ClientGame {
         String[] parts = message.split(";");
         for (ClientPlayer clientPlayer : clientPlayers) {
             if (clientPlayer != null && clientPlayer.getRole().equals("killer")) {
-                clientPlayer.setAction(parts[2]);
+                clientPlayer.setAction(parts[1]);
             }
         }
         gamePanel.repaint();
@@ -549,11 +657,16 @@ public class ClientGame {
                 currentLabel.setBounds(10, 5 + labelIndex * 35, 300, 30);
                 currentLabel.setFont(largeFont);
     
-                if (clientPlayer.getHp() < 2) {
-                    currentLabel.setForeground(Color.RED);
-                } else {
+                if (clientPlayer.getHp() == 2) {
                     currentLabel.setForeground(Color.GREEN);
+                } else if (clientPlayer.getHp() == 1){
+                    currentLabel.setForeground(Color.RED);
+                } else if ((clientPlayer.getHp() == 0)) {
+                    currentLabel.setForeground(Color.BLACK);
+                    clientPlayer.setDownImage();
                 }
+
+               
     
                 // 每處理一個玩家，移動到下一個 Label
                 labelIndex++;

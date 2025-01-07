@@ -9,6 +9,7 @@ public class Client implements Comm.TcpClientCallback {
   private ClientGame ClientGame;
   private int generatorCount = 0;
   private int hookCount = 0;
+  private int WindowCount = 0;
   public static String[] chars = {"killer", "p1", "p2", "p3"};
   
   public static void main(String[] args) {  
@@ -97,11 +98,16 @@ public class Client implements Comm.TcpClientCallback {
             ClientGame.initGenerator(message);
             System.out.println("Initializing generator at (" + x + ", " + y + ") with ID " + ClientGame.generators[generatorCount].getId());
             generatorCount++;  
-          } if ("hook".equals(type)) {
-            // 初始化發電機
+          } else if ("hook".equals(type)) {
+            // 初始化鉤子
             ClientGame.initHook(message);
             System.out.println("Initializing hook at (" + x + ", " + y + ") with ID " + ClientGame.Hook[hookCount].getId());
             hookCount++;
+          } else if ("window".equals(type)) {
+            // 初始化鉤子
+            ClientGame.initWindow(message);
+            System.out.println("Initializing hook at (" + x + ", " + y + ") with ID " + ClientGame.Window[WindowCount].getId());
+            WindowCount++;
           }else if ("player".equals(type)) {
             ClientGame.initPlayer(message,id);
             // System.out.println("Initializing player at (" + x + ", " + y + ") with ID " + id);
@@ -117,13 +123,13 @@ public class Client implements Comm.TcpClientCallback {
       }
     }
 
-    if(message.startsWith("animated")) {
-      if(parts[1].equals("attack"))  
+    if(message.startsWith("attack")){  
       ClientGame.attackFacing(message);
-      if (parts[1].equals("animated")) {
+    }
+
+    if(message.startsWith("animated")) {
         ClientGame.moveAnimation(message);
       }
-    }
 
 
     

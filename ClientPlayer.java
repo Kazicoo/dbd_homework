@@ -17,6 +17,9 @@ public class ClientPlayer extends ClientGameObject {
     private ImageIcon standImage;
     private ImageIcon bloodImage;
     private ImageIcon downImage;
+    private ImageIcon climbleftIcon;
+    private ImageIcon climbrightIcon;
+    
 
     private int offsetX = 0;
     private int offsetY = 0;
@@ -71,14 +74,16 @@ public class ClientPlayer extends ClientGameObject {
     }
     public ImageIcon initImage() {
         if (this.role.equals("killer")) {
-            idleImage        = new ImageIcon("Graphic/Killer/killer-standFrontBack.png");
+            idleImage        = new ImageIcon("Graphic/Killer/killer-standFront.png");
             attackLeftImage  = new ImageIcon("Graphic/Killer/killer-attackLeft.png");
             attackRightImage = new ImageIcon("Graphic/Killer/killer-attackRight.png");
-            backImage        = new ImageIcon("Graphic/Killer/killer-left.png");
+            backImage        = new ImageIcon("Graphic/Killer/killer-back.png");
             frontImage       = new ImageIcon("Graphic/Killer/killer-right.png");
             rightIcon        = new ImageIcon("Graphic/Killer/killer-right.png");
             leftIcon         = new ImageIcon("Graphic/Killer/killer-left.png");
             standImage       = new ImageIcon("Graphic/Killer/killer-left.png");
+            climbleftIcon    = new ImageIcon("Graphic/Killer/killer-climb.png");
+            climbrightIcon   = new ImageIcon("Graphic/Killer/killer-climb.png");
             offsetX = 49;
             offsetY = 98;
             System.out.println("killer image initialized");
@@ -91,6 +96,9 @@ public class ClientPlayer extends ClientGameObject {
             rightIcon  = new ImageIcon("Graphic/Human/" + role + "/" + role + "-right.png");
             leftIcon   = new ImageIcon("Graphic/Human/" + role + "/" + role + "-left.png");
             standImage = new ImageIcon("Graphic/Human/" + role + "/" + role + "-stand.png");
+            downImage  = new ImageIcon("Graphic/Human/" + role + "/" + role + "-down.png");
+            climbleftIcon  = new ImageIcon("Graphic/Human/" + role + "/" + role + "-climbLeft.png");
+            climbrightIcon = new ImageIcon("Graphic/Human/" + role + "/" + role + "-climbRight.png");
             offsetX = 30;
             offsetY = 90;
             attackLeftImage = null; // Survivor 沒有攻擊動作
@@ -138,6 +146,13 @@ public class ClientPlayer extends ClientGameObject {
             currentImage = downImage;
         }
     }
+    // public void setClimbImage(String direction) {
+    //      if (direction.equals("UP_LEFT")) {
+    //          currentImage = climbleftIcon;
+    //      } else if (direction.equals("UP_RIGHT")) {
+    //          currentImage = climbrightIcon;
+    //      }
+    //  }
 
     public int getOffsetX() {
         return offsetX;

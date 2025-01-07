@@ -4,7 +4,7 @@ public class ClientHook extends ClientMapItems {
     private int id;
     private int x;
     private int y;
-    private ImageIcon currentImage;
+    private ImageIcon currentImage = new ImageIcon("Graphic/Object/hook.png");
     public ClientHook(int id) {
         super(id);
     }
