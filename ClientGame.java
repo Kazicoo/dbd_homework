@@ -156,23 +156,17 @@ public class ClientGame {
             generators[generatorTotal].setRelativeLocation(x, y);
             generators[generatorTotal].setButton(new JButton());
                     
-   
-            // if (generators[generatorTotal] != null) {
-            //     // 當所有發電機都初始化完成後，呼叫 addbutton(
-            //         gamePanel.addbutton();  // 呼叫 GamePanel 的 addbutton
-            // }
-                    
-                    synchronized (this) {
-                        generatorTotal++;
-                        initGeneratorTotal++;
-                        if (initGeneratorTotal == 6 && playerTotal == 4) {
-                            notifyAll(); // 通知等待的線程
-                        }
-                    }
-                    if (generatorTotal == generators.length) {
-                        System.out.println("Maximum generators reached.");
-                    }
-                    System.out.println("Generator initialized: ID " + id + " at (" + x + ", " + y + ")");
+            synchronized (this) {
+                generatorTotal++;
+                initGeneratorTotal++;
+                if (initGeneratorTotal == 6 && playerTotal == 4) {
+                    notifyAll(); // 通知等待的線程
+                }
+            }
+            if (generatorTotal == generators.length) {
+                System.out.println("Maximum generators reached.");
+            }
+            System.out.println("Generator initialized: ID " + id + " at (" + x + ", " + y + ")");
                     
                     
         } catch (NumberFormatException e) {
@@ -210,34 +204,11 @@ public void initHook(String message) {
         Hook[id] = new ClientHook(id);
         Hook[id].setRelativeLocation(x, y);
 
-     
         ImageIcon hookIcon = new ImageIcon("Graphic/Object/hook.png");
-        JButton hookButton = new JButton(hookIcon);
         
-
+        
         int imageWidth = hookIcon.getIconWidth();
         int imageHeight = hookIcon.getIconHeight();
-
-        // 設定按鈕位置和大小
-        hookButton.setBounds(x, y, imageWidth, imageHeight);
-        hookButton.setOpaque(false);
-        hookButton.setContentAreaFilled(false);
-        hookButton.setBorderPainted(false);
-
-        // 添加按鈕到 JPanel
-        // gamePanel.add(hookButton);  // 確保gamePanel已正確初始化
-
-        // 添加互動邏輯
-        // hookButton.addMouseListener(new MouseAdapter() {
-        //     @Override
-        //     public void mouseClicked(MouseEvent e) {
-        //         if (SwingUtilities.isLeftMouseButton(e)) {
-        //             System.out.println("Hook clicked: ID " + Hook[id].getId());
-        //             // 可選：發送封包邏輯
-        //             // conn.send("Clicked;hook;" + Hook[id].getId());
-        //         }
-        //     }
-        // });
 
         synchronized (this) {
             if (hookTotal == 9) {
@@ -276,10 +247,9 @@ public void initHook(String message) {
             int y = Integer.parseInt(parts[3]);
             int id = Integer.parseInt(parts[4]);
     
-        
             // 初始化物件
-            Window[id] = new ClientWindow(id);
-            Window[id].setRelativeLocation(x, y);
+            Window[WindowTotal] = new ClientWindow(id);
+            Window[WindowTotal].setRelativeLocation(x, y);
     
             ImageIcon windowIcon = new ImageIcon("Graphic/Object/window.png");
             if (windowIcon.getIconWidth() == -1) {
@@ -298,26 +268,11 @@ public void initHook(String message) {
             windowButton.setContentAreaFilled(false);
             windowButton.setBorderPainted(false);
     
-            // 添加按鈕到 JPanel
-            // gamePanel.add(windowButton);  // 確保gamePanel已正確初始化
-            // gamePanel.revalidate();
-            // gamePanel.repaint();
+            WindowTotal++; 
     
-            
-            
-            // // 確保 windowButton 可聚焦並接收鍵盤事件
-            // windowButton.setFocusable(false);
-            // windowButton.requestFocusInWindow();
-    
-            synchronized (this) {
-                if (WindowTotal == 9) {
-                    System.out.println("Maximum hooks reached.");
-                    return;
-                }
-                WindowTotal++; // 自增鉤子數量
-                System.out.println("Window initialized: ID " + id + " at (" + x + ", " + y + ")");
-            }
-    
+            // 初始化物件
+            Window[id] = new ClientWindow(id);
+            Window[id].setRelativeLocation(x, y);
         } catch (NumberFormatException e) {
             System.out.println("Error parsing coordinates or ID: " + e.getMessage());
         }
@@ -358,24 +313,8 @@ public void initHook(String message) {
         boardButton.setContentAreaFilled(false);
         boardButton.setBorderPainted(false);
 
-    // 添加按鈕到 JPanel
-        gamePanel.add(boardButton);
 
-    // 添加鍵盤事件邏輯
-    //     gamePanel.addKeyListener(new KeyAdapter() {
-    //         @Override
-    //         public void keyPressed(KeyEvent e) {
-    //             if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-    //                 System.out.println("Board activated with space: ID " + board.getId());
-    //             // 可選：發送封包邏輯
-    //                 conn.send("Activated;board;");
-    //         }
-    //     }
-    // });
 
-        // 確保面板可聚焦並接收鍵盤事件
-        // gamePanel.setFocusable(false);
-        // gamePanel.requestFocusInWindow();
         synchronized (this) {
             if (boardTotal == 13) {
                 System.out.println("Maximum broads reached.");
@@ -384,9 +323,7 @@ public void initHook(String message) {
             boardTotal++; // 自增板子數量
             System.out.println("Hook initialized: ID " + id + " at (" + x + ", " + y + ")");
         }
-    } 
-    
-    
+    }
 
     public void initPlayer(String message, int clientId) {
         String[] parts = message.split(";");
@@ -606,7 +543,8 @@ public void initHook(String message) {
 
     }
     
-
+   
+    
     
     public void attackFacing(String message) {
         String[] parts = message.split(";");

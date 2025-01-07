@@ -104,9 +104,9 @@ public class Client implements Comm.TcpClientCallback {
             System.out.println("Initializing hook at (" + x + ", " + y + ") with ID " + ClientGame.Hook[hookCount].getId());
             hookCount++;
           } else if ("window".equals(type)) {
-            // 初始化鉤子
+            // 初始化窗
             ClientGame.initWindow(message);
-            System.out.println("Initializing hook at (" + x + ", " + y + ") with ID " + ClientGame.Window[WindowCount].getId());
+            System.out.println("Initializing window at (" + x + ", " + y + ") with ID " + ClientGame.Window[WindowCount].getId());
             WindowCount++;
           }else if ("player".equals(type)) {
             ClientGame.initPlayer(message,id);

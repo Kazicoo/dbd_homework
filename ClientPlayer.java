@@ -21,6 +21,7 @@ public class ClientPlayer extends ClientGameObject {
     private ImageIcon climbrightIcon;
     
 
+
     private int offsetX = 0;
     private int offsetY = 0;
 

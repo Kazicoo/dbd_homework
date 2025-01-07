@@ -1,4 +1,3 @@
-
 public class ClientWindow extends ClientMapItems{
     int id;
     public ClientWindow(int id) {
@@ -9,3 +8,4 @@ public class ClientWindow extends ClientMapItems{
         return id;
     }
 }
+

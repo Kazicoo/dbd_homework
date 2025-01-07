@@ -307,7 +307,7 @@
                             // 殺手圖案
                             ImageIcon killerImage = new ImageIcon("Graphic/Killer/killer-standFront.PNG");
                             Image image = killerImage.getImage();
-                            Image scaledImage = image.getScaledInstance(350, 700, Image.SCALE_SMOOTH);
+                            Image scaledImage = image.getScaledInstance(350, 650, Image.SCALE_SMOOTH);
                             killerImage = new ImageIcon(scaledImage);
                             imageLabel.setIcon(killerImage); 
                             imageLabel.setText("");  
@@ -315,7 +315,7 @@
                         case "p1" -> {
                             ImageIcon p1Image = new ImageIcon("Graphic/Human/p1/p1-lobby.PNG");
                             Image image = p1Image.getImage();
-                            Image p1scaledImage = image.getScaledInstance(350, 700, Image.SCALE_SMOOTH);
+                            Image p1scaledImage = image.getScaledInstance(350, 650, Image.SCALE_SMOOTH);
                             p1Image = new ImageIcon(p1scaledImage);
                             imageLabel.setIcon(p1Image); 
                             imageLabel.setText("");  
@@ -330,7 +330,7 @@
                         case "p2" -> {
                            ImageIcon p2Image = new ImageIcon("Graphic/Human/p2/p2-lobby.PNG");
                             Image image = p2Image.getImage();
-                            Image p2scaledImage = image.getScaledInstance(350, 700, Image.SCALE_SMOOTH);
+                            Image p2scaledImage = image.getScaledInstance(350, 650, Image.SCALE_SMOOTH);
                             p2Image = new ImageIcon(p2scaledImage);
                             imageLabel.setIcon(p2Image); 
                             imageLabel.setText(""); 
@@ -344,7 +344,7 @@
                         case "p3" -> {
                             ImageIcon p3Image = new ImageIcon("Graphic/Human/p3/p3-lobby.PNG");
                             Image image = p3Image.getImage();
-                            Image p3scaledImage = image.getScaledInstance(350, 700, Image.SCALE_SMOOTH);
+                            Image p3scaledImage = image.getScaledInstance(350, 650, Image.SCALE_SMOOTH);
                             p3Image = new ImageIcon(p3scaledImage);
                             imageLabel.setIcon(p3Image); 
                             imageLabel.setText(""); 
