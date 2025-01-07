@@ -302,16 +302,12 @@ public void initHook(String message) {
         Board[id].setRelativeLocation(x, y);
 
         ImageIcon boardIcon = new ImageIcon("Graphic/Object/board-notUsed.png");
-        JButton boardButton = new JButton(boardIcon);
+        
 
         int imageWidth = boardIcon.getIconWidth();
         int imageHeight = boardIcon.getIconHeight();
 
-    // 設定按鈕位置和大小
-        boardButton.setBounds(x, y, imageWidth, imageHeight);
-        boardButton.setOpaque(false);
-        boardButton.setContentAreaFilled(false);
-        boardButton.setBorderPainted(false);
+  
 
 
 
