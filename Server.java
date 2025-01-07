@@ -25,6 +25,8 @@ public class Server implements Comm.TcpServerCallback {
         serverGame.initHealthStatus();
         serverGame.initWall();
         serverGame.initHook();
+        serverGame.initBoard();
+        serverGame.initWindow();
         serverGame.startGameLoop();
     } catch (IOException e) {
       System.out.println("Failed to create server: " + e.getMessage());
@@ -66,15 +68,16 @@ public class Server implements Comm.TcpServerCallback {
       server.broadcast(message + ";" + id);
     }
 
+    if (message.startsWith("clicked")) {
+      String key = message.split(";")[1];
+      if (key.equals("generator")) {
+        serverGame.generatorClicked(message, id);
+      }
+    }
 
-    // if (message.startsWith("fix_gen")) {
-    //   ServerGenerator gen;
-    //   ServerPlayer player;
-
-    //   if (player.canInteractGenerator(gen)) {
-    //     gen.fix();
-    //   }
-    // }
+    if (message.startsWith("Activated")) {
+      activated(message, id);
+    }
 
     System.out.println("Client " + id + " sent: " + message);
     server.send(id, "Echo: " + message);
@@ -127,8 +130,16 @@ public class Server implements Comm.TcpServerCallback {
     // 開始遊戲，告訴前端遊戲開始
     server.broadcast("startLoading");
   }
+
+  public void activated(String message, int id) {
+    String[] parts = message.split(";");
+    if ("window".equals(parts[1])) {
+      int windowId = Integer.parseInt(parts[2]);
+      serverGame.windowActed(windowId, id);
+    }
+  }
   
-  public void updateReadyState (String message, int id) {
+  public void updateReadyState(String message, int id) {
     // 主視窗負責處理是否準備的邏輯處理
     // 判斷能不能準備，此時收到的訊息封包大概是兩組
     // 1.玩家選擇角色，封包為updateReadyState;ready;<role>

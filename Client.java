@@ -125,6 +125,7 @@ public class Client implements Comm.TcpClientCallback {
         ClientGame.moveAnimation(message);
       }
 
+
     
     System.out.println("Server sent: " + message);
   }
