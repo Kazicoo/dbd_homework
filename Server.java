@@ -68,10 +68,14 @@ public class Server implements Comm.TcpServerCallback {
       server.broadcast(message + ";" + id);
     }
 
+    // if (message.startWith("carryHuman")) {
+    //   server.broadcast
+    // }
+
     if (message.startsWith("clicked")) {
       String key = message.split(";")[1];
       if (key.equals("generator")) {
-        serverGame.generatorClicked(message, id);
+        serverGame.generatorClicked(id);
       }
     }
 

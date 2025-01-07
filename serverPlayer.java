@@ -182,10 +182,10 @@ public abstract class ServerPlayer extends ServerGameObject {
             game.sendMessage("crossing;player;back;" + getId());
             try {
                 if ("killer".equals(game.getRole())) {
-                    Thread.sleep(500);
+                    Thread.sleep(2000);
                     System.out.println("");
                 } else {
-                    Thread.sleep(200);
+                    Thread.sleep(1000);
                 }
             } catch (Exception e) {
             }
@@ -197,9 +197,9 @@ public abstract class ServerPlayer extends ServerGameObject {
             game.sendMessage("crossing;player;front;" + getId());
             try {
                 if ("killer".equals(game.getRole())) {
-                    Thread.sleep(500);
+                    Thread.sleep(2000);
                 } else {
-                    Thread.sleep(200);
+                    Thread.sleep(1000);
                 }
             } catch (Exception e) {
             }

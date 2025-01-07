@@ -88,9 +88,9 @@ public class ClientGame {
             frame.setVisible(true);
         }
 
-    public JLabel createGeneratorLabel(String role, int healthcount, int x, int y) {
-        JLabel generatorLabel = new JLabel(role + " Health: " + healthcount);
-        generatorLabel.setFont(new Font("Arial", Font.BOLD, 18));
+    public JLabel createGeneratorLabel(String role, int generatorCount, int x, int y) {
+        JLabel generatorLabel = new JLabel(" 未修理發電機: " + generatorCount);
+        generatorLabel.setFont(new Font("DialogInput", Font.BOLD, 18));
         generatorLabel.setBounds(x, y, 200, 30); // 設定位置和大小
         generatorLabel.setForeground(Color.RED); // 可自定義文字顏色
         return generatorLabel;
@@ -493,6 +493,7 @@ public void initHook(String message) {
                                 } else if (isMovingDown) {
                                     player.updateMovement("S");
                                 }
+                            
                             }
                             default -> System.out.println("Unhandled key release: " + key);
                         }
@@ -509,15 +510,27 @@ public void initHook(String message) {
             @Override
             public void keyTyped(KeyEvent e) { 
                 char key = e.getKeyChar();
-    
+
+                if (key == KeyEvent.VK_J) {
+                    for (ClientPlayer player : clientPlayers) {
+                        if (player != null && "killer".equals(player.getRole()) && player.getIsSelf()) {
+                            conn.send("animated;attack");
+                        } else {
+                        }
+                    }
+                }
+
                 // 檢查是否為空白鍵
                 if (key == KeyEvent.VK_SPACE) {
                     for (ClientPlayer player : clientPlayers) {
-                        if (player != null && "killer".equals(player.getRole()) && player.getIsSelf()) {
-                            conn.send("attack");
-                            // conn.send("Activated;window;");
-                            // conn.send("animated;attack")
-                        } 
+                        if (player != null && player.getIsSelf()) {
+                            if ("killer".equals(player.getRole())) {
+                                conn.send("Activated;window");
+                            }
+                        } else {
+                            conn.send("Activated;window");
+                            conn.send("clicked;generator");
+                        }
                     }
                 }
             }

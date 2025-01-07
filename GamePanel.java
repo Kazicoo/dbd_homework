@@ -17,6 +17,7 @@ public class GamePanel extends JPanel {
         this.generatorIcon = new ImageIcon("Graphic/Object/generator-broken.png").getImage();
         this.hookIcon = new ImageIcon("Graphic/Object/hook.png").getImage();
         this.boardIcon = new ImageIcon("Graphic/Object/board.png").getImage();
+        this.windowIcon = new ImageIcon("Graphic/Object/window.png").getImage();
         System.out.println("Background image loaded: " + (backgroundImage != null));
         System.out.println("generator image loaded: " + (generatorIcon != null));
         System.out.println("hook image loaded: " + (hookIcon != null));

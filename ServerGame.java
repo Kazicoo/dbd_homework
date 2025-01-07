@@ -30,7 +30,7 @@ public class ServerGame {
         int count = 0;
         int[][] positionMap = new int[9][2];
         positionMap[0] = new int[]{16*GRID_SIZE, 10*GRID_SIZE};
-        positionMap[1] = new int[]{53*GRID_SIZE, 5*GRID_SIZE};
+        positionMap[1] = new int[]{53*GRID_SIZE, 8*GRID_SIZE};
         positionMap[2] = new int[]{83*GRID_SIZE, 10*GRID_SIZE};
         positionMap[3] = new int[]{29*GRID_SIZE, 28*GRID_SIZE};
         positionMap[4] = new int[]{48*GRID_SIZE, 28*GRID_SIZE};
@@ -159,31 +159,45 @@ public class ServerGame {
         }
     }
     
-    public void generatorClicked(String message, int id) {
-        String[] parts = message.split(";");
-        int generatorId = Integer.parseInt(parts[2]);
-
-        ServerGenerator gen = null;
-        for (ServerGenerator g : generators) {
-            if (g != null && g.getId() == generatorId) {
-                gen = g;
+    public void generatorClicked(int id) {
+        ServerHuman player = null;
+        for (ServerHuman p : getHumans()) {
+            if (p != null && p.getId() == id) {
+                player = p; 
                 break;
             }
         }
-        // 根據 ID 獲取玩家 
-        ServerHuman player = null; 
-        for (ServerHuman p : getHumans()) { 
-            if (p != null && p.getId() == id) { 
-                player = p; break; 
-            } 
+
+        ServerMapItems[] items = player.getNearbyMapItems();
+        for (ServerMapItems item : items) {
+            if (item instanceof ServerGenerator gen) {
+                if (player.canInteractGenerator(gen)) {
+                    gen.fix(player);
+                }
+            }
         }
 
-        // 檢查玩家是否能與發電機交互並修復 
-        if (player != null && gen != null) { 
-            if (player.canInteractGenerator(gen)) { 
-                gen.fix(player); 
-            } 
-        }
+        // ServerGenerator gen = null;
+        // for (ServerGenerator g : generators) {
+        //     if (g != null && g.getId() == generatorId) {
+        //         gen = g;
+        //         break;
+        //     }
+        // }
+        // // 根據 ID 獲取玩家 
+        // ServerHuman player = null; 
+        // for (ServerHuman p : getHumans()) { 
+        //     if (p != null && p.getId() == id) { 
+        //         player = p; break; 
+        //     } 
+        // }
+
+        // // 檢查玩家是否能與發電機交互並修復 
+        // if (player != null && gen != null) { 
+        //     if (player.canInteractGenerator(gen)) { 
+        //         gen.fix(player); 
+        //     } 
+        // }
     }
     
     private final ServerWindow[] windows = new ServerWindow[11];
