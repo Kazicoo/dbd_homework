@@ -16,7 +16,7 @@ public class Server implements Comm.TcpServerCallback {
       try {
         Server server = new Server();
         System.out.println("Launching the server");
-        // 從這裡開始遊戲(即等待所有玩家準備完成後，伺服器會告訴前端準備完成)
+        // 從這裡開始遊戲(即等待所有玩家準備完成後，伺服器會告訴前端準備完成)2
         server.waitGameStart();
         serverGame = new ServerGame(server);
         // 當伺服器發送startLoading給客戶端後，要初始化遊戲資訊

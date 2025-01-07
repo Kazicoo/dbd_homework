@@ -98,7 +98,7 @@ public class Client implements Comm.TcpClientCallback {
             System.out.println("Initializing generator at (" + x + ", " + y + ") with ID " + ClientGame.generators[generatorCount].getId());
             generatorCount++;  
           } if ("hook".equals(type)) {
-            // 初始化發電機
+            // 初始化鉤子
             ClientGame.initHook(message);
             System.out.println("Initializing hook at (" + x + ", " + y + ") with ID " + ClientGame.Hook[hookCount].getId());
             hookCount++;
@@ -117,13 +117,13 @@ public class Client implements Comm.TcpClientCallback {
       }
     }
 
-    if(message.startsWith("animated")) {
-      if(parts[1].equals("attack"))  
+    if(message.startsWith("attack")){  
       ClientGame.attackFacing(message);
-      if (parts[1].equals("animated")) {
+    }
+
+    if(message.startsWith("animated")) {
         ClientGame.moveAnimation(message);
       }
-    }
 
 
     

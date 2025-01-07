@@ -23,7 +23,6 @@ public class ServerGame {
     public ServerGame(Server server) {
         this.server = server;
         this.idRole = server.getidRole();
-
     }
 
     //處理分配玩家出生點
@@ -31,7 +30,7 @@ public class ServerGame {
         int count = 0;
         int[][] positionMap = new int[9][2];
         positionMap[0] = new int[]{16*GRID_SIZE, 10*GRID_SIZE};
-        positionMap[1] = new int[]{53*GRID_SIZE, 15*GRID_SIZE};
+        positionMap[1] = new int[]{53*GRID_SIZE, 5*GRID_SIZE};
         positionMap[2] = new int[]{83*GRID_SIZE, 10*GRID_SIZE};
         positionMap[3] = new int[]{29*GRID_SIZE, 28*GRID_SIZE};
         positionMap[4] = new int[]{48*GRID_SIZE, 28*GRID_SIZE};
@@ -104,7 +103,6 @@ public class ServerGame {
                 generators[count] = new ServerGenerator(count, positionMap[position][0], positionMap[position][1]);
                 generators[count].setX(positionMap[position][0]);
                 generators[count].setY(positionMap[position][1]);
-                grid[positionMap[position][0]][positionMap[position][1]] = generators[count];
                 count++;
             }
         }
