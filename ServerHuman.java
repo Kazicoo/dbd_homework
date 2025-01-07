@@ -20,8 +20,8 @@ public class ServerHuman extends ServerPlayer {
         this.setMoveSpeed(SLOW_MOVE_SPEED);
     }
 
-    public ServerHuman(int id, ServerGame game) {
-        super(id, game);
+    public ServerHuman(int id, ServerGame game, String role) {
+        super(id, game, role);
         super.resetMoveSpeed();
     }
 

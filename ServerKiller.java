@@ -15,7 +15,7 @@ public class ServerKiller extends ServerPlayer {
 
 
     public ServerKiller(int id, ServerGame game) {
-        super(id, game);
+        super(id, game, "killer");
         super.resetMoveSpeed();
     }
 

@@ -1,6 +1,8 @@
 
 
 public abstract class ServerPlayer extends ServerGameObject {
+    private String role;
+
     protected ServerGame game;
 
     private int dx = 0;
@@ -20,9 +22,10 @@ public abstract class ServerPlayer extends ServerGameObject {
 
     private Direction facing = Direction.DOWN;
 
-    public ServerPlayer(int id, ServerGame game) {
+    public ServerPlayer(int id, ServerGame game, String role) {
         super(id);
         this.game = game;
+        this.role = role;
     }
 
     public int getDx() {
@@ -165,48 +168,67 @@ public abstract class ServerPlayer extends ServerGameObject {
 
         for (int _x=-2; _x<=2; _x++) {
             for (int _y=-2; _y<=2; _y++) {
-                items[count++] = game.getMapItem(
-                    gx + _x, 
-                    gy + _y);
-                
+                ServerMapItems item = game.getMapItem(gx + _x, gy + _y);
+                if (item == null) { continue; }
+                items[count++] = item;                
             }
         }
 
         return items;
     }
 
-    public void crossWindow(ServerWindow win) {
-        if (getY() > win.getY()) {
-            setRelativeLocation(win.getX(), win.getY()-50);
-            game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
-            game.sendMessage("crossing;player;back;" + getId());
-            try {
-                if ("killer".equals(game.getRole())) {
-                    Thread.sleep(2000);
-                    System.out.println("");
-                } else {
-                    Thread.sleep(1000);
-                }
-            } catch (Exception e) {
-            }
-            setRelativeLocation(win.getX(), win.getY()-100);
-            game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
-        } else {
-            setRelativeLocation(win.getX(), win.getY()+50);
-            game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
-            game.sendMessage("crossing;player;front;" + getId());
-            try {
-                if ("killer".equals(game.getRole())) {
-                    Thread.sleep(2000);
-                } else {
-                    Thread.sleep(1000);
-                }
-            } catch (Exception e) {
-            }
-            setRelativeLocation(win.getX(), win.getY()+100);
-            game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
-        }
+    public boolean canInteractWindow(ServerWindow win) {
+        return ServerGame.aabb_collision(
+            // self top left
+            getX() - ServerGame.GRID_SIZE / 2, 
+            getY() - ServerGame.GRID_SIZE / 2, 
+            // self bottom right
+            getX() + ServerGame.GRID_SIZE / 2,
+            getY() + ServerGame.GRID_SIZE / 2,
+            // other top left
+            win.getX() - ServerGame.GRID_SIZE,
+            win.getY() - ServerGame.GRID_SIZE,
+            // other bottom right
+            win.getX() + 2*ServerGame.GRID_SIZE,
+            win.getY() + 2*ServerGame.GRID_SIZE);
     }
+
+    public String getRole() {
+        return this.role;
+    }
+
+    // public void crossWindow(ServerWindow win) {
+    //     if (getY() > win.getY()) {
+    //         setRelativeLocation(win.getX(), win.getY()-50);
+    //         game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
+    //         game.sendMessage("crossing;player;back;" + getId());
+    //         try {
+    //             if ("killer".equals(game.getRole())) {
+    //                 Thread.sleep(2000);
+    //                 System.out.println("");
+    //             } else {
+    //                 Thread.sleep(1000);
+    //             }
+    //         } catch (Exception e) {
+    //         }
+    //         setRelativeLocation(win.getX(), win.getY()-100);
+    //         game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
+    //     } else {
+    //         setRelativeLocation(win.getX(), win.getY()+50);
+    //         game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
+    //         game.sendMessage("crossing;player;front;" + getId());
+    //         try {
+    //             if ("killer".equals(game.getRole())) {
+    //                 Thread.sleep(2000);
+    //             } else {
+    //                 Thread.sleep(1000);
+    //             }
+    //         } catch (Exception e) {
+    //         }
+    //         setRelativeLocation(win.getX(), win.getY()+100);
+    //         game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
+    //     }
+    // }
 
     @Override
     public boolean isColliding(ServerPlayer serverPlayer) {

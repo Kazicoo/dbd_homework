@@ -136,10 +136,7 @@ public class Server implements Comm.TcpServerCallback {
   }
 
   public void activated(String message, int id) {
-    String[] parts = message.split(";");
-    if ("window".equals(parts[1])) {
-      serverGame.windowActed(id);
-    }
+    serverGame.interact(id);
   }
   
   public void updateReadyState(String message, int id) {

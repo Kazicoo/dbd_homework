@@ -12,7 +12,6 @@ public class ServerGame {
     public static final int GRID_WIDTH  = 100;
     public static final int GRID_HEIGHT = 60;
     public static final int collisionSize = GRID_SIZE / 3;
-    private String role = "";
  
     public static final float FRAME_PER_SEC = 20;
     private Timer gameLoopTimer;
@@ -43,8 +42,14 @@ public class ServerGame {
 
         players[0] = new ServerKiller(idRole[0], this);
 
+        // for (int i = 1; i < idRole.length; i++) {
+        //     if (id == idRole[i]) {
+        //         server.broadcastToClient("updateGameObject;health;" + health + ";" + chars[i]);
+        //     }
+        // }
+
         for (int i = 1; i < 4; i++) {
-            players[i] = new ServerHuman(idRole[i], this);
+            players[i] = new ServerHuman(idRole[i], this, chars[i]); 
         }
 
         while(count < 4){
@@ -117,24 +122,15 @@ public class ServerGame {
             server.broadcastToClient("updateGameObject;health;2;" + chars[i]);
         }
     }
-    // 血量改變時
+    // 血量改變時 1 2 3 0
     public void setHealthStatus(int health, int id) {
         for (int i = 1; i < idRole.length; i++) {
             if (id == idRole[i]) {
                 server.broadcastToClient("updateGameObject;health;" + health + ";" + chars[i]);
-                setRole(chars[i]);
             }
         }
     }
 
-    public String getRole() {
-        return this.role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-    
     public void handleKeyInput(int id, String key, boolean isKeyDown) {
         for (ServerPlayer player : players) {
             if (player != null && player.getId() == id) {
@@ -209,16 +205,29 @@ public class ServerGame {
                 player = p; break; 
             } 
         }
+    }
 
+    public void interact(int player_id) {
+        ServerPlayer player = players[player_id];
         ServerMapItems[] items = player.getNearbyMapItems();
+
         for (ServerMapItems item : items) {
+            if (item instanceof ServerGenerator gen && 
+                player instanceof ServerHuman human) 
+            {
+                if (human.canInteractGenerator(gen)) {
+                    gen.fix((ServerHuman)player);
+                }
+
+                continue;
+            }
+
             if (item instanceof ServerWindow window) {
                 if (player.canInteractWindow(window)) {
-                    player.crossWindow(window);
+                    window.cross(this, player);
                 }
             }
         }
-
     }
     
     public void sendMessage(String message) {

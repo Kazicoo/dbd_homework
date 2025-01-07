@@ -34,4 +34,42 @@ public class ServerWindow extends ServerMapItems {
             serverPlayer.getX() + ServerGame.GRID_SIZE / 2,
             serverPlayer.getY() + ServerGame.GRID_SIZE / 2);
     }
+
+    public void cross(ServerGame game, ServerPlayer player) {
+        if (getY() + ServerGame.GRID_SIZE < player.getY()) {
+            new Thread(() -> {
+                player.setY(getY() - ServerGame.GRID_SIZE / 2);
+                game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
+                game.sendMessage("crossing;player;back;" + getId());
+
+                try {
+                    Thread.sleep(switch (player.getRole()) {
+                        case "killer" -> 2000;
+                        default -> 1000;
+                    });
+                } catch (Exception e) {}
+                
+                player.setY(getY() - ServerGame.GRID_SIZE / 2);
+                game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
+            }).start();
+
+            return;
+        }
+
+        new Thread(() -> {
+            player.setY(getY() + ServerGame.GRID_SIZE / 2);
+            game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
+            game.sendMessage("crossing;player;front;" + getId());
+
+            try {
+                Thread.sleep(switch (player.getRole()) {
+                    case "killer" -> 2000;
+                    default -> 1000;
+                });
+            } catch (Exception e) {}
+            
+            player.setY(getY() + ServerGame.GRID_SIZE / 2);
+            game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
+        }).start();
+    }
 }
