@@ -12,6 +12,7 @@ public class ServerGame {
     public static final int GRID_WIDTH  = 100;
     public static final int GRID_HEIGHT = 60;
     public static final int collisionSize = GRID_SIZE / 3;
+    private String role = "";
  
     public static final float FRAME_PER_SEC = 20;
     private Timer gameLoopTimer;
@@ -123,8 +124,17 @@ public class ServerGame {
         for (int i = 1; i < idRole.length; i++) {
             if (id == idRole[i]) {
                 server.broadcastToClient("updateGameObject;health;" + health + ";" + chars[i]);
+                setRole(chars[i]);
             }
         }
+    }
+
+    public String getRole() {
+        return this.role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
     
     public void handleKeyInput(int id, String key, boolean isKeyDown) {
@@ -177,17 +187,25 @@ public class ServerGame {
             } 
         }
     }
-    // if (message.startsWith("fix_gen")) {
-    //   ServerGenerator gen;
-    //   ServerPlayer player;
+    
+    private final ServerWindow[] windows = new ServerWindow[11];
+    public void windowActed(int id) {
+        // 根據 ID 獲取玩家 
+        ServerHuman player = null; 
+        for (ServerHuman p : getHumans()) { 
+            if (p != null && p.getId() == id) { 
+                player = p; break; 
+            } 
+        }
 
-    //   if (player.canInteractGenerator(gen)) {
-    //     gen.fix();
-    //   }
-    // }
-
-    public void windowActed(int windowId, int id) {
-        ServerWindow win = null;
+        ServerMapItems[] items = player.getNearbyMapItems();
+        for (ServerMapItems item : items) {
+            if (item instanceof ServerWindow window) {
+                if (player.canInteractWindow(window)) {
+                    player.crossWindow(window);
+                }
+            }
+        }
 
     }
     
@@ -527,7 +545,6 @@ public class ServerGame {
     }
     
 
-    private ServerWindow[] windows = new ServerWindow[11];
     public void initWindow() {
         int[][] windowPositions = { 
             {10, 4}, {10, 31}, {24, 28}, {72, 18}, {8, 49}, 

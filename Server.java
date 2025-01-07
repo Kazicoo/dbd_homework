@@ -134,8 +134,7 @@ public class Server implements Comm.TcpServerCallback {
   public void activated(String message, int id) {
     String[] parts = message.split(";");
     if ("window".equals(parts[1])) {
-      int windowId = Integer.parseInt(parts[2]);
-      serverGame.windowActed(windowId, id);
+      serverGame.windowActed(id);
     }
   }
   
