@@ -99,7 +99,7 @@ public class ClientGame {
         new Thread(() -> {
             while (true) {
                 synchronized (this) {
-                    if (initGeneratorTotal == 4 && playerTotal == 4) {
+                    if (initGeneratorTotal == 6 && playerTotal == 4) {
                         try {
                             conn.send("startGame");
                             System.out.println("Game started!");
