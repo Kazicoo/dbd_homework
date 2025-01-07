@@ -54,8 +54,8 @@ public class GamePanel extends JPanel {
         for (ClientHook clientHook : clientGame.Hook) {
             if (clientHook != null && clientHook.getCurrentImage() != null) {
                 ImageIcon hookIcon = clientHook.getCurrentImage();
-                int x = clientHook.getX();
-                int y = clientHook.getY();
+                int x = clientHook.getX()- cameraOffsetX;
+                int y = clientHook.getY() - cameraOffsetY;
                 hookIcon.paintIcon(this, g, x, y);  // 繪製鉤子圖標
             }
         }
