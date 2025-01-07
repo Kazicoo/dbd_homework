@@ -38,8 +38,8 @@ public class GamePanel extends JPanel {
         for (ClientPlayer clientPlayer : clientGame.clientPlayers) {
             if (clientPlayer != null && clientPlayer.getCurrentImage() != null) {
                 ImageIcon playerIcon = clientPlayer.getCurrentImage();
-                int x = clientPlayer.getX() - cameraOffsetX;  // 根據鏡頭偏移量調整 x 坐標
-                int y = clientPlayer.getY() - cameraOffsetY;  // 根據鏡頭偏移量調整 y 坐標
+                int x = clientPlayer.getX() - cameraOffsetX - clientPlayer.getOffsetX();  // 根據鏡頭偏移量調整 x 坐標
+                int y = clientPlayer.getY() - cameraOffsetY - clientPlayer.getOffsetY();  // 根據鏡頭偏移量調整 y 坐標
                 playerIcon.paintIcon(this, g, x, y);  // 繪製玩家圖標
             }
         }

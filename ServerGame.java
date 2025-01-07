@@ -106,7 +106,7 @@ public class ServerGame {
             if (isValid) {
                 usedPosition[count] = position;
                 generators[count] = new ServerGenerator(count, positionMap[position][0], positionMap[position][1]);
-                generators[count].setX(positionMap[position][0]);
+                grid[positionMap[position][0]][positionMap[position][1]] = generators[count]; // 修正網格賦值                generators[count].setX(positionMap[position][0]);
                 generators[count].setY(positionMap[position][1]);
                 count++;
             }
