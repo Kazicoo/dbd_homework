@@ -84,4 +84,20 @@ public class ServerHuman extends ServerPlayer {
             generator.getX() + 3 * ServerGame.GRID_SIZE,
             generator.getY() + 2 * ServerGame.GRID_SIZE);
     }
+
+    public boolean canInteractWindow(ServerWindow window) {
+        return ServerGame.aabb_collision(
+            // self top left
+            getX() - ServerGame.GRID_SIZE / 2, 
+            getY() - ServerGame.GRID_SIZE / 2, 
+            // self bottom right
+            getX() + ServerGame.GRID_SIZE / 2,
+            getY() + ServerGame.GRID_SIZE / 2,
+            // other top left
+            window.getX() - ServerGame.GRID_SIZE,
+            window.getY() - ServerGame.GRID_SIZE,
+            // other bottom right
+            window.getX() + ServerGame.GRID_SIZE,
+            window.getY() + ServerGame.GRID_SIZE);
+    }
 }

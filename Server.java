@@ -16,7 +16,7 @@ public class Server implements Comm.TcpServerCallback {
       try {
         Server server = new Server();
         System.out.println("Launching the server");
-        // 從這裡開始遊戲(即等待所有玩家準備完成後，伺服器會告訴前端準備完成)
+        // 從這裡開始遊戲(即等待所有玩家準備完成後，伺服器會告訴前端準備完成)2
         server.waitGameStart();
         serverGame = new ServerGame(server);
         // 當伺服器發送startLoading給客戶端後，要初始化遊戲資訊
@@ -74,6 +74,11 @@ public class Server implements Comm.TcpServerCallback {
         serverGame.generatorClicked(message, id);
       }
     }
+
+    if (message.startsWith("Activated")) {
+      activated(message, id);
+    }
+
     System.out.println("Client " + id + " sent: " + message);
     server.send(id, "Echo: " + message);
   }
@@ -125,8 +130,15 @@ public class Server implements Comm.TcpServerCallback {
     // 開始遊戲，告訴前端遊戲開始
     server.broadcast("startLoading");
   }
+
+  public void activated(String message, int id) {
+    String[] parts = message.split(";");
+    if ("window".equals(parts[1])) {
+      serverGame.windowActed(id);
+    }
+  }
   
-  public void updateReadyState (String message, int id) {
+  public void updateReadyState(String message, int id) {
     // 主視窗負責處理是否準備的邏輯處理
     // 判斷能不能準備，此時收到的訊息封包大概是兩組
     // 1.玩家選擇角色，封包為updateReadyState;ready;<role>

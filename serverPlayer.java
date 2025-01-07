@@ -175,6 +175,39 @@ public abstract class ServerPlayer extends ServerGameObject {
         return items;
     }
 
+    public void crossWindow(ServerWindow win) {
+        if (getY() > win.getY()) {
+            setRelativeLocation(win.getX(), win.getY()-50);
+            game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
+            game.sendMessage("crossing;player;back;" + getId());
+            try {
+                if ("killer".equals(game.getRole())) {
+                    Thread.sleep(500);
+                    System.out.println("");
+                } else {
+                    Thread.sleep(200);
+                }
+            } catch (Exception e) {
+            }
+            setRelativeLocation(win.getX(), win.getY()-100);
+            game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
+        } else {
+            setRelativeLocation(win.getX(), win.getY()+50);
+            game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
+            game.sendMessage("crossing;player;front;" + getId());
+            try {
+                if ("killer".equals(game.getRole())) {
+                    Thread.sleep(500);
+                } else {
+                    Thread.sleep(200);
+                }
+            } catch (Exception e) {
+            }
+            setRelativeLocation(win.getX(), win.getY()+100);
+            game.sendMessage("updateGameObject;player;" + getX() + ";" + getY() + ";" + getId());
+        }
+    }
+
     @Override
     public boolean isColliding(ServerPlayer serverPlayer) {
         return ServerGame.aabb_collision(

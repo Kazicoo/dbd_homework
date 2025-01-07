@@ -117,13 +117,14 @@ public class Client implements Comm.TcpClientCallback {
       }
     }
 
-    if(message.startsWith("animated")) {
-      if(parts[1].equals("attack"))  
+    if(message.startsWith("attack")){  
       ClientGame.attackFacing(message);
-      if (parts[1].equals("animated")) {
+    }
+
+    if(message.startsWith("animated")) {
         ClientGame.moveAnimation(message);
       }
-    }
+
 
     
     System.out.println("Server sent: " + message);
