@@ -51,7 +51,11 @@ public abstract class GameObject {
     y += dy;
   }
 
+  public abstract AABB getAABB();
+
   public boolean isColliding(GameObject other) {
-    return false;
+    AABB self = getAABB();
+    AABB othr = other.getAABB();
+    return self != null && othr != null && self.isColliding(othr);
   }
 }
