@@ -137,7 +137,7 @@ public abstract class Player extends GameObject {
     return items;
   }
 
-  public boolean inRange(Player other, int range, double angle) {
+  public boolean inRange(Player other, double range, double angle) {
     double base_angle = switch (facing) {
       case Up    -> 90;
       case Down  -> 270;
