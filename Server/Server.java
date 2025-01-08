@@ -41,8 +41,10 @@ public class Server implements Comm.TcpServerCallback {
 
 
   private final TcpServer comm;
-  private Status status = Status.Initializing;
+
+  private Status  status = Status.Initializing;
   private MapItem board[][] = new MapItem[BOARD_WIDTH][BOARD_HEIGHT];
+  private Player  players[] = new Player[4];
 
   private Server() throws Exception {
     comm = new TcpServer(8080, 4, this);
@@ -77,19 +79,65 @@ public class Server implements Comm.TcpServerCallback {
     return board[x][y];
   }
 
+  public Player[] getPlayers() {
+    return players;
+  }
 
-  public void sendMessage(int id, String message) throws Exception {
+
+  public void sendMessage(int id, String message) {
     comm.send(id, message);
   }
 
-  public void broadcast(String message) throws Exception {
+  public void broadcast(String message) {
     comm.broadcast(message);
+  }
+
+
+  private void handleKeyDown(int id, String parts[]) {
+    if (parts.length != 2)
+      return;
+
+    Player player = players[id];
+    if (player == null)
+      return;
+
+    switch (parts[1].toLowerCase()) {
+      case "w" -> player.updateDirection(Player.Direction.Up   , true);
+      case "s" -> player.updateDirection(Player.Direction.Down , true);
+      case "a" -> player.updateDirection(Player.Direction.Left , true);
+      case "d" -> player.updateDirection(Player.Direction.Right, true);
+    }
+  }
+
+  private void handleKeyUp(int id, String parts[]) {
+    if (parts.length != 2)
+      return;
+
+      Player player = players[id];
+      if (player == null)
+        return;
+
+    switch (parts[1].toLowerCase()) {
+      case "w" -> player.updateDirection(Player.Direction.Up   , false);
+      case "s" -> player.updateDirection(Player.Direction.Down , false);
+      case "a" -> player.updateDirection(Player.Direction.Left , false);
+      case "d" -> player.updateDirection(Player.Direction.Right, false);
+    }
   }
 
 
   @Override
   public void onMessage(int id, String message) {
     System.out.println("Server received: " + message);
+    String parts[] = message.split(";");
+
+    if (parts.length == 0)
+      return;
+
+    switch (parts[0].toLowerCase()) {
+      case "keydown" -> handleKeyDown(id, parts);
+      case "keyup"   -> handleKeyUp(id, parts);
+    }
   }
 
   @Override
