@@ -88,7 +88,7 @@ public class Server implements Comm.TcpServerCallback {
     comm.send(id, message);
   }
 
-  public void broadcast(String message) {
+  public void sendMessage(String message) {
     comm.broadcast(message);
   }
 

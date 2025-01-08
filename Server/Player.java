@@ -75,7 +75,7 @@ public abstract class Player extends GameObject {
     int newY = (int)getY();
 
     if (oldX != newX || oldY != newY)
-      Server.instance.broadcast("Move;" + getId() + ";" + newX + ";" + newY);
+      Server.instance.sendMessage("Move;" + getId() + ";" + newX + ";" + newY);
   }
 
   @Override
