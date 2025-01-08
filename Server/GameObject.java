@@ -17,7 +17,7 @@ public abstract class GameObject {
     return id;
   }
 
-  public abstract void update(double elapsedMs);
+  public abstract void update(double elapsed);
 
   public double getX() {
     return x;

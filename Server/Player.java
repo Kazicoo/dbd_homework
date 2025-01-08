@@ -29,7 +29,7 @@ public abstract class Player extends GameObject {
   private boolean   right     = false;
   private Direction facing    = Direction.Down;
   private double    speed     = 0;
-  private double    speedLast = 0
+  private double    speedLast = 0;
 
   public Player(int id, Role role) {
     super(id);
@@ -38,15 +38,15 @@ public abstract class Player extends GameObject {
   }
 
   @Override
-  public void update(double elapsedMs) {
+  public void update(double elapsed) {
     if (speedLast > 0) {
-      speedLast -= elapsedMs;
+      speedLast -= elapsed;
       if (speedLast <= 0)
         resetSpeed();
     }
 
-    double dx = (double)getDx() * getSpeed() * elapsedMs / 1000;
-    double dy = (double)getDy() * getSpeed() * elapsedMs / 1000;
+    double dx = (double)getDx() * getSpeed() * elapsed;
+    double dy = (double)getDy() * getSpeed() * elapsed;
 
     if (dx == 0 && dy == 0)
       return;
@@ -101,13 +101,13 @@ public abstract class Player extends GameObject {
     return speed;
   }
 
-  protected void setSpeed(double speed) {
+  protected void setSpeed(double speed, double duration) {
     this.speed = speed;
+    speedLast = duration;
   }
 
-  protected void setSpeed(double speed, double duration) {
-    setSpeed(speed);
-    speedLast = duration;
+  protected void setSpeed(double speed) {
+    setSpeed(speed, 0);
   }
 
   protected void resetSpeed() {

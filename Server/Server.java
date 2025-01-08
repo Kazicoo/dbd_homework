@@ -53,20 +53,20 @@ public class Server implements Comm.TcpServerCallback {
     long lastTime = System.nanoTime();
     while (true) {
       long currentTime = System.nanoTime();
-      update((double)(currentTime - lastTime) / 1000000.0);
-      Thread.sleep((long)(SERVER_FT));
+      update((double)(currentTime - lastTime) / 1e9);
+      Thread.sleep((long)SERVER_FT);
     }
   }
 
 
-  private void update(double elapsedMs) throws Exception {
+  private void update(double elapsed) throws Exception {
     switch (status) {
       case Initializing      -> {}
-      case WaitingConnection -> updateWaitingConnection(elapsedMs);
+      case WaitingConnection -> updateWaitingConnection(elapsed);
     }
   }
 
-  private void updateWaitingConnection(double elapsedMs) {
+  private void updateWaitingConnection(double elapsed) {
 
   }
 
