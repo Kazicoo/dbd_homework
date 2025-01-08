@@ -83,6 +83,25 @@ public class Server implements Comm.TcpServerCallback {
     return players;
   }
 
+  public Human[] getHumans() {
+    Human humans[] = new Human[4];
+    int count = 0;
+
+    for (Player p : players)
+      if (p != null && p instanceof Human h)
+        humans[count++] = h;
+
+    return humans;
+  }
+
+  public Killer getKiller() {
+    for (Player p : players)
+      if (p != null && p instanceof Killer k)
+        return k;
+
+    return null;
+  }
+
 
   public void sendMessage(int id, String message) {
     comm.send(id, message);
@@ -125,6 +144,43 @@ public class Server implements Comm.TcpServerCallback {
     }
   }
 
+  private void handleAttack(int id, String parts[]) {
+    Player player = players[id];
+    if (player == null)
+      return;
+
+    if (player instanceof Killer k)
+      k.attack();
+  }
+
+  private void handleHealing(int id, String parts[]) {
+    if (parts.length != 2)
+      return;
+
+    Player player = players[id];
+    if (player == null || !(player instanceof Human))
+      return;
+
+    int targetId = Integer.parseInt(parts[1]);
+    if (players[targetId] == null || !(players[targetId] instanceof Human))
+      return;
+
+    Human healer = (Human)player;
+    Human target = (Human)players[targetId];
+
+    if (target.isFallen())
+      healer.healing(target);
+  }
+
+  private void handleStopHealing(int id, String parts[]) {
+    Player player = players[id];
+    if (player == null || !(player instanceof Human))
+      return;
+
+    Human healer = (Human)player;
+    healer.stopHealing();
+  }
+
 
   @Override
   public void onMessage(int id, String message) {
@@ -135,8 +191,11 @@ public class Server implements Comm.TcpServerCallback {
       return;
 
     switch (parts[0].toLowerCase()) {
-      case "keydown" -> handleKeyDown(id, parts);
-      case "keyup"   -> handleKeyUp(id, parts);
+      case "keydown"  -> handleKeyDown(id, parts);
+      case "keyup"    -> handleKeyUp(id, parts);
+      case "attack"   -> handleAttack(id, parts);
+      case "heal"     -> handleHealing(id, parts);
+      case "stopheal" -> handleStopHealing(id, parts);
     }
   }
 
