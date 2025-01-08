@@ -6,8 +6,8 @@ import Util.AABB;
 public abstract class GameObject {
   private final int id;
 
-  private int x = 0;
-  private int y = 0;
+  private double x = 0;
+  private double y = 0;
 
   public GameObject(int id) {
     this.id = id;
@@ -19,36 +19,36 @@ public abstract class GameObject {
 
   public abstract void update(double elapsedMs);
 
-  public int getX() {
+  public double getX() {
     return x;
   }
 
-  public void setX(int x) {
+  public void setX(double x) {
     this.x = x;
   }
 
-  public void moveX(int dx) {
+  public void moveX(double dx) {
     x += dx;
   }
 
-  public int getY() {
+  public double getY() {
     return y;
   }
 
-  public void setY(int y) {
+  public void setY(double y) {
     this.y = y;
   }
 
-  public void moveY(int dy) {
+  public void moveY(double dy) {
     y += dy;
   }
 
-  public void setPosition(int x, int y) {
+  public void setPosition(double x, double y) {
     this.x = x;
     this.y = y;
   }
 
-  public void move(int dx, int dy) {
+  public void move(double dx, double dy) {
     x += dx;
     y += dy;
   }

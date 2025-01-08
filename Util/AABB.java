@@ -1,51 +1,51 @@
 package Util;
 
 public class AABB {
-  private final int x;
-  private final int y;
-  private final int w;
-  private final int h;
+  private final double x;
+  private final double y;
+  private final double w;
+  private final double h;
 
-  public AABB(int x, int y, int w, int h) {
+  public AABB(double x, double y, double w, double h) {
     this.x = x;
     this.y = y;
     this.w = w;
     this.h = h;
   }
 
-  public int getX() {
+  public double getX() {
     return x;
   }
 
-  public int getY() {
+  public double getY() {
     return y;
   }
 
-  public int getW() {
+  public double getW() {
     return w;
   }
 
-  public int getH() {
+  public double getH() {
     return h;
   }
 
-  public Pair<Integer> getCenter() {
+  public Pair<Double> getCenter() {
     return new Pair<>(x + w / 2, y + h / 2);
   }
 
-  public Pair<Integer> getTopLeft() {
+  public Pair<Double> getTopLeft() {
     return new Pair<>(x, y);
   }
 
-  public Pair<Integer> getTopRight() {
+  public Pair<Double> getTopRight() {
     return new Pair<>(x + w, y);
   }
 
-  public Pair<Integer> getBottomRight() {
+  public Pair<Double> getBottomRight() {
     return new Pair<>(x + w, y + h);
   }
 
-  public Pair<Integer> getBottomLeft() {
+  public Pair<Double> getBottomLeft() {
     return new Pair<>(x, y + h);
   }
 
