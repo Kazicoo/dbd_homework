@@ -19,7 +19,7 @@ public class Server implements Comm.TcpServerCallback {
 
 
   /// The server's ticks per second.
-  public static final double SERVER_TPS = 20;
+  public static final double SERVER_TPS = 60;
 
   /// The server's frame time in milliseconds.
   public static final double SERVER_FT = 1000 / SERVER_TPS;
