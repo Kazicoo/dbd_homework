@@ -1,5 +1,7 @@
 package Server;
 
+import Util.AABB;
+
 
 public abstract class GameObject {
   private final int id;

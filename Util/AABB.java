@@ -1,7 +1,4 @@
-package Server;
-
-import Util.Pair;
-
+package Util;
 
 public class AABB {
   private final int x;
